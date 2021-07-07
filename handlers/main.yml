@@ -1,0 +1,13 @@
+---
+# handlers file for ./roles/installer
+
+# ------------------------------------------------------------------------------
+- name: restart mongodb
+  become: yes
+  service:
+    name: "{{ install_server_mongodb.service }}"
+    state: restarted
+    enabled: "{{ install_server_mongodb.enabled }}"
+  tags:
+    - install_server
+    - mongodb

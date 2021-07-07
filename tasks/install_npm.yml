@@ -1,0 +1,41 @@
+---
+# tasks file for ./roles/install_server
+
+# ------------------------------------------------------------------------------
+- name: download npm step 1 [get/deb]
+  get_url:
+    url: "{{ install_server_npm.deb.url }}"
+    dest: "/tmp/{{ install_server_npm.deb.file }}"
+    mode: "0700"
+  tags:
+    - install_server
+    - install_npm
+
+- name: install npm step 2 [bash]
+  become: yes
+  shell: "/tmp/{{ install_server_npm.deb.file }}"
+  tags:
+    - install_server
+    - install_npm
+
+- name: install npm step 3 [apt]
+  become: yes
+  ansible.builtin.apt:
+    pkg: "{{ install_server_npm.apt }}"
+    state: present
+    force_apt_get: yes # apt-get instead of aptitude
+  tags:
+    - install_server
+    - install_npm
+
+# ------------------------------------------------------------------------------
+- name: install npm packages globally [npm install -g]
+  become: yes
+  npm:
+    name: "{{ item }}"
+    global: yes
+  loop: "{{ install_server_npm_pkg | flatten(levels=1) }}"
+  when: install_server_npm_pkg is defined
+  tags:
+    - install_server
+    - install_npm

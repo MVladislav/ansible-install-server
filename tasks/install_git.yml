@@ -1,0 +1,62 @@
+---
+# tasks file for ./roles/install_server
+
+# ------------------------------------------------------------------------------
+- name: "install git step 1 [apt]"
+  become: yes
+  ansible.builtin.apt:
+    pkg: "{{ install_server_git.apt }}"
+    state: present
+    force_apt_get: yes # apt-get instead of aptitude
+  when: install_server_git is defined and install_server_git.apt is defined
+  tags:
+    - install_server
+    - git
+
+# ------------------------------------------------------------------------------
+# user.email
+- name: "config git step 2.1.1 [{{ item.key }}:: {{ item.value }}]"
+  community.general.git_config:
+    name: "{{ item.key }}"
+    scope: "{{ item.scope }}"
+    value: "{{ item.value }}"
+  loop: "{{ install_server_git.git.config|flatten(levels=1) }}"
+  when: install_server_git is defined and install_server_git.git is defined and install_server_git.git.config is defined
+  tags:
+    - install_server
+    - git
+
+# folder
+- name: "config git step 2.2.1 [create folder for template: git-hooks]"
+  ansible.builtin.file:
+    path: ~/.git-hooks
+    state: directory
+    mode: "0755"
+  when: install_server_git is defined
+  tags:
+    - install_server
+    - git
+
+# template
+- name: "config git step 2.2.2 [copy commit-msg template into git-hooks]"
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.template:
+    src: "{{ install_server_git.git.hook.commit_msg.template }}"
+    dest: "{{ install_server_git.git.hook.base_path }}/{{ install_server_git.git.hook.commit_msg.filename }}"
+    mode: "0770"
+  when: install_server_git is defined
+  tags:
+    - install_server
+    - git
+
+# core.hooksPath
+- name: "config git step 2.2.3 [core.hooksPath]"
+  community.general.git_config:
+    name: core.hooksPath
+    scope: global
+    value: "{{ install_server_git.git.hook.base_path }}"
+  when: install_server_git is defined
+  tags:
+    - install_server
+    - git

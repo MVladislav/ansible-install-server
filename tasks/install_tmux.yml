@@ -1,0 +1,160 @@
+---
+# tasks file for ./roles/install_server
+
+# # ------------------------------------------------------------------------------
+- name: install tmux dependecies step 1 [apt]
+  become: yes
+  ansible.builtin.apt:
+    pkg: "{{ install_server_tmux.apt_dependecies }}"
+    state: present
+    force_apt_get: yes # apt-get instead of aptitude
+  tags:
+    - install_server
+    - tmux
+
+# # ------------------------------------------------------------------------------
+- name: install tmux step 1 [git clone]
+  become: yes
+  ansible.builtin.git:
+    repo: "{{ install_server_tmux.git }}"
+    dest: "/tmp/tmux"
+    force: yes
+    update: "{{ install_server_tmux.update | bool }}"
+  tags:
+    - install_server
+    - tmux
+
+# # ------------------------------------------------------------------------------
+- name: install tmux step 2.1 [run autogen.sh]
+  become: yes
+  shell: ./autogen.sh
+  args:
+    chdir: "/tmp/tmux"
+    creates: "/tmp/tmux/configure"
+  tags:
+    - install_server
+    - tmux
+
+- name: install tmux step 2.2 [run configure]
+  become: yes
+  shell: ./configure
+  args:
+    chdir: "/tmp/tmux"
+    creates: "/tmp/tmux/Makefile"
+  tags:
+    - install_server
+    - tmux
+
+- name: install tmux step 2.3 [make and install]
+  become: yes
+  shell: make && make install
+  args:
+    chdir: "/tmp/tmux"
+  tags:
+    - install_server
+    - tmux
+
+# ------------------------------------------------------------------------------
+- name: install tmux step 3 [enable aliases .bashrc]
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  lineinfile:
+    dest: "{{ install_server_tmux.aliases_path }}"
+    state: present
+    line: "{{ item }}"
+  with_items:
+    - alias tl='tmux ls'
+    - alias ta='tmux attach -t'
+    - alias tk='tmux kill-session -t'
+  when: install_server_tmux.aliases
+  tags:
+    - install_server
+    - tmux
+
+# ------------------------------------------------------------------------------
+- name: install tmux step 4.1 [git clone style]
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.git:
+    repo: "{{ install_server_tmux.style.git }}"
+    dest: "~/.tmux_style_git"
+    force: yes
+    update: no
+  tags:
+    - install_server
+    - tmux
+
+- name: install tmux step 4.2 [symbolic .tmux.conf]
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.file:
+    src: ~/.tmux_style_git/.tmux.conf
+    dest: ~/.tmux.conf
+    state: link
+  tags:
+    - install_server
+    - tmux
+
+- name: install tmux step 4.3 [symbolic .tmux.conf.local]
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.file:
+    src: ~/.tmux_style_git/.tmux.conf.local
+    dest: ~/.tmux.conf.local
+    state: link
+  tags:
+    - install_server
+    - tmux
+
+# ------------------------------------------------------------------------------
+- name: install tmux step 4.4 [append command to .tmux.conf.local]
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  lineinfile:
+    dest: "~/.tmux_style_git/.tmux.conf.local"
+    state: present
+    line: "{{ item }}"
+  with_items:
+    - set -g prefix C-y
+    - unbind C-y
+    - bind C-y send prefix
+    - setw -g mouse on
+    - tmux_conf_copy_to_os_clipboard=true
+    - tmux_conf_theme_left_separator_main="\uE0B0" # /!\ you don't need to install Powerline
+    - tmux_conf_theme_left_separator_sub="\uE0B1" #   you only need fonts patched with
+    - tmux_conf_theme_right_separator_main="\uE0B2" #   Powerline symbols or the standalone
+    - tmux_conf_theme_right_separator_sub="\uE0B3" #   PowerlineSymbols.otf font, see README.md
+    - tmux_conf_battery_status_charging="🔌" # U+1F50C
+    - tmux_conf_battery_status_discharging="🔋" # U+1F50B
+    - tmux_conf_battery_bar_symbol_full="♥"
+  tags:
+    - install_server
+    - tmux
+
+# ------------------------------------------------------------------------------
+- name: install tmux step 5.1.1 [create folder for PowerlineSymbols.otf]
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.file:
+    path: ~/.local/share/fonts/
+    state: directory
+    mode: "0754"
+  tags:
+    - install_server
+    - tmux
+
+# https://github.com/powerline/fonts
+- name: install tmux step 5.1.2 [download PowerlineSymbols.otf]
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  get_url:
+    url: "{{ item }}"
+    dest: ~/.local/share/fonts/
+    mode: "0664"
+  loop:
+    - https://raw.githubusercontent.com/powerline/fonts/master/ProFont/ProFont%20For%20Powerline.ttf
+    - https://raw.githubusercontent.com/powerline/fonts/master/UbuntuMono/Ubuntu%20Mono%20derivative%20Powerline.ttf
+    - https://raw.githubusercontent.com/powerline/fonts/master/SourceCodePro/Source%20Code%20Pro%20for%20Powerline.otf
+  tags:
+    - install_server
+    - tmux

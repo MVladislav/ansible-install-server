@@ -1,0 +1,370 @@
+---
+# defaults file for ./roles/install_server
+
+# ------------------------------------------------------------------------------
+install_server_service_name: default-server
+install_server_hostname: "{{ install_server_service_name }}"
+
+install_server_links_to_check_update:
+  mongodb_pgp: https://www.mongodb.org/static/pgp/server-4.2.asc
+  mongodb_distribution: bionic/mongodb-org/4.2
+  #
+  npm_url: https://deb.nodesource.com/setup_15.x
+  npm_file: setup_15.x.sh
+  #
+  go_file: go1.16.linux-amd64.tar.gz
+  go_url: https://golang.org/dl/go1.16.5.linux-amd64.tar.gz
+  # go_url: https://golang.org/dl/go1.16.5.linux-arm64.tar.gz
+  go_checksum: "sha256:b12c23023b68de22f74c0524f10b753e7b08b1504cb7e417eccebdd3fae49061"
+  go_version: go version go1.16.5 linux/amd64
+  # go_version: go version go1.16.5 linux/arm64
+
+# ------------------------------------------------------------------------------
+# WHAT TO INSTALL
+install_server_config:
+  dev: no
+  apt_base: no
+  apt_dev: no
+  apt_exfat: no
+  apt_libs: no
+  apt_vpn: no
+  # dpkg_...: no
+  # snap_...: no
+  snap_microk8s: no
+  git: no
+  zsh: no
+  tmux: no
+  python: no # base|dev
+  go: no
+  go_kompose: no
+  npm: no
+  mongodb: no
+  java: no # base|dev
+
+# ------------------------------------------------------------------------------
+# CLIENTS for adding access (ex. zsh)
+clients:
+  - name: "{{ ansible_user }}"
+
+# ------------------------------------------------------------------------------
+# APT
+# install_server_config.apt_...
+install_server_apt:
+  # Needed
+  - name: dirmngr
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: curl
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: git
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: git-flow
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  # Others
+  - name: vim
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  # - name: rar
+  #   install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: unrar
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: zip
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: openssl
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: snapd
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  # Others
+  - name: ca-certificates
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: apt-transport-https
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: gnupg
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: resolvconf
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: unattended-upgrades
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  # dev
+  - name: jq
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: iftop
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: htop
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: net-tools
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: haveged
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  # Others
+  - name: exfat-fuse
+    install: "{{ install_server_config.apt_exfat | default('no') | bool }}"
+  - name: exfat-utils
+    install: "{{ install_server_config.apt_exfat | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  # 1
+  - name: freeglut3
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: freeglut3-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: cmake
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: g++
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: build-essential
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  # 7
+  - name: autoconf
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: pkg-config
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: lib32z1
+    install: no
+  - name: mesa-utils
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: libstdc++6
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  # 2
+  - name: libgl1-mesa-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: libegl1-mesa-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: libgles2-mesa
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: libgles2-mesa-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  # 3
+  - name: libnet1-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: libnet1
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: libpcap0.8-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: libpcap0.8
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: libpcap-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  # 4
+  - name: libssl-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: zlib1g-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  # 4.1
+  - name: libxml2-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: libxslt1-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: libffi-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: libpq-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  - name: resolvconf
+    install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
+  - name: wireguard
+    install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
+  - name: openvpn
+    install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
+  - name: openvpn-systemd-resolved
+    install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
+  # - name: network-manager-openvpn
+  #   install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
+  - name: openconnect
+    install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
+  # - name: network-manager-openconnect
+  #   install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
+  # - name: l2tp
+  #   install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
+  # - name: network-manager-l2tp
+  #   install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
+
+# ------------------------------------------------------------------------------
+# DPKG packages
+# install_server_config.dpkg_...
+install_server_dpkg: []
+
+# ------------------------------------------------------------------------------
+# SNAP packages
+# install_server_config.snap_...
+install_server_snap:
+  - name: microk8s
+    classic: yes
+    beta: no
+    install: "{{ install_server_config.snap_microk8s | default('no') | bool }}"
+
+# ------------------------------------------------------------------------------
+# GIT
+# install_server_config.git
+install_server_git_user: "{{ ansible_user }}"
+install_server_git_email: "{{ ansible_user }}"
+install_server_git:
+  apt:
+    - git
+    - git-flow
+  git:
+    config:
+      - key: user.email
+        value: "{{ install_server_git_user }}"
+        scope: global
+      - key: user.name
+        value: "{{ install_server_git_user }}"
+        scope: global
+      - key: init.defaultBranch
+        value: main
+        scope: global
+      - key: pull.ff
+        value: only
+        scope: global
+    hook:
+      base_path: ~/.git-hooks
+      commit_msg:
+        template: "commit-msg.j2"
+        filename: "commit-msg"
+
+# ------------------------------------------------------------------------------
+# ZSH
+# install_server_config.zsh
+install_server_zsh:
+  update: false
+  apt:
+    - zsh
+    - powerline
+    - fonts-powerline
+  git:
+    ohmyzsh:
+      url: https://github.com/robbyrussell/oh-my-zsh.git
+      folder: .oh-my-zsh
+    spaceship:
+      url: https://github.com/denysdovhan/spaceship-prompt.git
+      folder: .oh-my-zsh/themes/spaceship-prompt
+    zshTheme:
+      url: https://github.com/zsh-users/zsh-syntax-highlighting.git
+      folder: .zsh-syntax-highlighting
+  zshrc: .zshrc
+  theme: spaceship
+  # spaceship | agnoster
+  plugins: tmux git vscode ubuntu sudo npm ng adb ansible colored-man-pages command-not-found cp docker fd git-flow gitignore history man nmap node ufw vim-interaction python pip kubectl git-flow docker-compose
+  append_file:
+    - template: zshrc-append.j2
+      path: ~/.zshrc-append
+      append_as: source ~/.zshrc-append
+    # - template: zshrc-append-hack.j2
+    #   path: ~/.zshrc-append-hack
+    #   append_as: source ~/.zshrc-append-hack
+    # - template: zshrc-append-vpn.j2
+    #   path: ~/.zshrc-append-vpn
+    #   append_as: source ~/.zshrc-append-vpn
+
+# ------------------------------------------------------------------------------
+# TMUX
+# install_server_config.tmux
+# https://github.com/gpakosz/.tmux#configuration
+# https://gist.github.com/henrik/1967800
+install_server_tmux:
+  update: yes
+  git: https://github.com/tmux/tmux.git
+  style:
+    git: https://github.com/gpakosz/.tmux.git
+  apt_dependecies:
+    - build-essential
+    - wget
+    - tar
+    - libevent-dev
+    - libncurses-dev
+    - autoconf
+    - automake
+    - pkg-config
+    - bison
+    - xclip
+  aliases: true
+  # aliases_path: "~/.bashrc"
+  aliases_path: "~/.zshrc"
+
+# ------------------------------------------------------------------------------
+# PYTHON
+# install_server_config.python
+install_server_python:
+  apt:
+    - python3
+  dev:
+    - python3-pip
+    - python3-venv
+    - python3-dev
+  #  - pip3 install --upgrade pip
+  pip:
+    - virtualenv
+    - autopep8
+
+# ------------------------------------------------------------------------------
+# ANSIBLE
+# install_server_config.ansible
+install_server_ansible:
+  apt:
+    - python3
+    - python3-pip
+    - sshpass
+  pip:
+    - ansible
+
+# ------------------------------------------------------------------------------
+# GO
+# install_server_config.go
+install_server_go:
+  file: "{{ install_server_links_to_check_update.go_file }}"
+  url: "{{ install_server_links_to_check_update.go_url }}"
+  checksum: "{{ install_server_links_to_check_update.go_checksum }}"
+  version: "{{ install_server_links_to_check_update.go_version }}"
+  set_path: yes
+
+# ------------------------------------------------------------------------------
+# GO packages
+# install_server_config.go_...
+install_server_go_sources:
+  - source: github.com/kubernetes/kompose
+    install: "{{ install_server_config.go_kompose | default('no') | bool }}"
+
+# ------------------------------------------------------------------------------
+# NPM
+# install_server_config.npm
+install_server_npm:
+  deb:
+    url: "{{ install_server_links_to_check_update.npm_url }}"
+    file: "{{ install_server_links_to_check_update.npm_file }}"
+  apt: nodejs
+install_server_npm_pkg:
+  - typescript
+  - jshint
+#- "@angular/cli"
+#- typescript
+#- jshint
+#- ts-node
+#- tslint
+#- nodemon
+#- pm2
+
+# ------------------------------------------------------------------------------
+# MONGODB
+# install_server_config.mongodb
+install_server_mongodb:
+  packages:
+    - mongodb-org
+  service: mongod
+  enabled: yes
+  repo_name: mongodb
+  repo: https://repo.mongodb.org/apt/ubuntu
+  version: multiverse
+  fingerprint: null
+  pgp: "{{ install_server_links_to_check_update.mongodb_pgp }}"
+  distribution: "{{ install_server_links_to_check_update.mongodb_distribution }}"
+
+# ------------------------------------------------------------------------------
+# JAVA
+# install_server_config.java
+install_server_java:
+  apt:
+    - openjdk-8-jre-headless
+    - openjdk-11-jre-headless
+  dev:
+    - ant
+  os_env:
+    - variable: JAVA_HOME
+      path: /usr/lib/jvm/java-8-openjdk-amd64

@@ -1,0 +1,40 @@
+---
+# tasks file for ./roles/install_server
+
+# ------------------------------------------------------------------------------
+- name: install java packages [apt]
+  become: yes
+  ansible.builtin.apt:
+    pkg: "{{ install_server_java.apt }}"
+    state: present
+    force_apt_get: yes # apt-get instead of aptitude
+  when: install_server_java is defined and install_server_java.apt is defined
+  tags:
+    - install_server
+    - install_java
+
+# ------------------------------------------------------------------------------
+- name: install java packages [apt]
+  become: yes
+  ansible.builtin.apt:
+    pkg: "{{ install_server_java.apt }}"
+    state: present
+    force_apt_get: yes # apt-get instead of aptitude
+  when: (install_server_config.dev is defined and install_server_config.dev | bool) and (install_server_java is defined and install_server_java.dev is defined)
+  tags:
+    - install_server
+    - install_java
+
+# ------------------------------------------------------------------------------
+
+- name: set java env variables
+  become: yes
+  lineinfile:
+    dest: "/etc/environment"
+    state: present
+    regexp: "^{{ item.variable }}="
+    line: "{{ item.variable }}={{ item.path}}"
+  with_items: "{{ install_server_java.os_env }}"
+  tags:
+    - install_server
+    - install_java

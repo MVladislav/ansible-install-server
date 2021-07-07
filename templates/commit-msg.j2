@@ -1,0 +1,97 @@
+#!/usr/bin/env python3
+"""
+Git commit hook:
+ .git/hooks/commit-msg
+ Check commit message according to guidelines
+"""
+
+import re
+import sys
+
+ISSUE_NUMBER = "\(#([0-9]{1,})\)"
+
+TYPE_LIST = {
+    "init": "",
+    "docs": "Documentation only changes",
+    "refactor": "A code change that neither fixes a bug nor adds a feature",
+    "update": "",
+    "merge": "",
+    "build": "Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)",
+    "test": "Adding missing tests or correcting existing tests",
+    f"fix({ISSUE_NUMBER})": "A bug fix (need a issue number ex.: fix(#666): <message>)",
+    "publish": "",
+    "ci": "Changes to our CI configuration files and scripts (example scopes: Circle, BrowserStack, SauceLabs)",
+    "feat": "A new feature",
+    "perf": "A code change that improves performance",
+    "chore": "",
+    "revert": "",
+    "style": "",
+}
+TYPE_LIST_KEYS = TYPE_LIST.keys()
+TYPE = "|".join(TYPE_LIST_KEYS)
+
+SCOPE_LIST = {
+    "animations": "",
+    "bazel": "",
+    "benchpress": "",
+    "common": "",
+    "compiler": "",
+    "compiler-cli": "",
+    "core": "",
+    "elements": "",
+    "forms": "",
+    "http": "",
+    "language-service": "",
+    "localize": "",
+    "platform-browser": "",
+    "platform-browser-dynamic": "",
+    "platform-server": "",
+    "router": "",
+    "service-worker": "",
+    "upgrade": "",
+    "zone.js": "",
+    "packaging": "",
+    "changelog": "",
+    "dev-infra": "",
+    "docs-infra": "",
+    "migrations": "",
+    "ngcc": "",
+    "ve": ""
+}
+SCOPE_LIST_KEYS = SCOPE_LIST.keys()
+SCOPE = "|".join(SCOPE_LIST_KEYS)
+
+MIN_LENGTH = "{3,}"
+
+REGEX = f'^({TYPE})(\(({SCOPE})\))?\:\s(.{MIN_LENGTH})'
+
+GUIDELINE_LINK = 'https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit'
+
+with open(sys.argv[1]) as commit:
+    lines = commit.readlines()
+    if len(lines) == 0:
+        sys.stderr.write("\nEmpty commit message\n")
+        sys.stderr.write("\n - Refer commit guide: {}\n\n".format(help_address))
+        sys.exit(1)
+
+    match_regex = re.match('({})'.format(REGEX), lines[0])
+
+    if match_regex is None:
+        type_desc = "\n".join((f"  - {key}:: {value}" for key, value in TYPE_LIST.items()))
+        scope_desc = "\n".join((f"  - {key}:: {value}" for key, value in SCOPE_LIST.items()))
+        sys.stderr.write(
+            f"""
+\nYour commit message subject line does not follow the guideline:
+\nREGEX:: <type>(<scope>): <message>
+==> {REGEX}
+\n<type>:
+{ type_desc }
+\n<scope> (is optional):
+{ scope_desc }
+\n\n=> Refer commit guideline: {GUIDELINE_LINK}\n\n
+            """
+        )
+        sys.exit(1)
+
+    sys.stderr.write("\nYour commit message looks good! \n\n")
+sys.exit(0)

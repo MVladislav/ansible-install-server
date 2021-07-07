@@ -1,0 +1,167 @@
+---
+# tasks file for ./roles/install_server
+
+# ------------------------------------------------------------------------------
+- name: install zsh step 1 [apt]
+  become: yes
+  ansible.builtin.apt:
+    pkg: "{{ install_server_zsh.apt }}"
+    state: present
+    force_apt_get: yes # apt-get instead of aptitude
+  tags:
+    - install_server
+    - zsh
+
+# ------------------------------------------------------------------------------
+- name: install zsh step 2 [git]
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.git:
+    repo: "{{ install_server_zsh.git.ohmyzsh.url }}"
+    dest: "~/{{ install_server_zsh.git.ohmyzsh.folder }}"
+    force: yes
+    update: no
+  tags:
+    - install_server
+    - zsh
+
+- name: install zsh step 2.1 [cp]
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  shell: "cp ~/{{ install_server_zsh.git.ohmyzsh.folder }}/templates/zshrc.zsh-template ~/{{ install_server_zsh.zshrc }}"
+  tags:
+    - install_server
+    - zsh
+
+# ------------------------------------------------------------------------------
+- name: install zsh spaceship theme step 3 [git]
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.git:
+    repo: "{{ install_server_zsh.git.spaceship.url }}"
+    dest: "~/{{ install_server_zsh.git.spaceship.folder }}"
+    force: yes
+    update: no
+  tags:
+    - install_server
+    - zsh
+
+- name: install zsh spaceship theme step 3.1 [ln]
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  file:
+    src: "~/{{ install_server_zsh.git.spaceship.folder }}/spaceship.zsh-theme"
+    dest: "~/{{ install_server_zsh.git.ohmyzsh.folder }}/themes/spaceship.zsh-theme"
+    #owner: foo
+    #group: foo
+    state: link
+    force: yes
+  tags:
+    - install_server
+    - zsh
+
+# ------------------------------------------------------------------------------
+- name: install zsh step 4 [git]
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.git:
+    repo: "{{ install_server_zsh.git.zshTheme.url }}"
+    dest: "~/{{ install_server_zsh.git.zshTheme.folder }}"
+    depth: 1
+    update: no
+  tags:
+    - install_server
+    - zsh
+
+- name: install zsh step 4.1 [echo]
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  shell: 'echo "source ~/{{ install_server_zsh.git.zshTheme.folder }}/zsh-syntax-highlighting.zsh" >> ~/{{ install_server_zsh.zshrc }}'
+  tags:
+    - install_server
+    - zsh
+
+# ZSH_THEME
+- name: "install zsh step 4.2.1 [replace 'theme' with {{ install_server_zsh.theme }}]"
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  lineinfile:
+    path: "~/{{ install_server_zsh.zshrc }}"
+    regexp: 'ZSH_THEME="(.*?)"'
+    line: 'ZSH_THEME="{{ install_server_zsh.theme }}"'
+    mode: "0660"
+  tags:
+    - install_server
+    - zsh
+
+# plugins
+- name: "install zsh step 4.2.2 [replace 'plugins' with {{ install_server_zsh.plugins }}]"
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  lineinfile:
+    path: "~/{{ install_server_zsh.zshrc }}"
+    regexp: 'plugins=\((.*?)\)'
+    line: "plugins=({{ install_server_zsh.plugins }})"
+    mode: "0660"
+  tags:
+    - install_server
+    - zsh
+
+# # alias
+# - name: "install zsh step 4.2.3 [replace 'alias docker-swarm-compose' with {{ install_server_zsh.plugins }}]"
+#   become: yes
+#   become_user: "{{ outer_item.name }}"
+#   lineinfile:
+#     path: "~/{{ install_server_zsh.zshrc }}"
+#     regexp: 'alias docker-swarm-compose="(.*?)"'
+#     line: 'alias docker-swarm-compose="docker-compose config | docker stack deploy --compose-file -"'
+#     mode: "0660"
+#   ignore_errors: yes
+#   tags:
+#     - install_server
+#     - zsh
+
+# template
+- name: "install zsh step 4.2.3.1 [copy 'template for zsh script tools' with {{ item.path }}]"
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.template:
+    src: "{{ item.template }}"
+    dest: "{{ item.path }}"
+    mode: "0660"
+  loop: "{{ install_server_zsh.append_file|flatten(levels=1) }}"
+  tags:
+    - install_server
+    - zsh
+
+# append
+- name: "install zsh step 4.2.3.1 [add 'append file with tool scripts' with {{ item.path }}]"
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  lineinfile:
+    path: "~/{{ install_server_zsh.zshrc }}"
+    regexp: "{{ item.append_as }}"
+    line: "{{ item.append_as }}"
+    mode: "0660"
+  loop: "{{ install_server_zsh.append_file|flatten(levels=1) }}"
+  tags:
+    - install_server
+    - zsh
+
+# ------------------------------------------------------------------------------
+- name: get zsh path
+  command: which zsh
+  register: zsh_path
+  tags:
+    - install_server
+    - zsh
+
+- name: "switch to zsh (for user: {{ outer_item.name }})"
+  become: yes
+  user:
+    name: "{{ outer_item.name }}"
+    shell: "{{ zsh_path.stdout }}"
+  when: zsh_path.stdout is defined
+  tags:
+    - install_server
+    - zsh

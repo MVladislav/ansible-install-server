@@ -1,0 +1,161 @@
+######################################################################
+##
+## set PATH so it includes user's private bin if it exists
+##
+######################################################################
+if [ -d "$HOME/.local/bin" ]; then
+  PATH="$HOME/.local/bin:$PATH"
+fi
+
+if [ -d /etc/zsh/profile.d ]; then
+  for i in /etc/zsh/profile.d/*.sh; do
+    if [ -r $i ]; then
+      . $i
+    fi
+  done
+  unset i
+fi
+
+######################################################################
+##
+## EXPORT & ALIAS
+##
+######################################################################
+export APP_JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+
+function vm_md_to_pdf() {
+  cur_date=$(date +"%Y-%m-%d")
+  filename=$(echo "$1" | cut -f 1 -d ".")
+  pandoc "$1" \
+    -o "$filename".pdf \
+    --from markdown \
+    --template "/opt/git/pandoc-latex-template/eisvogel.tex" \
+    --pdf-engine=xelatex \
+    --listings \
+    -V lang=en-GB \
+    -V classoption=onside \
+    -V book \
+    -V date="$cur_date" \
+    -V 'mainfont:Source Code Pro for Powerline' \
+    -V 'sansfont:DejaVuSans' \
+    -V 'monofont:DejaVuSansMono' \
+    -V 'mathfont:TeXGyreDejaVuMath-Regular'
+}
+
+### DOCKER ###
+alias docker-swarm-compose="docker-compose config | docker stack deploy --compose-file -"
+
+### TOOLS ###
+# alias vm_my_ip='curl https://my-ip-is.appspot.com/plain'
+# alias vm_my_ip='curl ifconfig.co/'
+alias vm_my_ip='curl ifconfig.io/ip'
+alias vm_my_country='curl ifconfig.io/country_code'
+alias vm_my_ua='curl ifconfig.io/ua'
+alias vm_my_all='curl ifconfig.io/all.json | jq'
+alias vm_random='openssl rand -base64 '
+alias vm_find_command='apropos '
+
+### PYTHON TOOLS ###
+alias vm_url_decode='python3 -c "import sys, urllib.parse as ul; print(ul.unquote_plus(sys.argv[1]))"'
+alias vm_url_encode='python3 -c "import sys, urllib.parse as ul; print(ul.quote_plus(sys.argv[1]))"'
+alias vm_reverse='python3 -c "import sys; print(sys.argv[1][::-1])"'
+
+alias vm_hun_to_min="python3 -c 'import sys;x = sys.argv[1].split(\":\");x3 = (int(x[0]) * 60) + ((int(x[1])/100)*60);print(x3, \":: \", f\"{divmod(x3, 60)[0]}h : {divmod(x3, 60)[1]}m\")'"
+
+# sudo apt install xclip
+# pip3 install pyperclip
+alias vm_copyFromClip='python3 -c "import sys, pyperclip; pyperclip.copy(sys.argv[1])"'
+
+### GIT ###
+alias vm_lg1="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all"
+alias vm_lg2="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all"
+
+### TMUX ###
+alias vm_tl='tmux ls'
+alias vm_ta='tmux attach -t'
+alias vm_tk='tmux kill-session -t'
+
+######################################################################
+##
+## extract: Extract most know archives with one command
+##
+######################################################################
+vm_extract() {
+  if [ -f "$1" ]; then
+    case "$1" in
+    *.tar.bz2) tar xjf "$1" ;;
+    *.tar.gz) tar xzf "$1" ;;
+    *.bz2) bunzip2 "$1" ;;
+    *.rar) unrar x "$1" ;;
+    *.gz) gunzip "$1" ;;
+    *.tar) tar xf "$1" ;;
+    *.tbz2) tar xjf "$1" ;;
+    *.tgz) tar xzf "$1" ;;
+    *.tar.xz) tar xvfJ "$1" ;;
+    *.zip) unzip "$1" ;;
+    *.Z) uncompress "$1" ;;
+    *.7z) 7z x "$1" ;;
+    *) echo "'$1' cannot be extracted via extract()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+
+######################################################################
+##
+## encrypt: encrypt to most know archives with one command
+##
+######################################################################
+vm_encrypt() {
+  if [ -n "$3" ]; then
+    case "$3" in
+    sec)
+      case "$1" in
+      rar) password="-hp" ;;
+      7z) password="-p" ;;
+      *) echo "'$2' cannot be encrypt via encrypt() to '$1'" ;;
+      esac
+      ;;
+    *)
+      case "$1" in
+      rar) password="-hp$3" ;;
+      7z) password="-p$3" ;;
+      *) echo "'$2' cannot be encrypt via encrypt() to '$1'" ;;
+      esac
+      ;;
+    esac
+  fi
+  if [ -e "$2" ]; then
+    case "$1" in
+    rar) rar a "$password" "$2.rar" "$2" ;;
+    7z) 7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=32m -ms=on -mhe=on "$password" "$2.7z" "$2" ;;
+    *) echo "'$2' cannot be encrypt via encrypt() to '$1'" ;;
+    esac
+  else
+    echo "'$2' is not a valid file"
+  fi
+}
+
+######################################################################
+##
+## ii: display useful host related information
+##
+######################################################################
+vm_ii() {
+  echo -e "\\n${RED}You are logged on:$NC"
+  hostname
+  echo -e "\\n${RED}Additionnal information:$NC"
+  uname -a
+  echo -e "\\n${RED}Users logged on:$NC"
+  w -h
+  echo -e "\\n${RED}Current date:$NC"
+  date
+  echo -e "\\n${RED}Machine stats:$NC"
+  uptime
+  echo -e "\\n${RED}Public facing IP Address:$NC"
+  vm_my_ip
+  vm_my_country
+  vm_my_ua
+  echo
+}
