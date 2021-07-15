@@ -316,6 +316,16 @@ install_server_go:
   set_path: yes
 
 # ------------------------------------------------------------------------------
+# RUBY
+# install_server_config.ruby
+install_server_ruby:
+  apt_dependencies:
+    - ruby-full
+    - build-essential
+    - zlib1g-dev
+  set_path: yes
+
+# ------------------------------------------------------------------------------
 # GO packages
 # install_server_config.go_...
 install_server_go_sources:
