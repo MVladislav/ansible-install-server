@@ -37,6 +37,7 @@ install_server_config:
   python: no # base|dev
   go: no
   go_kompose: no
+  ruby: no
   npm: no
   mongodb: no
   java: no # base|dev
@@ -313,6 +314,16 @@ install_server_go:
   url: "{{ install_server_links_to_check_update.go_url }}"
   checksum: "{{ install_server_links_to_check_update.go_checksum }}"
   version: "{{ install_server_links_to_check_update.go_version }}"
+  set_path: yes
+
+# ------------------------------------------------------------------------------
+# RUBY
+# install_server_config.ruby
+install_server_ruby:
+  apt_dependencies:
+    - ruby-full
+    - build-essential
+    - zlib1g-dev
   set_path: yes
 
 # ------------------------------------------------------------------------------
