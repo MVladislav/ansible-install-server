@@ -29,6 +29,7 @@ install_server_config:
   python: no # base|dev
   go: no
   go_kompose: no
+  ruby: no
   npm: no
   mongodb: no
   java: no # base|dev
