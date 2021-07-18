@@ -330,6 +330,7 @@ install_server_npm:
     url: "{{ install_server_links_to_check_update.npm_url }}"
     file: "{{ install_server_links_to_check_update.npm_file }}"
   apt: nodejs
+  set_path: yes
 install_server_npm_pkg:
   - typescript
   - jshint

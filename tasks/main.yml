@@ -127,6 +127,14 @@
   include: install_npm.yml
   when: install_server_config.npm is defined and install_server_config.npm | bool
 
+# - will be installed per client, need to set clients
+- name: install npm packages (per user)
+  include: install_npm_pkg.yml
+  loop: "{{ clients | flatten(levels=1) }}"
+  loop_control:
+    loop_var: outer_item
+  when: (install_server_config.npm is defined and install_server_config.npm | bool) and (clients is defined and outer_item.dev is defined and outer_item.dev | bool)
+
 # ------------------------------------------------------------------------------
 # MONGODB PACKAGES
 - name: install mongodb

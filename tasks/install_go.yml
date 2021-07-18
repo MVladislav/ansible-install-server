@@ -47,7 +47,6 @@
     - go
 
 # ------------------------------------------------------------------------------
-# TODO:
 - name: "create a directory, for /etc/zsh/profile.d"
   become: yes
   ansible.builtin.file:
@@ -56,6 +55,7 @@
     group: "root"
     state: directory
     mode: "0755"
+  when: install_server_go is defined and install_server_go.set_path is defined and install_server_go.set_path | bool
   tags:
     - install_server
     - go
@@ -66,6 +66,7 @@
     src: go-bin.sh
     dest: /etc/zsh/profile.d
     # dest: /etc/profile.d
+  when: install_server_go is defined and install_server_go.set_path is defined and install_server_go.set_path | bool
   tags:
     - install_server
     - go
