@@ -2,11 +2,35 @@
 # tasks file for ./roles/install_server
 
 # ------------------------------------------------------------------------------
+- name: "npm | create a directory, for ~/.npm-packages"
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.file:
+    path: "~/.npm-packages"
+    state: directory
+    mode: "0750"
+  when: install_server_npm_pkg
+  tags:
+    - install_server
+    - npm
+
+# ------------------------------------------------------------------------------
+- name: Setup NPM prefix
+  become: yes
+  become_user: "{{ outer_item.name }}"
+  command: "npm config set prefix ~/.npm-packages"
+  when: install_server_npm_pkg
+  tags:
+    - install_server
+    - npm
+
+# ------------------------------------------------------------------------------
 - name: npm | install npm packages globally [npm install -g]
   become: yes
   become_user: "{{ outer_item.name }}"
   npm:
     name: "{{ item }}"
+    path: "~/.npm-packages"
     # global: yes
   loop: "{{ install_server_npm_pkg | flatten(levels=1) }}"
   when: install_server_npm_pkg is defined
