@@ -122,6 +122,12 @@
   when: install_server_config.go is defined and install_server_config.go | bool
 
 # ------------------------------------------------------------------------------
+# GO PACKAGES
+- name: install ruby packages
+  include: install_ruby.yml
+  when: install_server_config.ruby is defined and install_server_config.ruby | bool
+
+# ------------------------------------------------------------------------------
 # NPM
 - name: install npm
   include: install_npm.yml
