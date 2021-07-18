@@ -42,7 +42,7 @@
     - install_server
     - npm
 
-- name: npm | set GOPATH for all users
+- name: npm | set npm-PATH for all users
   become: yes
   copy:
     src: npm-path.sh
