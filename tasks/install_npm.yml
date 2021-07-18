@@ -2,23 +2,23 @@
 # tasks file for ./roles/install_server
 
 # ------------------------------------------------------------------------------
-- name: download npm step 1 [get/deb]
+- name: npm | download npm step 1 [get/deb]
   get_url:
     url: "{{ install_server_npm.deb.url }}"
     dest: "/tmp/{{ install_server_npm.deb.file }}"
     mode: "0700"
   tags:
     - install_server
-    - install_npm
+    - npm
 
-- name: install npm step 2 [bash]
+- name: npm | install npm step 2 [bash]
   become: yes
   shell: "/tmp/{{ install_server_npm.deb.file }}"
   tags:
     - install_server
-    - install_npm
+    - npm
 
-- name: install npm step 3 [apt]
+- name: npm | install npm step 3 [apt]
   become: yes
   ansible.builtin.apt:
     pkg: "{{ install_server_npm.apt }}"
@@ -26,16 +26,29 @@
     force_apt_get: yes # apt-get instead of aptitude
   tags:
     - install_server
-    - install_npm
+    - npm
 
 # ------------------------------------------------------------------------------
-- name: install npm packages globally [npm install -g]
+- name: "npm | create a directory, for /etc/zsh/profile.d"
   become: yes
-  npm:
-    name: "{{ item }}"
-    global: yes
-  loop: "{{ install_server_npm_pkg | flatten(levels=1) }}"
-  when: install_server_npm_pkg is defined
+  ansible.builtin.file:
+    path: "/etc/zsh/profile.d"
+    owner: "root"
+    group: "root"
+    state: directory
+    mode: "0755"
+  when: install_server_npm is defined and install_server_npm.set_path is defined and install_server_npm.set_path | bool
   tags:
     - install_server
-    - install_npm
+    - npm
+
+- name: npm | set npm-PATH for all users
+  become: yes
+  copy:
+    src: npm-path.sh
+    dest: /etc/zsh/profile.d
+    # dest: /etc/profile.d
+  when: install_server_npm is defined and install_server_npm.set_path is defined and install_server_npm.set_path | bool
+  tags:
+    - install_server
+    - npm

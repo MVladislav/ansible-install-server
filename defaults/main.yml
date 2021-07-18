@@ -9,15 +9,16 @@ install_server_links_to_check_update:
   mongodb_pgp: https://www.mongodb.org/static/pgp/server-4.2.asc
   mongodb_distribution: bionic/mongodb-org/4.2
   #
-  npm_url: https://deb.nodesource.com/setup_15.x
-  npm_file: setup_15.x.sh
+  npm_url: https://deb.nodesource.com/setup_16.x
+  npm_file: setup_16.x.sh
   #
   go_file: go1.16.linux-amd64.tar.gz
-  go_url: https://golang.org/dl/go1.16.5.linux-amd64.tar.gz
-  # go_url: https://golang.org/dl/go1.16.5.linux-arm64.tar.gz
-  go_checksum: "sha256:b12c23023b68de22f74c0524f10b753e7b08b1504cb7e417eccebdd3fae49061"
-  go_version: go version go1.16.5 linux/amd64
-  # go_version: go version go1.16.5 linux/arm64
+  go_url: https://golang.org/dl/go1.16.6.linux-amd64.tar.gz
+  go_checksum: "sha256:be333ef18b3016e9d7cb7b1ff1fdb0cac800ca0be4cf2290fe613b3d069dfe0d"
+  go_version: go version go1.16.6 linux/amd64
+  # go_url: https://golang.org/dl/go1.16.6.linux-arm64.tar.gz
+  # go_checksum: "sha256:9e38047463da6daecab9017cd0599f33f84991e68263752cfab49253bbc98c30"
+  # go_version: go version go1.16.6 linux/arm64
 
 # ------------------------------------------------------------------------------
 # WHAT TO INSTALL
@@ -341,6 +342,7 @@ install_server_npm:
     url: "{{ install_server_links_to_check_update.npm_url }}"
     file: "{{ install_server_links_to_check_update.npm_file }}"
   apt: nodejs
+  set_path: yes
 install_server_npm_pkg:
   - typescript
   - jshint
