@@ -1,5 +1,8 @@
 ---
 # tasks file for ./roles/install_server
+#
+# will not installed as root, per defined in "install_npm" that this is not need
+# here will install per user without root needed
 
 # ------------------------------------------------------------------------------
 - name: "npm | create a directory, for ~/.npm-packages"

@@ -33,6 +33,7 @@
   become: yes
   ansible.builtin.file:
     path: "/etc/zsh/profile.d"
+    # path: /etc/profile.d
     owner: "root"
     group: "root"
     state: directory
