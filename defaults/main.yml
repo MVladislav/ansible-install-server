@@ -87,17 +87,28 @@ install_server_apt:
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   # dev
+  # monitoring: lsof|tcpdump -i ...|netstat -a | more|htop|iotop|iostat|s-tui|watch zpool iostat -vy 1 1|smem -tuwa|bpytop
   - name: jq
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: iftop
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: htop
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: iotop
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: sysstat
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: smem
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: ethtool
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: net-tools
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: haveged
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: iperf3
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: stress
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   # Others
   - name: exfat-fuse
@@ -293,7 +304,10 @@ install_server_python:
     - python3-pip
     - python3-venv
     - python3-dev
-  #  - pip3 install --upgrade pip
+    #  - pip3 install --upgrade pip
+    # TOOLS
+    - s-tui
+    - bpytop
   pip:
     - virtualenv
     - autopep8
