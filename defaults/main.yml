@@ -110,6 +110,8 @@ install_server_apt:
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: stress
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: nvtop
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   # Others
   - name: exfat-fuse
     install: "{{ install_server_config.apt_exfat | default('no') | bool }}"
