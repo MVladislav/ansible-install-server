@@ -1,0 +1,29 @@
+---
+# tasks file for ./roles/install_server
+
+# ------------------------------------------------------------------------------
+- name: "init tunning's step:: network"
+  become: yes
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: present
+    # reload: yes
+  # lineinfile:
+  #   dest: "/etc/sysctl.conf"
+  #   state: present
+  #   line: "{{ item.key }} = {{ item.value }}"
+  loop: "{{ install_server_os_tun.net_tun_lines|flatten(levels=1) }}"
+  when: install_server_os_tun.net_tun_lines is defined
+  register: result
+  tags:
+    - install_server
+    - apt
+
+- name: "init tunning's step:: run 'sysctl -p --system'"
+  become: yes
+  shell: sysctl -p --system
+  when: result is defined and result.changed is defined and result.changed | bool
+  tags:
+    - install_server
+    - apt

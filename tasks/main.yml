@@ -54,6 +54,12 @@
     - create_default_folder
 
 # ------------------------------------------------------------------------------
+# --- TUNNING OS ---
+- name: run os tunning's
+  include: tun_os.yml
+  when: (install_server_os_tun is defined) and (install_server_os_tun.install is defined and install_server_os_tun.install | bool)
+
+# ------------------------------------------------------------------------------
 # ENV
 - name: set env variables
   become: yes

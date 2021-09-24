@@ -44,6 +44,11 @@ install_server_config:
   java: no # base|dev
 
 # ------------------------------------------------------------------------------
+# IF DO OS TUNNING
+install_server_config_tun_os:
+  install: yes
+
+# ------------------------------------------------------------------------------
 # CLIENTS for adding access (ex. zsh)
 clients:
   - name: "{{ ansible_user }}"
@@ -295,6 +300,26 @@ install_server_tmux:
   aliases: true
   # aliases_path: "~/.bashrc"
   aliases_path: "~/.zshrc"
+
+# ------------------------------------------------------------------------------
+# OS TUNNING'S
+install_server_os_tun:
+  install: "{{ install_server_config_tun_os.install | default('no') | bool }}"
+  net_tun_lines:
+    - key: net.core.rmem_max
+      value: 134217728
+    - key: net.core.wmem_max
+      value: 134217728
+    - key: net.ipv4.tcp_rmem
+      value: 4096 87380 67108864
+    - key: net.ipv4.tcp_wmem
+      value: 4096 65536 67108864
+    - key: net.ipv4.tcp_congestion_control
+      value: htcp
+    - key: net.ipv4.tcp_mtu_probing
+      value: 1
+    - key: net.core.default_qdisc
+      value: fq
 
 # ------------------------------------------------------------------------------
 # PYTHON
