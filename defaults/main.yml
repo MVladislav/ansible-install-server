@@ -32,6 +32,7 @@ install_server_config:
   # dpkg_...: no
   # snap_...: no
   snap_microk8s: no
+  snap_btop: no
   git: no
   zsh: no
   tmux: no
@@ -212,6 +213,10 @@ install_server_snap:
     classic: yes
     beta: no
     install: "{{ install_server_config.snap_microk8s | default('no') | bool }}"
+  - name: btop
+    classic: no
+    beta: no
+    install: "{{ install_server_config.snap_btop | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # GIT
@@ -334,7 +339,7 @@ install_server_python:
     #  - pip3 install --upgrade pip
     # TOOLS
     - s-tui
-    - bpytop
+    # - bpytop # TODO: change with https://github.com/aristocratos/btop or "sudo snap install btop"
   pip:
     - virtualenv
     - autopep8
