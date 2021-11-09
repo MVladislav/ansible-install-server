@@ -76,6 +76,8 @@ install_server_apt:
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: zip
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: p7zip-full
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: openssl
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: snapd
