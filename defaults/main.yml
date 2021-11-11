@@ -345,6 +345,8 @@ install_server_python:
   pip:
     - virtualenv
     - autopep8
+    - black
+    - pre-commit
 
 # ------------------------------------------------------------------------------
 # ANSIBLE
