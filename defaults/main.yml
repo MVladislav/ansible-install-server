@@ -182,6 +182,11 @@ install_server_apt:
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: libpq-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  # 5
+  - name: libgirepository1.0-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: llibgpgme-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   - name: resolvconf
     install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
