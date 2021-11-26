@@ -12,13 +12,10 @@ install_server_links_to_check_update:
   npm_url: https://deb.nodesource.com/setup_16.x
   npm_file: setup_16.x.sh
   #
-  go_file: go1.17.linux-amd64.tar.gz
-  go_url: https://golang.org/dl/go1.17.linux-amd64.tar.gz
-  go_checksum: "sha256:6bf89fc4f5ad763871cf7eac80a2d594492de7a818303283f1366a7f6a30372d"
-  go_version: go version go1.17 linux/amd64
-  # go_url: https://golang.org/dl/go1.16.6.linux-arm64.tar.gz
-  # go_checksum: "sha256:9e38047463da6daecab9017cd0599f33f84991e68263752cfab49253bbc98c30"
-  # go_version: go version go1.16.6 linux/arm64
+  # go_file: go1.17.linux-amd64.tar.gz
+  # go_url: https://golang.org/dl/go1.17.linux-amd64.tar.gz
+  # go_checksum: "sha256:6bf89fc4f5ad763871cf7eac80a2d594492de7a818303283f1366a7f6a30372d"
+  # go_version: go version go1.17 linux/amd64
 
 # ------------------------------------------------------------------------------
 # WHAT TO INSTALL
@@ -29,6 +26,7 @@ install_server_config:
   apt_exfat: no
   apt_libs: no
   apt_vpn: no
+  apt_go: no
   # dpkg_...: no
   # snap_...: no
   snap_microk8s: no
@@ -37,7 +35,7 @@ install_server_config:
   zsh: no
   tmux: no
   python: no # base|dev
-  go: no
+  # go: no
   go_kompose: no
   ruby: no
   npm: no
@@ -187,6 +185,8 @@ install_server_apt:
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: llibgpgme-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: libboost-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   - name: resolvconf
     install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
@@ -206,6 +206,9 @@ install_server_apt:
   #   install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
   # - name: network-manager-l2tp
   #   install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  - name: golang
+    install: "{{ install_server_config.apt_go | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # DPKG packages
@@ -364,15 +367,15 @@ install_server_ansible:
   pip:
     - ansible
 
-# ------------------------------------------------------------------------------
-# GO
-# install_server_config.go
-install_server_go:
-  file: "{{ install_server_links_to_check_update.go_file }}"
-  url: "{{ install_server_links_to_check_update.go_url }}"
-  checksum: "{{ install_server_links_to_check_update.go_checksum }}"
-  version: "{{ install_server_links_to_check_update.go_version }}"
-  set_path: yes
+# # ------------------------------------------------------------------------------
+# # GO
+# # install_server_config.go
+# install_server_go:
+#   file: "{{ install_server_links_to_check_update.go_file }}"
+#   url: "{{ install_server_links_to_check_update.go_url }}"
+#   checksum: "{{ install_server_links_to_check_update.go_checksum }}"
+#   version: "{{ install_server_links_to_check_update.go_version }}"
+#   set_path: yes
 
 # ------------------------------------------------------------------------------
 # RUBY
