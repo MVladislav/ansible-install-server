@@ -16,6 +16,7 @@
 
 # --- HOSTNAME ---
 - name: "set hostname:: update /etc/hosts"
+  become: yes
   ansible.builtin.replace:
     path: /etc/hosts
     regexp: "{{ ansible_hostname }}"
