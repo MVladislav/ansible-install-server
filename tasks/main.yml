@@ -87,21 +87,21 @@
   include: tun_os.yml
   when: (install_server_os_tun is defined) and (install_server_os_tun.install is defined and install_server_os_tun.install | bool)
 
-# ------------------------------------------------------------------------------
-# ENV
-- name: set env variables
-  become: yes
-  lineinfile:
-    dest: "/etc/environment"
-    state: present
-    regexp: "^{{ item.key }}="
-    line: "{{ item.key }}={{ item.value}}"
-  with_items:
-    - key: LC_CTYPE
-      value: C.UTF-8
-  tags:
-    - install_server
-    - env_variables
+# # ------------------------------------------------------------------------------
+# # ENV
+# - name: set env variables
+#   become: yes
+#   lineinfile:
+#     dest: "/etc/environment"
+#     state: present
+#     regexp: "^{{ item.key }}="
+#     line: "{{ item.key }}={{ item.value}}"
+#   with_items:
+#     - key: LC_CTYPE
+#       value: C.UTF-8
+#   tags:
+#     - install_server
+#     - env_variables
 
 # ------------------------------------------------------------------------------
 # INSTALL GIT
