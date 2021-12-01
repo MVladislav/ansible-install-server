@@ -211,7 +211,7 @@ install_server_apt:
   - name: golang
     install: "{{ install_server_config.apt_go | default('no') | bool }}"
   # ----------------------------------------------------------------------------
-  - name: linux-modules-raspi
+  - name: linux-modules-extra-raspi
     install: "{{ install_server_config.apt_rasp_pi_pkg | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
