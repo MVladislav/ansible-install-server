@@ -27,6 +27,7 @@ install_server_config:
   apt_libs: no
   apt_vpn: no
   apt_go: no
+  apt_rasp_pi_pkg: no
   # dpkg_...: no
   # snap_...: no
   snap_microk8s: no
@@ -209,6 +210,9 @@ install_server_apt:
   # ----------------------------------------------------------------------------
   - name: golang
     install: "{{ install_server_config.apt_go | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  - name: linux-modules-raspi
+    install: "{{ install_server_config.apt_rasp_pi_pkg | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # DPKG packages

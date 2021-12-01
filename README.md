@@ -20,14 +20,16 @@ install_server_config:
   apt_exfat: no
   apt_libs: no
   apt_vpn: no
+  apt_go: no
+  apt_rasp_pi_pkg: no
   # dpkg_...: no
   # snap_...: no
   snap_microk8s: no
+  snap_btop: no
   git: no
   zsh: no
   tmux: no
   python: no # base|dev
-  go: no
   go_kompose: no
   ruby: no
   npm: no
