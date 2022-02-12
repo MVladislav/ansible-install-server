@@ -22,6 +22,7 @@ install_server_config:
   apt_vpn: no
   apt_go: no
   apt_rasp_pi_pkg: no
+  apt_qemu_guest_agent: no
   # dpkg_...: no
   # snap_...: no
   snap_microk8s: no

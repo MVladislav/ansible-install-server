@@ -28,6 +28,7 @@ install_server_config:
   apt_vpn: no
   apt_go: no
   apt_rasp_pi_pkg: no
+  apt_qemu_guest_agent: no
   # dpkg_...: no
   # snap_...: no
   snap_microk8s: no
@@ -213,6 +214,9 @@ install_server_apt:
   # ----------------------------------------------------------------------------
   - name: linux-modules-extra-raspi
     install: "{{ install_server_config.apt_rasp_pi_pkg | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  - name: qemu-guest-agent
+    install: "{{ install_client_config.apt_qemu_guest_agent | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # DPKG packages
