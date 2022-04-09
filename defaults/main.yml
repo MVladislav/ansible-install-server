@@ -9,8 +9,9 @@ install_server_links_to_check_update:
   mongodb_pgp: https://www.mongodb.org/static/pgp/server-5.0.asc
   mongodb_distribution: buster/mongodb-org/5.0
   #
-  npm_url: https://deb.nodesource.com/setup_16.x
-  npm_file: setup_16.x.sh
+  # https://github.com/nodesource/distributions/blob/master/README.md
+  npm_url: https://deb.nodesource.com/setup_lts.x
+  npm_file: setup_lts.x.sh
   #
   # go_file: go1.17.linux-amd64.tar.gz
   # go_url: https://golang.org/dl/go1.17.linux-amd64.tar.gz
