@@ -3,7 +3,7 @@
 
 # ------------------------------------------------------------------------------
 - name: ruby | install dependencies [apt]
-  become: yes
+  become: true
   ansible.builtin.apt:
     pkg: "{{ install_server_ruby.apt_dependencies }}"
     state: present
@@ -15,7 +15,7 @@
 # ------------------------------------------------------------------------------
 # TODO:
 - name: "ruby | create a directory, for /etc/zsh/profile.d"
-  become: yes
+  become: true
   ansible.builtin.file:
     path: "/etc/zsh/profile.d"
     owner: "root"
@@ -27,7 +27,7 @@
     - ruby
 
 - name: ruby | set GEM_HOME for all users
-  become: yes
+  become: true
   copy:
     src: ruby-path.sh
     dest: /etc/zsh/profile.d

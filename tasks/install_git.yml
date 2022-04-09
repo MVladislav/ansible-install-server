@@ -3,7 +3,7 @@
 
 # ------------------------------------------------------------------------------
 - name: "install git step 1 [apt]"
-  become: yes
+  become: true
   ansible.builtin.apt:
     pkg: "{{ install_server_git.apt }}"
     state: present
@@ -39,7 +39,7 @@
 
 # template
 - name: "config git step 2.2.2 [copy commit-msg template into git-hooks]"
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.template:
     src: "{{ install_server_git.git.hook.commit_msg.template }}"

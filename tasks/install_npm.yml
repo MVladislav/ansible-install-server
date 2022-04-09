@@ -12,14 +12,14 @@
     - npm
 
 - name: npm | install npm step 2 [bash]
-  become: yes
+  become: true
   shell: "/tmp/{{ install_server_npm.deb.file }}"
   tags:
     - install_server
     - npm
 
 - name: npm | install npm step 3 [apt]
-  become: yes
+  become: true
   ansible.builtin.apt:
     pkg: "{{ install_server_npm.apt }}"
     state: present
@@ -30,7 +30,7 @@
 
 # ------------------------------------------------------------------------------
 - name: "npm | create a directory, for /etc/zsh/profile.d"
-  become: yes
+  become: true
   ansible.builtin.file:
     path: "/etc/zsh/profile.d"
     # path: /etc/profile.d
@@ -44,7 +44,7 @@
     - npm
 
 - name: npm | set npm-PATH for all users
-  become: yes
+  become: true
   copy:
     src: npm-path.sh
     dest: /etc/zsh/profile.d

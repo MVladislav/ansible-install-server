@@ -3,7 +3,7 @@
 
 # ------------------------------------------------------------------------------
 - name: install a .deb package from the internet [main]
-  become: yes
+  become: true
   ansible.builtin.apt:
     deb: "{{ item.url }}"
   loop: "{{ install_server_dpkg|flatten(levels=1) }}"

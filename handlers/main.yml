@@ -3,7 +3,7 @@
 
 # ------------------------------------------------------------------------------
 - name: restart mongodb
-  become: yes
+  become: true
   service:
     name: "{{ install_server_mongodb.service }}"
     state: restarted

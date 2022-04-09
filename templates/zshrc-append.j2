@@ -47,7 +47,7 @@ function vm_md_to_pdf() {
 }
 
 ### DOCKER ###
-alias docker-swarm-compose="docker-compose config | docker stack deploy --resolve-image=never --compose-file -"
+alias docker-swarm-compose="docker-compose config | CONFIG_VERSION=1 docker stack deploy --resolve-image=never --with-registry-auth --compose-file -"
 
 ### TOOLS ###
 # alias vm_my_ip='curl https://my-ip-is.appspot.com/plain'

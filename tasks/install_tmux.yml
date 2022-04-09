@@ -3,7 +3,7 @@
 
 # # ------------------------------------------------------------------------------
 - name: install tmux dependecies step 1 [apt]
-  become: yes
+  become: true
   ansible.builtin.apt:
     pkg: "{{ install_server_tmux.apt_dependecies }}"
     state: present
@@ -14,7 +14,7 @@
 
 # # ------------------------------------------------------------------------------
 - name: install tmux step 1 [git clone]
-  become: yes
+  become: true
   ansible.builtin.git:
     repo: "{{ install_server_tmux.git }}"
     dest: "/tmp/tmux"
@@ -26,7 +26,7 @@
 
 # # ------------------------------------------------------------------------------
 - name: install tmux step 2.1 [run autogen.sh]
-  become: yes
+  become: true
   shell: ./autogen.sh
   args:
     chdir: "/tmp/tmux"
@@ -36,7 +36,7 @@
     - tmux
 
 - name: install tmux step 2.2 [run configure]
-  become: yes
+  become: true
   shell: ./configure
   args:
     chdir: "/tmp/tmux"
@@ -46,7 +46,7 @@
     - tmux
 
 - name: install tmux step 2.3 [make and install]
-  become: yes
+  become: true
   shell: make && make install
   args:
     chdir: "/tmp/tmux"
@@ -56,7 +56,7 @@
 
 # ------------------------------------------------------------------------------
 - name: install tmux step 3 [enable aliases .bashrc]
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   lineinfile:
     dest: "{{ install_server_tmux.aliases_path }}"
@@ -73,7 +73,7 @@
 
 # ------------------------------------------------------------------------------
 - name: install tmux step 4.1 [git clone style]
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.git:
     repo: "{{ install_server_tmux.style.git }}"
@@ -85,7 +85,7 @@
     - tmux
 
 - name: install tmux step 4.2 [symbolic .tmux.conf]
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.file:
     src: ~/.tmux_style_git/.tmux.conf
@@ -96,7 +96,7 @@
     - tmux
 
 - name: install tmux step 4.3 [symbolic .tmux.conf.local]
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.file:
     src: ~/.tmux_style_git/.tmux.conf.local
@@ -108,7 +108,7 @@
 
 # ------------------------------------------------------------------------------
 - name: install tmux step 4.4 [append command to .tmux.conf.local]
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   lineinfile:
     dest: "~/.tmux_style_git/.tmux.conf.local"
@@ -133,7 +133,7 @@
 
 # ------------------------------------------------------------------------------
 - name: install tmux step 5.1.1 [create folder for PowerlineSymbols.otf]
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.file:
     path: ~/.local/share/fonts/
@@ -145,7 +145,7 @@
 
 # https://github.com/powerline/fonts
 - name: install tmux step 5.1.2 [download PowerlineSymbols.otf]
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   get_url:
     url: "{{ item }}"

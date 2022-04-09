@@ -3,7 +3,7 @@
 
 # ------------------------------------------------------------------------------
 - name: install java packages [apt]
-  become: yes
+  become: true
   ansible.builtin.apt:
     pkg: "{{ install_server_java.apt }}"
     state: present
@@ -15,7 +15,7 @@
 
 # ------------------------------------------------------------------------------
 - name: install java packages [apt]
-  become: yes
+  become: true
   ansible.builtin.apt:
     pkg: "{{ install_server_java.apt }}"
     state: present
@@ -28,7 +28,7 @@
 # ------------------------------------------------------------------------------
 
 - name: set java env variables
-  become: yes
+  become: true
   lineinfile:
     dest: "/etc/environment"
     state: present

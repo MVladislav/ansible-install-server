@@ -3,7 +3,7 @@
 
 # ------------------------------------------------------------------------------
 - name: add mongodb apt signing key, will not download if present
-  become: yes
+  become: true
   ansible.builtin.apt_key:
     url: "{{ install_server_mongodb.pgp }}"
     state: present
@@ -24,7 +24,7 @@
     - install_mongodb
 
 - name: add mongodb repository into sources list
-  become: yes
+  become: true
   ansible.builtin.apt_repository:
     filename: "{{ install_server_mongodb.repo_name }}"
     repo: "deb [arch={{ os_architecture.stdout }}] {{ install_server_mongodb.repo }} {{ install_server_mongodb.distribution }} {{ install_server_mongodb.version }}"
@@ -36,7 +36,7 @@
 
 # ------------------------------------------------------------------------------
 - name: install mongodb packages
-  become: yes
+  become: true
   ansible.builtin.apt:
     #allow_unauthenticated: yes
     name: "{{ install_server_mongodb.packages }}"

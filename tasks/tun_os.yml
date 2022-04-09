@@ -3,7 +3,7 @@
 
 # ------------------------------------------------------------------------------
 - name: "init tunning's step:: network"
-  become: yes
+  become: true
   ansible.posix.sysctl:
     name: "{{ item.key }}"
     value: "{{ item.value }}"
@@ -21,7 +21,7 @@
     - apt
 
 - name: "init tunning's step:: run 'sysctl -p --system'"
-  become: yes
+  become: true
   shell: sysctl -p --system
   when: result is defined and result.changed is defined and result.changed | bool
   tags:

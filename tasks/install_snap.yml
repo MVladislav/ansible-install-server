@@ -3,7 +3,7 @@
 
 # ------------------------------------------------------------------------------
 - name: install snap services [main]
-  become: yes
+  become: true
   snap:
     name: "{{ item.name }}"
     classic: "{{ item.classic | bool }}"

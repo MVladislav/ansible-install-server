@@ -3,7 +3,7 @@
 
 # ------------------------------------------------------------------------------
 #- name: delete user accounts
-#  become: yes
+#  become: true
 #  user:
 #    name: "{{ item.name }}"
 #    state: absent
@@ -13,7 +13,7 @@
 
 # ------------------------------------------------------------------------------
 - name: update user accounts
-  become: yes
+  become: true
   user:
     name: "{{ item.name }}"
     state: present

@@ -6,7 +6,7 @@
 
 # ------------------------------------------------------------------------------
 - name: "npm | create a directory, for ~/.npm-packages"
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.file:
     path: "~/.npm-packages"
@@ -19,7 +19,7 @@
 
 # ------------------------------------------------------------------------------
 - name: Setup NPM prefix
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   command: "npm config set prefix ~/.npm-packages"
   when: install_server_npm_pkg
@@ -29,7 +29,7 @@
 
 # ------------------------------------------------------------------------------
 - name: npm | install npm packages globally
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   community.general.npm:
     name: "{{ item }}"

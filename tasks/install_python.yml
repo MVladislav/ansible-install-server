@@ -3,7 +3,7 @@
 
 # ------------------------------------------------------------------------------
 - name: install python by apt packages [main]
-  become: yes
+  become: true
   ansible.builtin.apt:
     pkg: "{{ install_server_python.apt }}"
     state: present
@@ -15,7 +15,7 @@
 
 # ------------------------------------------------------------------------------
 - name: install python by apt packages [dev]
-  become: yes
+  become: true
   ansible.builtin.apt:
     pkg: "{{ install_server_python.dev }}"
     state: present

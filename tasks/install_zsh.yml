@@ -3,7 +3,7 @@
 
 # ------------------------------------------------------------------------------
 - name: install zsh step 1 [apt]
-  become: yes
+  become: true
   ansible.builtin.apt:
     pkg: "{{ install_server_zsh.apt }}"
     state: present
@@ -14,7 +14,7 @@
 
 # ------------------------------------------------------------------------------
 - name: install zsh step 2 [git]
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.git:
     repo: "{{ install_server_zsh.git.ohmyzsh.url }}"
@@ -26,7 +26,7 @@
     - zsh
 
 - name: install zsh step 2.1 [cp]
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   shell: "cp ~/{{ install_server_zsh.git.ohmyzsh.folder }}/templates/zshrc.zsh-template ~/{{ install_server_zsh.zshrc }}"
   tags:
@@ -35,7 +35,7 @@
 
 # ------------------------------------------------------------------------------
 - name: install zsh spaceship theme step 3 [git]
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.git:
     repo: "{{ install_server_zsh.git.spaceship.url }}"
@@ -47,7 +47,7 @@
     - zsh
 
 - name: install zsh spaceship theme step 3.1 [ln]
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   file:
     src: "~/{{ install_server_zsh.git.spaceship.folder }}/spaceship.zsh-theme"
@@ -62,7 +62,7 @@
 
 # ------------------------------------------------------------------------------
 - name: install zsh step 4 [git]
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.git:
     repo: "{{ install_server_zsh.git.zshTheme.url }}"
@@ -74,7 +74,7 @@
     - zsh
 
 - name: install zsh step 4.1 [echo]
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   shell: 'echo "source ~/{{ install_server_zsh.git.zshTheme.folder }}/zsh-syntax-highlighting.zsh" >> ~/{{ install_server_zsh.zshrc }}'
   tags:
@@ -83,7 +83,7 @@
 
 # ZSH_THEME
 - name: "install zsh step 4.2.1 [replace 'theme' with {{ install_server_zsh.theme }}]"
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   lineinfile:
     path: "~/{{ install_server_zsh.zshrc }}"
@@ -96,7 +96,7 @@
 
 # plugins
 - name: "install zsh step 4.2.2 [replace 'plugins' with {{ install_server_zsh.plugins }}]"
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   lineinfile:
     path: "~/{{ install_server_zsh.zshrc }}"
@@ -109,7 +109,7 @@
 
 # # alias
 # - name: "install zsh step 4.2.3 [replace 'alias docker-swarm-compose' with {{ install_server_zsh.plugins }}]"
-#   become: yes
+#   become: true
 #   become_user: "{{ outer_item.name }}"
 #   lineinfile:
 #     path: "~/{{ install_server_zsh.zshrc }}"
@@ -123,7 +123,7 @@
 
 # template
 - name: "install zsh step 4.2.3.1 [copy 'template for zsh script tools' with {{ item.path }}]"
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.template:
     src: "{{ item.template }}"
@@ -136,7 +136,7 @@
 
 # append
 - name: "install zsh step 4.2.3.1 [add 'append file with tool scripts' with {{ item.path }}]"
-  become: yes
+  become: true
   become_user: "{{ outer_item.name }}"
   lineinfile:
     path: "~/{{ install_server_zsh.zshrc }}"
@@ -157,7 +157,7 @@
     - zsh
 
 - name: "switch to zsh (for user: {{ outer_item.name }})"
-  become: yes
+  become: true
   user:
     name: "{{ outer_item.name }}"
     shell: "{{ zsh_path.stdout }}"
@@ -168,7 +168,7 @@
 
 # ------------------------------------------------------------------------------
 - name: "create a directory, for /etc/zsh/profile.d"
-  become: yes
+  become: true
   ansible.builtin.file:
     path: "/etc/zsh/profile.d"
     owner: "root"
