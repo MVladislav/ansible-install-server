@@ -15,18 +15,23 @@ install_server_git_user: "{{ ansible_user }}"
 install_server_git_email: "{{ ansible_user }}"
 install_server_config:
   dev: no
+  env_tun_setup: no
+  # APT (1) -------------------------------
   apt_base: no
   apt_dev: no
-  apt_exfat: no
+  apt_build: no
   apt_libs: no
+  # APT (2) -------------------------------
   apt_vpn: no
   apt_go: no
   apt_rasp_pi_pkg: no
   apt_qemu_guest_agent: no
+  # DPKG ----------------------------------
   # dpkg_...: no
-  # snap_...: no
+  # SNAP ----------------------------------
   snap_microk8s: no
   snap_btop: no
+  # OTHER --------------------------------
   git: no
   zsh: no
   tmux: no

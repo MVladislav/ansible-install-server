@@ -8,47 +8,40 @@ install_server_hostname: "{{ install_server_service_name }}"
 install_server_links_to_check_update:
   mongodb_pgp: https://www.mongodb.org/static/pgp/server-5.0.asc
   mongodb_distribution: buster/mongodb-org/5.0
-  #
   # https://github.com/nodesource/distributions/blob/master/README.md
   npm_url: https://deb.nodesource.com/setup_lts.x
   npm_file: setup_lts.x.sh
-  #
-  # go_file: go1.17.linux-amd64.tar.gz
-  # go_url: https://golang.org/dl/go1.17.linux-amd64.tar.gz
-  # go_checksum: "sha256:6bf89fc4f5ad763871cf7eac80a2d594492de7a818303283f1366a7f6a30372d"
-  # go_version: go version go1.17 linux/amd64
 
 # ------------------------------------------------------------------------------
 # WHAT TO INSTALL
 install_server_config:
   dev: no
+  env_tun_setup: no
+  # APT (1) -------------------------------
   apt_base: no
   apt_dev: no
-  apt_exfat: no
+  apt_build: no
   apt_libs: no
+  # APT (2) -------------------------------
   apt_vpn: no
   apt_go: no
   apt_rasp_pi_pkg: no
   apt_qemu_guest_agent: no
+  # DPKG ----------------------------------
   # dpkg_...: no
-  # snap_...: no
+  # SNAP ----------------------------------
   snap_microk8s: no
   snap_btop: no
+  # OTHER --------------------------------
   git: no
   zsh: no
   tmux: no
   python: no # base|dev
-  # go: no
   go_kompose: no
   ruby: no
   npm: no
   mongodb: no
   java: no # base|dev
-
-# ------------------------------------------------------------------------------
-# IF DO OS TUNNING
-install_server_config_tun_os:
-  install: yes
 
 # ------------------------------------------------------------------------------
 # CLIENTS for adding access (ex. zsh)
@@ -59,7 +52,7 @@ clients:
 # APT
 # install_server_config.apt_...
 install_server_apt:
-  # Needed
+  # --------------------------------
   - name: dirmngr
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: curl
@@ -68,34 +61,32 @@ install_server_apt:
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: git-flow
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  # Others
   - name: vim
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  # - name: rar
-  #   install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  # --------------------------------
+  - name: rar
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: unrar
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: zip
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: p7zip-full
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: xz-utils
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  # --------------------------------
   - name: openssl
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  - name: snapd
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  # Others
   - name: ca-certificates
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: apt-transport-https
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: gnupg
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  - name: resolvconf
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
   - name: unattended-upgrades
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   # ----------------------------------------------------------------------------
-  # dev
   # monitoring: lsof|tcpdump -i ...|netstat -a | more|htop|iotop|iostat|s-tui|watch zpool iostat -vy 1 1|smem -tuwa|bpytop
   - name: jq
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
@@ -121,35 +112,34 @@ install_server_apt:
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: nvtop
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
-  # Others
-  - name: exfat-fuse
-    install: "{{ install_server_config.apt_exfat | default('no') | bool }}"
-  - name: exfat-utils
-    install: "{{ install_server_config.apt_exfat | default('no') | bool }}"
   # ----------------------------------------------------------------------------
-  # 1
+  # - name: exfat-fuse
+  #   install: "{{ install_server_config.apt_exfat | default('no') | bool }}"
+  # - name: exfat-utils
+  #   install: "{{ install_server_config.apt_exfat | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
   - name: freeglut3
-    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+    install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: freeglut3-dev
-    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+    install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: cmake
-    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+    install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: g++
-    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+    install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: build-essential
-    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
-  # 7
+    install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: autoconf
-    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+    install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: pkg-config
-    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
-  - name: lib32z1
-    install: no
+    install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: mesa-utils
-    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+    install: "{{ install_server_config.apt_build | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  # - name: lib32z1
+  #   install: no
   - name: libstdc++6
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
-  # 2
+  # ----------------------------------------------------------------------------
   - name: libgl1-mesa-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: libegl1-mesa-dev
@@ -158,7 +148,7 @@ install_server_apt:
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: libgles2-mesa-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
-  # 3
+  # ----------------------------------------------------------------------------
   - name: libnet1-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: libnet1
@@ -169,12 +159,12 @@ install_server_apt:
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: libpcap-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
-  # 4
+  # ----------------------------------------------------------------------------
   - name: libssl-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: zlib1g-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
-  # 4.1
+  # ----------------------------------------------------------------------------
   - name: libxml2-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: libxslt1-dev
@@ -183,7 +173,7 @@ install_server_apt:
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: libpq-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
-  # 5
+  # ----------------------------------------------------------------------------
   - name: libgirepository1.0-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: libgpgme-dev
@@ -328,20 +318,25 @@ install_server_tmux:
 # ------------------------------------------------------------------------------
 # OS TUNNING'S
 install_server_os_tun:
-  install: "{{ install_server_config_tun_os.install | default('no') | bool }}"
+  install: "{{ install_server_config.env_tun_setup | default('no') | bool }}"
   net_tun_lines:
+    # allow testing with buffers up to 128MB
     - key: net.core.rmem_max
       value: 134217728
     - key: net.core.wmem_max
       value: 134217728
+    # increase Linux autotuning TCP buffer limit to 64MB
     - key: net.ipv4.tcp_rmem
       value: 4096 87380 67108864
     - key: net.ipv4.tcp_wmem
       value: 4096 65536 67108864
+    # recommended default congestion control is htcp
     - key: net.ipv4.tcp_congestion_control
       value: htcp
-    - key: net.ipv4.tcp_mtu_probing
-      value: 1
+    # # recommended for hosts with jumbo frames enabled
+    # - key: net.ipv4.tcp_mtu_probing
+    #   value: 1
+    # recommended to enable 'fair queueing'
     - key: net.core.default_qdisc
       value: fq
 
@@ -375,16 +370,6 @@ install_server_ansible:
     - sshpass
   pip:
     - ansible
-
-# # ------------------------------------------------------------------------------
-# # GO
-# # install_server_config.go
-# install_server_go:
-#   file: "{{ install_server_links_to_check_update.go_file }}"
-#   url: "{{ install_server_links_to_check_update.go_url }}"
-#   checksum: "{{ install_server_links_to_check_update.go_checksum }}"
-#   version: "{{ install_server_links_to_check_update.go_version }}"
-#   set_path: yes
 
 # ------------------------------------------------------------------------------
 # RUBY
@@ -441,12 +426,12 @@ install_server_mongodb:
 # ------------------------------------------------------------------------------
 # JAVA
 # install_server_config.java
+install_server_java_version: 11
 install_server_java:
   apt:
-    - openjdk-8-jre-headless
-    - openjdk-11-jre-headless
+    - "openjdk-{{ install_server_java_version }}-jre-headless"
   dev:
     - ant
   os_env:
     - variable: JAVA_HOME
-      path: /usr/lib/jvm/java-8-openjdk-amd64
+      path: "/usr/lib/jvm/java-{{ install_server_java_version }}-openjdk-amd64"
