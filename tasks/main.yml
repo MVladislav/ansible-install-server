@@ -4,12 +4,12 @@
 # ------------------------------------------------------------------------------
 # SETUP USERS
 - name: setup users
-  include: setup_users.yml
+  include_tasks: setup_users.yml
 
 # ------------------------------------------------------------------------------
 # DEFAULT PACKAGES
 - name: install default packages
-  include: install_apt.yml
+  include_tasks: install_apt.yml
 
 # ------------------------------------------------------------------------------
 # CHANGE HOST DEFAULTS
@@ -84,7 +84,7 @@
 # ------------------------------------------------------------------------------
 # --- TUNNING OS ---
 - name: run os tunning's
-  include: tun_os.yml
+  include_tasks: tun_os.yml
   when: (install_server_os_tun is defined) and (install_server_os_tun.install is defined and install_server_os_tun.install | bool)
 
 # # ------------------------------------------------------------------------------
@@ -107,7 +107,7 @@
 # INSTALL GIT
 # - will be installed per client, need to set clients
 - name: install git (per user)
-  include: install_git.yml
+  include_tasks: install_git.yml
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
@@ -117,7 +117,7 @@
 # INSTALL ZSH
 # - will be installed per client, need to set clients
 - name: install zsh (per user)
-  include: install_zsh.yml
+  include_tasks: install_zsh.yml
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
@@ -127,7 +127,7 @@
 # INSTALL TMUX
 # - will be installed per client, need to set clients
 - name: install tmux (per user)
-  include: install_tmux.yml
+  include_tasks: install_tmux.yml
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
@@ -136,22 +136,22 @@
 # ------------------------------------------------------------------------------
 # DPKG PACKAGES
 - name: install dpkg packages
-  include: install_dpkg.yml
+  include_tasks: install_dpkg.yml
 
 # ------------------------------------------------------------------------------
 # SNAP PACKAGES
 - name: install snap packages
-  include: install_snap.yml
+  include_tasks: install_snap.yml
 
 # ------------------------------------------------------------------------------
 # PYTHON PACKAGES
 - name: install python
-  include: install_python.yml
+  include_tasks: install_python.yml
   when: install_server_config.python is defined and install_server_config.python | bool
 
 # - will be installed per client, need to set clients
 - name: install python packages (per user)
-  include: install_python_pkg.yml
+  include_tasks: install_python_pkg.yml
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
@@ -160,24 +160,24 @@
 # ------------------------------------------------------------------------------
 # GO PACKAGES
 - name: install go packages
-  include: install_go.yml
+  include_tasks: install_go.yml
   when: install_server_config.go is defined and install_server_config.go | bool
 
 # ------------------------------------------------------------------------------
 # RUBY PACKAGES
 - name: install ruby packages
-  include: install_ruby.yml
+  include_tasks: install_ruby.yml
   when: install_server_config.ruby is defined and install_server_config.ruby | bool
 
 # ------------------------------------------------------------------------------
 # NPM PACKAGES
 - name: install npm
-  include: install_npm.yml
+  include_tasks: install_npm.yml
   when: install_server_config.npm is defined and install_server_config.npm | bool
 
 # - will be installed per client, need to set clients
 - name: install npm packages (per user)
-  include: install_npm_pkg.yml
+  include_tasks: install_npm_pkg.yml
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
@@ -186,11 +186,11 @@
 # ------------------------------------------------------------------------------
 # MONGODB PACKAGES
 - name: install mongodb
-  include: install_mongodb.yml
+  include_tasks: install_mongodb.yml
   when: install_server_config.mongodb is defined and install_server_config.mongodb | bool
 
 # ------------------------------------------------------------------------------
 # JAVA PACKAGES
 - name: install java packages
-  include: install_java.yml
+  include_tasks: install_java.yml
   when: install_server_config.java is defined and install_server_config.java | bool
