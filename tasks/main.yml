@@ -59,14 +59,6 @@
 #     - install_server
 #     - hostname
 
-# --- AUTOUPDATE ---
-- name: set auto update over unattended-upgrades
-  become: true
-  shell: "dpkg-reconfigure -f noninteractive --priority low unattended-upgrades"
-  tags:
-    - install_server
-    - auto_update
-
 # --- DEFAULT FOLDER ---
 - name: "create default folder per client"
   become: true

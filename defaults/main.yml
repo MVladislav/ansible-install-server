@@ -85,9 +85,6 @@ install_server_apt:
   - name: gnupg
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   # ----------------------------------------------------------------------------
-  - name: unattended-upgrades
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  # ----------------------------------------------------------------------------
   # monitoring: lsof|tcpdump -i ...|netstat -a | more|htop|iotop|iostat|s-tui|watch zpool iostat -vy 1 1|smem -tuwa|bpytop
   - name: jq
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
