@@ -25,6 +25,7 @@ install_server_config:
   # APT (2) -------------------------------
   apt_vpn: no
   apt_go: no
+  apt_php: no
   apt_rasp_pi_pkg: no
   apt_qemu_guest_agent: no
   # DPKG ----------------------------------
@@ -202,6 +203,27 @@ install_server_apt:
   # ----------------------------------------------------------------------------
   - name: golang
     install: "{{ install_server_config.apt_go | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  - name: php
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-gmp
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-curl
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-intl
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-mbstring
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-xmlrpc
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-mysql
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-gd
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-xml
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-zip
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   - name: linux-modules-extra-raspi
     install: "{{ install_server_config.apt_rasp_pi_pkg | default('no') | bool }}"

@@ -24,6 +24,7 @@ install_server_config:
   # APT (2) -------------------------------
   apt_vpn: no
   apt_go: no
+  apt_php: no
   apt_rasp_pi_pkg: no
   apt_qemu_guest_agent: no
   # DPKG ----------------------------------
