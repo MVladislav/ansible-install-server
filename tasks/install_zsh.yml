@@ -21,6 +21,7 @@
     dest: "~/{{ install_server_zsh.git.ohmyzsh.folder }}"
     force: true
     update: false
+    version: master
   tags:
     - install_server
     - zsh
@@ -44,6 +45,7 @@
     dest: "~/{{ install_server_zsh.git.spaceship.folder }}"
     force: true
     update: false
+    version: master
   tags:
     - install_server
     - zsh
@@ -69,6 +71,7 @@
     dest: "~/{{ install_server_zsh.git.zshTheme.folder }}"
     depth: 1
     update: false
+    version: master
   tags:
     - install_server
     - zsh

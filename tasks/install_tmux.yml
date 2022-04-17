@@ -20,6 +20,7 @@
     dest: "/tmp/tmux"
     force: true
     update: "{{ install_server_tmux.update | bool }}"
+    version: master
   tags:
     - install_server
     - tmux
@@ -83,6 +84,7 @@
     dest: "~/.tmux_style_git"
     force: true
     update: false
+    version: master
   tags:
     - install_server
     - tmux

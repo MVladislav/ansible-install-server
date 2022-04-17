@@ -15,34 +15,34 @@ install_server_links_to_check_update:
 # ------------------------------------------------------------------------------
 # WHAT TO INSTALL
 install_server_config:
-  dev: no
-  env_tun_setup: no
+  dev: false
+  env_tun_setup: false
   # APT (1) -------------------------------
-  apt_base: no
-  apt_dev: no
-  apt_build: no
-  apt_libs: no
+  apt_base: false
+  apt_dev: false
+  apt_build: false
+  apt_libs: false
   # APT (2) -------------------------------
-  apt_vpn: no
-  apt_go: no
-  apt_php: no
-  apt_rasp_pi_pkg: no
-  apt_qemu_guest_agent: no
+  apt_vpn: false
+  apt_go: false
+  apt_php: false
+  apt_rasp_pi_pkg: false
+  apt_qemu_guest_agent: false
   # DPKG ----------------------------------
-  # dpkg_...: no
+  # dpkg_...: false
   # SNAP ----------------------------------
-  snap_microk8s: no
-  snap_btop: no
+  snap_microk8s: false
+  snap_btop: false
   # OTHER --------------------------------
-  git: no
-  zsh: no
-  tmux: no
-  python: no # base|dev
-  go_kompose: no
-  ruby: no
-  npm: no
-  mongodb: no
-  java: no # base|dev
+  git: false
+  zsh: false
+  tmux: false
+  python: false # base|dev
+  go_kompose: false
+  ruby: false
+  npm: false
+  mongodb: false
+  java: false # base|dev
 
 # ------------------------------------------------------------------------------
 # CLIENTS for adding access (ex. zsh)
@@ -134,7 +134,7 @@ install_server_apt:
     install: "{{ install_server_config.apt_build | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   # - name: lib32z1
-  #   install: no
+  #   install: false
   - name: libstdc++6
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   # ----------------------------------------------------------------------------
@@ -238,12 +238,12 @@ install_server_dpkg: []
 # install_server_config.snap_...
 install_server_snap:
   - name: microk8s
-    classic: yes
-    beta: no
+    classic: true
+    beta: false
     install: "{{ install_server_config.snap_microk8s | default('no') | bool }}"
   - name: btop
-    classic: no
-    beta: no
+    classic: false
+    beta: false
     install: "{{ install_server_config.snap_btop | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
@@ -297,7 +297,10 @@ install_server_zsh:
   zshrc: .zshrc
   theme: spaceship
   # spaceship | agnoster
-  plugins: tmux git vscode ubuntu sudo npm ng adb ansible colored-man-pages command-not-found cp docker fd git-flow gitignore history man nmap node ufw vim-interaction python pip kubectl git-flow docker-compose
+  plugins: >
+    tmux git vscode ubuntu sudo npm ng adb ansible colored-man-pages
+    command-not-found cp docker fd git-flow gitignore history man nmap
+    node ufw vim-interaction python pip kubectl git-flow docker-compose
   append_file:
     - template: zshrc-append.j2
       path: ~/.zshrc-append
@@ -315,7 +318,7 @@ install_server_zsh:
 # https://github.com/gpakosz/.tmux#configuration
 # https://gist.github.com/henrik/1967800
 install_server_tmux:
-  update: yes
+  update: true
   git: https://github.com/tmux/tmux.git
   style:
     git: https://github.com/gpakosz/.tmux.git
@@ -398,7 +401,7 @@ install_server_ruby:
     - ruby-full
     - build-essential
     - zlib1g-dev
-  set_path: yes
+  set_path: true
 
 # ------------------------------------------------------------------------------
 # GO packages
@@ -414,18 +417,18 @@ install_server_npm:
   deb:
     url: "{{ install_server_links_to_check_update.npm_url }}"
     file: "{{ install_server_links_to_check_update.npm_file }}"
-  apt: nodejs
-  set_path: yes
+  apt: falsedejs
+  set_path: true
 install_server_npm_pkg:
   - typescript
   - jshint
-#- "@angular/cli"
-#- typescript
-#- jshint
-#- ts-node
-#- tslint
-#- nodemon
-#- pm2
+# - "@angular/cli"
+# - typescript
+# - jshint
+# - ts-node
+# - tslint
+# - nodemon
+# - pm2
 
 # ------------------------------------------------------------------------------
 # MONGODB
@@ -434,7 +437,7 @@ install_server_mongodb:
   packages:
     - mongodb-org
   service: mongod
-  enabled: yes
+  enabled: true
   repo_name: mongodb
   repo: https://repo.mongodb.org/apt/ubuntu
   version: multiverse
