@@ -171,12 +171,6 @@
     and outer_item.dev | bool)
 
 # ------------------------------------------------------------------------------
-# GO PACKAGES
-- name: install go packages
-  include_tasks: install_go.yml
-  when: install_server_config.go is defined and install_server_config.go | bool
-
-# ------------------------------------------------------------------------------
 # RUBY PACKAGES
 - name: install ruby packages
   include_tasks: install_ruby.yml
