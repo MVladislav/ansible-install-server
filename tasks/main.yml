@@ -28,9 +28,10 @@
   tags:
     - install_server
     - hostname
+
 - name: "set hostname:: use hostnamectl"
   become: true
-  shell: "hostnamectl set-hostname {{ install_server_hostname }}"
+  ansible.builtin.command: "hostnamectl set-hostname {{ install_server_hostname }}"
   when: install_server_hostname is defined
   tags:
     - install_server
@@ -103,7 +104,12 @@
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
-  when: (install_server_config.git is defined and install_server_config.git | bool) and (clients is defined and outer_item.dev is defined and outer_item.dev | bool)
+  when: >
+    (install_server_config.git is defined
+    and install_server_config.git | bool)
+    and (clients is defined
+    and outer_item.dev is defined
+    and outer_item.dev | bool)
 
 # ------------------------------------------------------------------------------
 # INSTALL ZSH
@@ -113,7 +119,12 @@
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
-  when: (install_server_config.zsh is defined and install_server_config.zsh | bool) and (clients is defined and outer_item.dev is defined and outer_item.dev | bool)
+  when: >
+    (install_server_config.zsh is defined
+    and install_server_config.zsh | bool)
+    and (clients is defined
+    and outer_item.dev is defined
+    and outer_item.dev | bool)
 
 # ------------------------------------------------------------------------------
 # INSTALL TMUX
@@ -123,7 +134,12 @@
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
-  when: (install_server_config.tmux is defined and install_server_config.tmux | bool) and (clients is defined and outer_item.dev is defined and outer_item.dev | bool)
+  when: >
+    (install_server_config.tmux is defined
+    and install_server_config.tmux | bool)
+    and (clients is defined
+    and outer_item.dev is defined
+    and outer_item.dev | bool)
 
 # ------------------------------------------------------------------------------
 # DPKG PACKAGES
@@ -147,7 +163,12 @@
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
-  when: (install_server_config.python is defined and install_server_config.python | bool) and (clients is defined and outer_item.dev is defined and outer_item.dev | bool)
+  when: >
+    (install_server_config.python is defined
+    and install_server_config.python | bool)
+    and (clients is defined
+    and outer_item.dev is defined
+    and outer_item.dev | bool)
 
 # ------------------------------------------------------------------------------
 # GO PACKAGES
@@ -173,7 +194,12 @@
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
-  when: (install_server_config.npm is defined and install_server_config.npm | bool) and (clients is defined and outer_item.dev is defined and outer_item.dev | bool)
+  when: >
+    (install_server_config.npm is defined
+    and install_server_config.npm | bool)
+    and (clients is defined
+    and outer_item.dev is defined
+    and outer_item.dev | bool)
 
 # ------------------------------------------------------------------------------
 # MONGODB PACKAGES

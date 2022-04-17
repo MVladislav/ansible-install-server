@@ -22,7 +22,7 @@
 
 - name: "init tunning's step:: run 'sysctl -p --system'"
   become: true
-  shell: sysctl -p --system
+  ansible.builtin.command: sysctl -p --system
   when: result is defined and result.changed is defined and result.changed | bool
   tags:
     - install_server

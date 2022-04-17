@@ -7,7 +7,7 @@
   ansible.builtin.apt:
     pkg: "{{ install_server_python.apt }}"
     state: present
-    force_apt_get: yes # apt-get instead of aptitude
+    force_apt_get: true # apt-get instead of aptitude
   when: install_server_python is defined and install_server_python.apt is defined
   tags:
     - install_server
@@ -19,8 +19,12 @@
   ansible.builtin.apt:
     pkg: "{{ install_server_python.dev }}"
     state: present
-    force_apt_get: yes # apt-get instead of aptitude
-  when: (install_server_config.dev is defined and install_server_config.dev | bool) and (install_server_python is defined and install_server_python.dev is defined)
+    force_apt_get: true # apt-get instead of aptitude
+  when: >
+    (install_server_config.dev is defined
+    and install_server_config.dev | bool)
+    and (install_server_python is defined
+    and install_server_python.dev is defined)
   tags:
     - install_server
     - install_python

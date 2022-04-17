@@ -7,7 +7,7 @@
   ansible.builtin.apt:
     pkg: "{{ install_server_git.apt }}"
     state: present
-    force_apt_get: yes # apt-get instead of aptitude
+    force_apt_get: true # apt-get instead of aptitude
   when: install_server_git is defined and install_server_git.apt is defined
   tags:
     - install_server

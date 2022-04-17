@@ -17,8 +17,9 @@
 #   tags: install_server
 
 - name: get OS architecture
-  shell: dpkg --print-architecture
+  ansible.builtin.command: dpkg --print-architecture
   register: os_architecture
+  changed_when: os_architecture.rc != 0
   tags:
     - install_server
     - install_mongodb
@@ -27,7 +28,8 @@
   become: true
   ansible.builtin.apt_repository:
     filename: "{{ install_server_mongodb.repo_name }}"
-    repo: "deb [arch={{ os_architecture.stdout }}] {{ install_server_mongodb.repo }} {{ install_server_mongodb.distribution }} {{ install_server_mongodb.version }}"
+    repo: >
+      deb [arch={{ os_architecture.stdout }}] {{ install_server_mongodb.repo }} {{ install_server_mongodb.distribution }} {{ install_server_mongodb.version }}
     state: present
     # update_cache: no
   tags:
@@ -38,11 +40,11 @@
 - name: install mongodb packages
   become: true
   ansible.builtin.apt:
-    #allow_unauthenticated: yes
+    # allow_unauthenticated: true
     name: "{{ install_server_mongodb.packages }}"
     state: present
-    update_cache: yes
-    force_apt_get: yes # apt-get instead of aptitude
+    update_cache: true
+    force_apt_get: true # apt-get instead of aptitude
   notify: restart mongodb
   tags:
     - install_server
