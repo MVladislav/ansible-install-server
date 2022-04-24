@@ -305,12 +305,6 @@ install_server_zsh:
     - template: zshrc-append.j2
       path: ~/.zshrc-append
       append_as: source ~/.zshrc-append
-    # - template: zshrc-append-hack.j2
-    #   path: ~/.zshrc-append-hack
-    #   append_as: source ~/.zshrc-append-hack
-    # - template: zshrc-append-vpn.j2
-    #   path: ~/.zshrc-append-vpn
-    #   append_as: source ~/.zshrc-append-vpn
 
 # ------------------------------------------------------------------------------
 # TMUX
@@ -339,6 +333,7 @@ install_server_tmux:
 
 # ------------------------------------------------------------------------------
 # OS TUNNING'S
+# install_server_config.env_tun_setup
 install_server_os_tun:
   install: "{{ install_server_config.env_tun_setup | default('no') | bool }}"
   net_tun_lines:
