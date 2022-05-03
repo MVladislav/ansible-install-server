@@ -21,7 +21,7 @@
     dest: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.git.ohmyzsh.folder }}"
     force: true
     update: false
-    version: master
+    version: "{{ install_server_zsh.git.ohmyzsh.version | default('master') }}"
   tags:
     - install_server
     - zsh
@@ -48,7 +48,7 @@
     dest: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.git.themes_folder }}/{{ item.name }}"
     force: true
     update: false
-    version: master
+    version: "{{ item.version | default('master') }}"
   loop: "{{ install_server_zsh.git.themes|flatten(levels=1) }}"
   tags:
     - install_server
