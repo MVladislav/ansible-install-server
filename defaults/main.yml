@@ -280,17 +280,50 @@ install_server_git:
 # install_server_config.zsh
 install_server_zsh:
   update: false
+  user_home: ~
   apt:
     - zsh
+    - zsh-syntax-highlighting
+    - zsh-autosuggestions
     - powerline
     - fonts-powerline
+  fonts:
+    folder: "{{install_server_zsh.user_home}}/.local/share/fonts"
+    sources:
+      - url: >
+          https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf
+        folder: nerd-fonts
+        name: "Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf"
+      - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-Bold.otf
+        folder: JetBrainsMono
+        name: "JetBrainsMono-Bold.otf"
+      - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-BoldItalic.otf
+      - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-ExtraBold.otf
+      - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-ExtraBoldItalic.otf
+      - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-ExtraLight.otf
+      - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-ExtraLightItalic.otf
+      - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-Italic.otf
+      - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-Light.otf
+      - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-LightItalic.otf
+      - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-Medium.otf
+      - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-MediumItalic.otf
+      - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-Regular.otf
+      - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-SemiBold.otf
+      - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-SemiBoldItalic.otf
+      - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-Thin.otf
+      - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-ThinItalic.otf
   git:
     ohmyzsh:
       url: https://github.com/robbyrussell/oh-my-zsh.git
       folder: .oh-my-zsh
-    spaceship:
-      url: https://github.com/denysdovhan/spaceship-prompt.git
-      folder: .oh-my-zsh/themes/spaceship-prompt
+    themes_folder: .oh-my-zsh/themes
+    themes:
+      - url: https://github.com/denysdovhan/spaceship-prompt.git
+        name: spaceship
+        theme_name: spaceship.zsh-theme
+      - url: https://github.com/Moarram/headline.git
+        name: headline
+        theme_name: headline.zsh-theme
     zshTheme:
       url: https://github.com/zsh-users/zsh-syntax-highlighting.git
       folder: .zsh-syntax-highlighting
@@ -298,13 +331,15 @@ install_server_zsh:
   theme: spaceship
   # spaceship | agnoster
   plugins: >
-    tmux git vscode ubuntu sudo npm ng adb ansible colored-man-pages
+    tmux git vscode terraform kubectl ubuntu sudo npm ng adb ansible colored-man-pages
     command-not-found cp docker fd git-flow gitignore history man nmap
     node ufw vim-interaction python pip kubectl git-flow docker-compose
   append_file:
     - template: zshrc-append.j2
       path: ~/.zshrc-append
       append_as: source ~/.zshrc-append
+    - append_as: source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh 2>/dev/null
+    - append_as: source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null
 
 # ------------------------------------------------------------------------------
 # TMUX

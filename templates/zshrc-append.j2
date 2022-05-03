@@ -10,7 +10,7 @@ if [ -d "$HOME/.local/bin" ]; then
 fi
 
 if [ -d /etc/zsh/profile.d ]; then
-  if ls /etc/zsh/profile.d/*.sh 1> /dev/null 2>&1; then
+  if ls /etc/zsh/profile.d/*.sh 1>/dev/null 2>&1; then
     for i in /etc/zsh/profile.d/*.sh; do
       if [ -r $i ]; then
         . $i
@@ -25,7 +25,6 @@ fi
 ## EXPORT & ALIAS
 ##
 ######################################################################
-export APP_JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 function vm_md_to_pdf() {
   cur_date=$(date +"%Y-%m-%d")
@@ -47,7 +46,15 @@ function vm_md_to_pdf() {
 }
 
 ### DOCKER ###
+alias docker="DOCKER_BUILDKIT=1 docker"
 alias docker-swarm-compose="docker-compose config | CONFIG_VERSION=1 docker stack deploy --resolve-image=never --with-registry-auth --compose-file -"
+
+### KUBERNETES ###
+alias k="kubectl"
+alias h="helm"
+
+### TERRAFORM ###
+alias tf="terraform"
 
 ### TOOLS ###
 # alias vm_my_ip='curl https://my-ip-is.appspot.com/plain'
@@ -79,11 +86,31 @@ alias vm_tl='tmux ls'
 alias vm_ta='tmux attach -t'
 alias vm_tk='tmux kill-session -t'
 
+### LS ###
+alias ls='ls --color'
+# ls, the common ones I use a lot shortened for rapid fire usage
+alias l='ls -lFh'   #size,show type,human readable
+alias la='ls -lAFh' #long list,show almost all,show type,human readable
+alias lr='ls -tRFh' #sorted by date,recursive,show type,human readable
+alias lt='ls -ltFh' #long list,sorted by date,show type,human readable
+alias ll='ls -l'    #long list
+alias ldot='ls -ld .*'
+alias lS='ls -1FSsh'
+alias lart='ls -1Fcart'
+alias lrt='ls -1Fcrt'
+
+### OTHER ###
+alias grep='grep --color'
+alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
+
+alias t='tail -f'
+
 ######################################################################
 ##
 ## extract: Extract most know archives with one command
 ##
 ######################################################################
+# usage:: vm_extract <file>
 vm_extract() {
   if [ -f "$1" ]; then
     case "$1" in
@@ -149,8 +176,9 @@ vm_encrypt() {
 vm_ii() {
   echo -e "\\n${RED}You are logged on:$NC"
   hostname
-  echo -e "\\n${RED}Additionnal information:$NC"
+  echo -e "\\n${RED}Additional information:$NC"
   uname -a
+  lsb_release -d
   echo -e "\\n${RED}Users logged on:$NC"
   w -h
   echo -e "\\n${RED}Current date:$NC"

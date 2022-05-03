@@ -18,7 +18,7 @@
   become_user: "{{ outer_item.name }}"
   ansible.builtin.git:
     repo: "{{ install_server_zsh.git.ohmyzsh.url }}"
-    dest: "~/{{ install_server_zsh.git.ohmyzsh.folder }}"
+    dest: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.git.ohmyzsh.folder }}"
     force: true
     update: false
     version: master
@@ -29,7 +29,10 @@
 - name: install zsh step 2.1 [cp]
   become: true
   become_user: "{{ outer_item.name }}"
-  ansible.builtin.command: "cp ~/{{ install_server_zsh.git.ohmyzsh.folder }}/templates/zshrc.zsh-template ~/{{ install_server_zsh.zshrc }}"
+  ansible.builtin.command: >
+    cp
+    {{ install_server_zsh.user_home }}/{{ install_server_zsh.git.ohmyzsh.folder }}/templates/zshrc.zsh-template
+    {{ install_server_zsh.user_home }}/{{ install_server_zsh.zshrc }}
   register: zsh_cp_ohmyzsh
   changed_when: zsh_cp_ohmyzsh.rc != 0
   tags:
@@ -37,15 +40,16 @@
     - zsh
 
 # ------------------------------------------------------------------------------
-- name: install zsh spaceship theme step 3 [git]
+- name: install zsh themes step 3 [git]
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.git:
-    repo: "{{ install_server_zsh.git.spaceship.url }}"
-    dest: "~/{{ install_server_zsh.git.spaceship.folder }}"
+    repo: "{{ item.url }}"
+    dest: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.git.themes_folder }}/{{ item.name }}"
     force: true
     update: false
     version: master
+  loop: "{{ install_server_zsh.git.themes|flatten(levels=1) }}"
   tags:
     - install_server
     - zsh
@@ -54,10 +58,11 @@
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.file:
-    src: "~/{{ install_server_zsh.git.spaceship.folder }}/spaceship.zsh-theme"
-    dest: "~/{{ install_server_zsh.git.ohmyzsh.folder }}/themes/spaceship.zsh-theme"
+    src: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.git.themes_folder }}/{{ item.name }}/{{ item.theme_name }}"
+    dest: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.git.themes_folder }}/{{ item.theme_name }}"
     state: link
     force: true
+  loop: "{{ install_server_zsh.git.themes|flatten(levels=1) }}"
   tags:
     - install_server
     - zsh
@@ -68,7 +73,7 @@
   become_user: "{{ outer_item.name }}"
   ansible.builtin.git:
     repo: "{{ install_server_zsh.git.zshTheme.url }}"
-    dest: "~/{{ install_server_zsh.git.zshTheme.folder }}"
+    dest: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.git.zshTheme.folder }}"
     depth: 1
     update: false
     version: master
@@ -79,7 +84,10 @@
 - name: install zsh step 4.1 [echo]
   become: true
   become_user: "{{ outer_item.name }}"
-  ansible.builtin.shell: 'echo "source ~/{{ install_server_zsh.git.zshTheme.folder }}/zsh-syntax-highlighting.zsh" >> ~/{{ install_server_zsh.zshrc }}'
+  ansible.builtin.shell: >
+    echo
+    "source {{ install_server_zsh.user_home }}/{{ install_server_zsh.git.zshTheme.folder }}/zsh-syntax-highlighting.zsh"
+    >> {{ install_server_zsh.user_home }}/{{ install_server_zsh.zshrc }}
   register: zsh_echo_zsh_theme
   changed_when: zsh_echo_zsh_theme.rc != 0
   tags:
@@ -91,7 +99,7 @@
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.lineinfile:
-    path: "~/{{ install_server_zsh.zshrc }}"
+    path: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.zshrc }}"
     regexp: 'ZSH_THEME="(.*?)"'
     line: 'ZSH_THEME="{{ install_server_zsh.theme }}"'
     mode: "0660"
@@ -104,7 +112,7 @@
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.lineinfile:
-    path: "~/{{ install_server_zsh.zshrc }}"
+    path: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.zshrc }}"
     regexp: 'plugins=\((.*?)\)'
     line: "plugins=({{ install_server_zsh.plugins }})"
     mode: "0660"
@@ -117,7 +125,7 @@
 #   become: true
 #   become_user: "{{ outer_item.name }}"
 #   lineinfile:
-#     path: "~/{{ install_server_zsh.zshrc }}"
+#     path: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.zshrc }}"
 #     regexp: 'alias docker-swarm-compose="(.*?)"'
 #     line: 'alias docker-swarm-compose="docker-compose config | docker stack deploy --compose-file -"'
 #     mode: "0660"
@@ -135,20 +143,22 @@
     dest: "{{ item.path }}"
     mode: "0660"
   loop: "{{ install_server_zsh.append_file|flatten(levels=1) }}"
+  when: item.template is defined and item.path is defined
   tags:
     - install_server
     - zsh
 
 # append
-- name: "install zsh step 4.2.3.1 [add 'append file with tool scripts' with {{ item.path }}]"
+- name: "install zsh step 4.2.3.1 [add 'append file with tool scripts' with {{ item.append_as }}]"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.lineinfile:
-    path: "~/{{ install_server_zsh.zshrc }}"
+    path: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.zshrc }}"
     regexp: "{{ item.append_as }}"
     line: "{{ item.append_as }}"
     mode: "0660"
   loop: "{{ install_server_zsh.append_file|flatten(levels=1) }}"
+  when: item.append_as is defined
   tags:
     - install_server
     - zsh
