@@ -17,6 +17,7 @@ install_server_links_to_check_update:
 install_server_config:
   dev: false
   env_tun_setup: false
+  snmp: false
   # APT (1) -------------------------------
   apt_base: false
   apt_dev: false
@@ -466,6 +467,57 @@ install_server_os_tun:
 
     - key: vm.max_map_count
       value: 262144
+
+# ------------------------------------------------------------------------------
+# SNMP
+# install_server_config.snmp
+install_server_snmp_user: snmp
+install_server_snmp_password: snmp_password
+install_server_snmp_encryption: snmp_encryption
+install_server_snmp_location:
+install_server_snmp_contact:
+install_server_snmp_address_ipv4: "127.0.0.1"
+install_server_snmp_address_ipv6: "::1"
+install_server_snmp_port_ipv4: 161
+install_server_snmp_port_ipv6: 161
+install_server_snmp:
+  snmp_user: "{{ install_server_snmp_user }}"
+  snmp_password: "{{ install_server_snmp_password }}"
+  snmp_encryption: "{{ install_server_snmp_encryption }}"
+
+  snmp_location: "{{ install_server_snmp_location }}"
+  snmp_contact: "{{ install_server_snmp_contact }}"
+
+  snmp_additional_packages: []
+
+  snmp_extension_scripts: "/usr/local/lib/snmpd"
+  snmp_packages:
+    - snmp
+    - snmpd
+
+  snmp_config: "/etc/snmp/snmpd.conf"
+  snmp_daemon_config: "/etc/default/snmpd"
+  snmp_service_name: "snmpd"
+
+  # template::
+  snmp_agent_address_protocol:
+    ipv4: udp
+    ipv6: udp6
+  snmp_agent_address_address:
+    ipv4: "{{ ansible_default_ipv4.address if ansible_default_ipv4.address is defined else install_server_snmp_address_ipv4 }}"
+    ipv6: "{{ ansible_default_ipv6.address if ansible_default_ipv6.address is defined else install_server_snmp_address_ipv6 }}"
+  snmp_agent_address_port:
+    ipv4: "{{ install_server_snmp_port_ipv4 | default(161) }}"
+    ipv6: "{{ install_server_snmp_port_ipv6 | default(161) }}"
+
+  snmp_extension_list:
+    - url: "https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/distro"
+      extend: ".1.3.6.1.4.1.2021.7890.1 distro {{ snmp_extension_scripts }}/distro"
+    - url: "https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/osupdate"
+      extend: "osupdate {{ snmp_extension_scripts }}/osupdate"
+  snmp_extension_proxmox:
+    url: "https://raw.githubusercontent.com/librenms/librenms-agent/master/agent-local/proxmox"
+    extend: "proxmox /usr/bin/sudo {{ snmp_extension_scripts }}/proxmox"
 
 # ------------------------------------------------------------------------------
 # PYTHON
