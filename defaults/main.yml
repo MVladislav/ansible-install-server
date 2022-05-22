@@ -450,11 +450,16 @@ install_server_os_tun:
       value: 134217728
     - key: net.core.wmem_max
       value: 134217728
+    #
+    - key: net.ipv4.tcp_mem
+      value: 4096 87380 67108864
     # increase Linux autotuning TCP buffer limit to 64MB
+    - key: net.ipv4.tcp_window_scaling
+      value: 1
     - key: net.ipv4.tcp_rmem
       value: 4096 87380 67108864
     - key: net.ipv4.tcp_wmem
-      value: 4096 65536 67108864
+      value: 4096 87380 67108864
     # recommended default congestion control is htcp
     - key: net.ipv4.tcp_congestion_control
       value: htcp
