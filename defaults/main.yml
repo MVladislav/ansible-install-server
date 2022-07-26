@@ -579,7 +579,7 @@ install_server_npm:
   deb:
     url: "{{ install_server_links_to_check_update.npm_url }}"
     file: "{{ install_server_links_to_check_update.npm_file }}"
-  apt: falsedejs
+  apt: nodejs
   set_path: true
 install_server_npm_pkg:
   - typescript
