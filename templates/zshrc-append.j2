@@ -74,6 +74,11 @@ alias vm_reverse='python3 -c "import sys; print(sys.argv[1][::-1])"'
 
 alias vm_hun_to_min="python3 -c 'import sys;x = sys.argv[1].split(\":\");x3 = (int(x[0]) * 60) + ((int(x[1])/100)*60);print(x3, \":: \", f\"{divmod(x3, 60)[0]}h : {divmod(x3, 60)[1]}m\")'"
 
+### PEN TOOLS ###
+#function vm_asn() { dig $(dig -x $1 | grep PTR | tail -n 1 | grep -Eo ‘[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}’).origin.asn.cymru.com TXT +short }
+function vm_asn() { whois -h whois.cymru.com "-v $1" }
+
+
 # sudo apt install xclip
 # pip3 install pyperclip
 alias vm_copyFromClip='python3 -c "import sys, pyperclip; pyperclip.copy(sys.argv[1])"'
