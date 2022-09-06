@@ -65,6 +65,10 @@ install_server_apt:
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: vim
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: exa
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: bat
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
   # --------------------------------
   - name: rar
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
@@ -110,6 +114,12 @@ install_server_apt:
   - name: stress
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: nvtop
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: sysbench
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: stress-ng
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: iozone3
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   # - name: exfat-fuse
