@@ -69,6 +69,10 @@ install_server_apt:
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: bat
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: libpam-u2f
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: libfido2-dev
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
   # --------------------------------
   - name: rar
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
