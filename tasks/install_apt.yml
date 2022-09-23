@@ -3,11 +3,11 @@
 
 # ------------------------------------------------------------------------------
 - name: install apt services [main]
-  become: yes
+  become: true
   ansible.builtin.apt:
     pkg: "{{ item.name }}"
     state: present
-    force_apt_get: yes # apt-get instead of aptitude
+    force_apt_get: true # apt-get instead of aptitude
   loop: "{{ install_server_apt|flatten(levels=1) }}"
   when: (install_server_apt is defined) and (item.install is defined and item.install | bool)
   tags:

@@ -2,19 +2,19 @@
 # tasks file for setup_users
 
 # ------------------------------------------------------------------------------
-#- name: delete user accounts
-#  become: yes
+# - name: delete user accounts
+#  become: true
 #  user:
-#    name: "{{ item.name }}"
-#    state: absent
-#    remove: yes
-#    force: yes
+#  name: "{{ item.name }}"
+#  state: absent
+#  remove: yes
+#  force: yes
 #  loop: "{{ clients |flatten(levels=1) }}"
 
 # ------------------------------------------------------------------------------
 - name: update user accounts
-  become: yes
-  user:
+  become: true
+  ansible.builtin.user:
     name: "{{ item.name }}"
     state: present
     # shell: "{{ item.shell | default('/bin/bash')}}"
@@ -22,7 +22,7 @@
     createhome: "{{ item.createhome | default('yes') | bool }}"
     # sudo apt install whois && mkpasswd --method=sha-512
     password: "{{ item.password }}"
-    #update_password: on_create
+    # update_password: on_create
   loop: "{{ clients | flatten(levels=1) }}"
   when: item.updateOrCreate is defined and item.updateOrCreate | bool
   tags:

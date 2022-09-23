@@ -1,3 +1,6 @@
+### ZSH ###
+setopt NO_NOMATCH
+
 ######################################################################
 ##
 ## set PATH so it includes user's private bin if it exists
@@ -8,21 +11,126 @@ if [ -d "$HOME/.local/bin" ]; then
 fi
 
 if [ -d /etc/zsh/profile.d ]; then
-  for i in /etc/zsh/profile.d/*.sh; do
-    if [ -r $i ]; then
-      . $i
-    fi
-  done
-  unset i
+  if ls /etc/zsh/profile.d/*.sh 1>/dev/null 2>&1; then
+    for i in /etc/zsh/profile.d/*.sh; do
+      if [ -r $i ]; then
+        . $i
+      fi
+    done
+    unset i
+  fi
 fi
+
+### LS ###
+alias ls='ls --color'
+# ls, the common ones I use a lot shortened for rapid fire usage
+alias l='ls -lFh'   #size,show type,human readable
+alias la='ls -lAFh' #long list,show almost all,show type,human readable
+alias lr='ls -tRFh' #sorted by date,recursive,show type,human readable
+alias lt='ls -ltFh' #long list,sorted by date,show type,human readable
+alias ll='ls -l'    #long list
+alias ldot='ls -ld .*'
+alias lS='ls -1FSsh'
+alias lart='ls -1Fcart'
+alias lrt='ls -1Fcrt'
+
+### LS as EXA ###
+# $sudo apt install exa
+alias ls='exa'
+alias l='exa -1'
+alias ll='exa -alh'
+alias lm='ll -t modified'
+alias la='ll -t accessed'
+alias lc='ll -t created'
+alias ld='exa -ld .*'
+alias tree='exa --tree --long -L 3'
+
+### CAT as BAT ###
+# $sudo apt install bat
+alias cat='batcat -p'
+alias cat-b='batcat'
+
+### RSYNC ###
+alias cp='rsync --info=progress2 -auvz'
+
+### DOCKER ###
+alias docker='DOCKER_BUILDKIT=1 docker'
+alias docker-swarm-compose='docker-compose config | CONFIG_VERSION=1 docker stack deploy --resolve-image=never --with-registry-auth --compose-file -'
+
+### KUBERNETES ###
+alias k='kubectl'
+alias kn='k config set-context --current --namespace'
+alias h='helm'
+
+### TERRAFORM ###
+alias tf='terraform'
+
+### PYTHON TOOLS ###
+alias vm_url_decode='python3 -c "import sys, urllib.parse as ul; print(ul.unquote_plus(sys.argv[1]))"'
+alias vm_url_encode='python3 -c "import sys, urllib.parse as ul; print(ul.quote_plus(sys.argv[1]))"'
+alias vm_reverse='python3 -c "import sys; print(sys.argv[1][::-1])"'
+
+alias vm_hun_to_min="python3 -c 'import sys;x = sys.argv[1].split(\":\");x3 = (int(x[0]) * 60) + ((int(x[1])/100)*60);print(x3, \":: \", f\"{divmod(x3, 60)[0]}h : {divmod(x3, 60)[1]}m\")'"
+
+# $sudo apt install xclip
+# $pip3 install pyperclip
+alias vm_copyFromClip='python3 -c "import sys, pyperclip; pyperclip.copy(sys.argv[1])"'
+
+### GIT ###
+alias vm_lg1="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all"
+alias vm_lg2="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all"
+
+### TMUX ###
+alias vm_tl='tmux ls'
+alias vm_ta='tmux attach -t'
+alias vm_tk='tmux kill-session -t'
+
+### OTHER ###
+alias grep='grep --color'
+alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS}'
+
+alias t='tail -f'
+
+alias vm_random='openssl rand -base64'
+alias vm_find_command='apropos'
+
+### TOOLS ###
+# alias vm_my_ip='curl https://my-ip-is.appspot.com/plain'
+# alias vm_my_ip='curl ifconfig.co/'
+alias vm_my_ip='curl ifconfig.io/ip'
+alias vm_my_country='curl ifconfig.io/country_code'
+alias vm_my_ua='curl ifconfig.io/ua'
+alias vm_my_all='curl ifconfig.io/all.json | jq'
+
+######################################################################
+##
+## ii: display useful host related information
+##
+######################################################################
+vm_ii() {
+  echo -e "\\n${RED}You are logged on:$NC"
+  hostname
+  echo -e "\\n${RED}Additional information:$NC"
+  uname -a
+  lsb_release -d
+  echo -e "\\n${RED}Users logged on:$NC"
+  w -h
+  echo -e "\\n${RED}Current date:$NC"
+  date
+  echo -e "\\n${RED}Machine stats:$NC"
+  uptime
+  echo -e "\\n${RED}Public facing IP Address:$NC"
+  vm_my_ip
+  vm_my_country
+  vm_my_ua
+  echo
+}
 
 ######################################################################
 ##
 ## EXPORT & ALIAS
 ##
 ######################################################################
-export APP_JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-
 function vm_md_to_pdf() {
   cur_date=$(date +"%Y-%m-%d")
   filename=$(echo "$1" | cut -f 1 -d ".")
@@ -42,44 +150,12 @@ function vm_md_to_pdf() {
     -V 'mathfont:TeXGyreDejaVuMath-Regular'
 }
 
-### DOCKER ###
-alias docker-swarm-compose="docker-compose config | docker stack deploy --compose-file -"
-
-### TOOLS ###
-# alias vm_my_ip='curl https://my-ip-is.appspot.com/plain'
-# alias vm_my_ip='curl ifconfig.co/'
-alias vm_my_ip='curl ifconfig.io/ip'
-alias vm_my_country='curl ifconfig.io/country_code'
-alias vm_my_ua='curl ifconfig.io/ua'
-alias vm_my_all='curl ifconfig.io/all.json | jq'
-alias vm_random='openssl rand -base64 '
-alias vm_find_command='apropos '
-
-### PYTHON TOOLS ###
-alias vm_url_decode='python3 -c "import sys, urllib.parse as ul; print(ul.unquote_plus(sys.argv[1]))"'
-alias vm_url_encode='python3 -c "import sys, urllib.parse as ul; print(ul.quote_plus(sys.argv[1]))"'
-alias vm_reverse='python3 -c "import sys; print(sys.argv[1][::-1])"'
-
-alias vm_hun_to_min="python3 -c 'import sys;x = sys.argv[1].split(\":\");x3 = (int(x[0]) * 60) + ((int(x[1])/100)*60);print(x3, \":: \", f\"{divmod(x3, 60)[0]}h : {divmod(x3, 60)[1]}m\")'"
-
-# sudo apt install xclip
-# pip3 install pyperclip
-alias vm_copyFromClip='python3 -c "import sys, pyperclip; pyperclip.copy(sys.argv[1])"'
-
-### GIT ###
-alias vm_lg1="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all"
-alias vm_lg2="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all"
-
-### TMUX ###
-alias vm_tl='tmux ls'
-alias vm_ta='tmux attach -t'
-alias vm_tk='tmux kill-session -t'
-
 ######################################################################
 ##
 ## extract: Extract most know archives with one command
 ##
 ######################################################################
+# usage:: vm_extract <file>
 vm_extract() {
   if [ -f "$1" ]; then
     case "$1" in
@@ -135,27 +211,4 @@ vm_encrypt() {
   else
     echo "'$2' is not a valid file"
   fi
-}
-
-######################################################################
-##
-## ii: display useful host related information
-##
-######################################################################
-vm_ii() {
-  echo -e "\\n${RED}You are logged on:$NC"
-  hostname
-  echo -e "\\n${RED}Additionnal information:$NC"
-  uname -a
-  echo -e "\\n${RED}Users logged on:$NC"
-  w -h
-  echo -e "\\n${RED}Current date:$NC"
-  date
-  echo -e "\\n${RED}Machine stats:$NC"
-  uptime
-  echo -e "\\n${RED}Public facing IP Address:$NC"
-  vm_my_ip
-  vm_my_country
-  vm_my_ua
-  echo
 }

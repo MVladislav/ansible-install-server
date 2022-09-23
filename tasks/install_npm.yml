@@ -3,7 +3,7 @@
 
 # ------------------------------------------------------------------------------
 - name: npm | download npm step 1 [get/deb]
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ install_server_npm.deb.url }}"
     dest: "/tmp/{{ install_server_npm.deb.file }}"
     mode: "0700"
@@ -12,25 +12,27 @@
     - npm
 
 - name: npm | install npm step 2 [bash]
-  become: yes
-  shell: "/tmp/{{ install_server_npm.deb.file }}"
+  become: true
+  ansible.builtin.command: "/tmp/{{ install_server_npm.deb.file }}"
+  register: npm_run_script_install
+  changed_when: npm_run_script_install.rc != 0
   tags:
     - install_server
     - npm
 
 - name: npm | install npm step 3 [apt]
-  become: yes
+  become: true
   ansible.builtin.apt:
     pkg: "{{ install_server_npm.apt }}"
     state: present
-    force_apt_get: yes # apt-get instead of aptitude
+    force_apt_get: true # apt-get instead of aptitude
   tags:
     - install_server
     - npm
 
 # ------------------------------------------------------------------------------
 - name: "npm | create a directory, for /etc/zsh/profile.d"
-  become: yes
+  become: true
   ansible.builtin.file:
     path: "/etc/zsh/profile.d"
     # path: /etc/profile.d
@@ -44,10 +46,11 @@
     - npm
 
 - name: npm | set npm-PATH for all users
-  become: yes
-  copy:
+  become: true
+  ansible.builtin.copy:
     src: npm-path.sh
     dest: /etc/zsh/profile.d
+    mode: 0644
     # dest: /etc/profile.d
   when: install_server_npm is defined and install_server_npm.set_path is defined and install_server_npm.set_path | bool
   tags:

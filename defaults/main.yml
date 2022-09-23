@@ -6,42 +6,44 @@ install_server_service_name: default-server
 install_server_hostname: "{{ install_server_service_name }}"
 
 install_server_links_to_check_update:
-  mongodb_pgp: https://www.mongodb.org/static/pgp/server-4.2.asc
-  mongodb_distribution: bionic/mongodb-org/4.2
-  #
-  npm_url: https://deb.nodesource.com/setup_16.x
-  npm_file: setup_16.x.sh
-  #
-  go_file: go1.16.linux-amd64.tar.gz
-  go_url: https://golang.org/dl/go1.16.6.linux-amd64.tar.gz
-  go_checksum: "sha256:be333ef18b3016e9d7cb7b1ff1fdb0cac800ca0be4cf2290fe613b3d069dfe0d"
-  go_version: go version go1.16.6 linux/amd64
-  # go_url: https://golang.org/dl/go1.16.6.linux-arm64.tar.gz
-  # go_checksum: "sha256:9e38047463da6daecab9017cd0599f33f84991e68263752cfab49253bbc98c30"
-  # go_version: go version go1.16.6 linux/arm64
+  mongodb_pgp: https://www.mongodb.org/static/pgp/server-5.0.asc
+  mongodb_distribution: buster/mongodb-org/5.0
+  # https://github.com/nodesource/distributions/blob/master/README.md
+  npm_url: https://deb.nodesource.com/setup_lts.x
+  npm_file: setup_lts.x.sh
 
 # ------------------------------------------------------------------------------
 # WHAT TO INSTALL
 install_server_config:
-  dev: no
-  apt_base: no
-  apt_dev: no
-  apt_exfat: no
-  apt_libs: no
-  apt_vpn: no
-  # dpkg_...: no
-  # snap_...: no
-  snap_microk8s: no
-  git: no
-  zsh: no
-  tmux: no
-  python: no # base|dev
-  go: no
-  go_kompose: no
-  ruby: no
-  npm: no
-  mongodb: no
-  java: no # base|dev
+  dev: false
+  env_tun_setup: false
+  snmp: false
+  # APT (1) -------------------------------
+  apt_base: false
+  apt_dev: false
+  apt_build: false
+  apt_libs: false
+  # APT (2) -------------------------------
+  apt_vpn: false
+  apt_go: false
+  apt_php: false
+  apt_rasp_pi_pkg: false
+  apt_qemu_guest_agent: false
+  # DPKG ----------------------------------
+  # dpkg_...: false
+  # SNAP ----------------------------------
+  snap_microk8s: false
+  snap_btop: false
+  # OTHER --------------------------------
+  git: false
+  zsh: false
+  tmux: false
+  python: false # base|dev
+  go_kompose: false
+  ruby: false
+  npm: false
+  mongodb: false
+  java: false # base|dev
 
 # ------------------------------------------------------------------------------
 # CLIENTS for adding access (ex. zsh)
@@ -52,7 +54,7 @@ clients:
 # APT
 # install_server_config.apt_...
 install_server_apt:
-  # Needed
+  # --------------------------------
   - name: dirmngr
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: curl
@@ -61,37 +63,49 @@ install_server_apt:
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: git-flow
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  # Others
   - name: vim
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  # - name: rar
-  #   install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: exa
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: bat
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: libpam-u2f
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: libfido2-dev
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  # --------------------------------
+  - name: rar
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: unrar
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: zip
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: p7zip-full
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: xz-utils
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  # --------------------------------
   - name: openssl
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  - name: snapd
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  # Others
   - name: ca-certificates
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: apt-transport-https
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: gnupg
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  - name: resolvconf
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  - name: unattended-upgrades
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
   # ----------------------------------------------------------------------------
-  # dev
+  # monitoring: lsof|tcpdump -i ...|netstat -a | more|htop|iotop|iostat|s-tui|watch zpool iostat -vy 1 1|smem -tuwa|bpytop
   - name: jq
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: iftop
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: htop
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: iotop
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: sysstat
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: smem
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: ethtool
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
@@ -99,35 +113,46 @@ install_server_apt:
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: haveged
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
-  # Others
-  - name: exfat-fuse
-    install: "{{ install_server_config.apt_exfat | default('no') | bool }}"
-  - name: exfat-utils
-    install: "{{ install_server_config.apt_exfat | default('no') | bool }}"
+  - name: iperf3
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: stress
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: nvtop
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: sysbench
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: stress-ng
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: iozone3
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   # ----------------------------------------------------------------------------
-  # 1
+  # - name: exfat-fuse
+  #   install: "{{ install_server_config.apt_exfat | default('no') | bool }}"
+  # - name: exfat-utils
+  #   install: "{{ install_server_config.apt_exfat | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
   - name: freeglut3
-    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+    install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: freeglut3-dev
-    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+    install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: cmake
-    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+    install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: g++
-    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+    install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: build-essential
-    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
-  # 7
+    install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: autoconf
-    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+    install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: pkg-config
-    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
-  - name: lib32z1
-    install: no
+    install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: mesa-utils
-    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+    install: "{{ install_server_config.apt_build | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  # - name: lib32z1
+  #   install: false
   - name: libstdc++6
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
-  # 2
+  # ----------------------------------------------------------------------------
   - name: libgl1-mesa-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: libegl1-mesa-dev
@@ -136,7 +161,7 @@ install_server_apt:
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: libgles2-mesa-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
-  # 3
+  # ----------------------------------------------------------------------------
   - name: libnet1-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: libnet1
@@ -147,12 +172,12 @@ install_server_apt:
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: libpcap-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
-  # 4
+  # ----------------------------------------------------------------------------
   - name: libssl-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: zlib1g-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
-  # 4.1
+  # ----------------------------------------------------------------------------
   - name: libxml2-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: libxslt1-dev
@@ -160,6 +185,13 @@ install_server_apt:
   - name: libffi-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: libpq-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  - name: libgirepository1.0-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: libgpgme-dev
+    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
+  - name: libboost-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   - name: resolvconf
@@ -180,6 +212,36 @@ install_server_apt:
   #   install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
   # - name: network-manager-l2tp
   #   install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  - name: golang
+    install: "{{ install_server_config.apt_go | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  - name: php
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-gmp
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-curl
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-intl
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-mbstring
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-xmlrpc
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-mysql
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-gd
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-xml
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  - name: php-zip
+    install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  - name: linux-modules-extra-raspi
+    install: "{{ install_server_config.apt_rasp_pi_pkg | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  - name: qemu-guest-agent
+    install: "{{ install_client_config.apt_qemu_guest_agent | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # DPKG packages
@@ -191,9 +253,13 @@ install_server_dpkg: []
 # install_server_config.snap_...
 install_server_snap:
   - name: microk8s
-    classic: yes
-    beta: no
+    classic: true
+    beta: false
     install: "{{ install_server_config.snap_microk8s | default('no') | bool }}"
+  - name: btop
+    classic: false
+    beta: false
+    install: "{{ install_server_config.snap_btop | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # GIT
@@ -229,34 +295,69 @@ install_server_git:
 # install_server_config.zsh
 install_server_zsh:
   update: false
+  user_home: "~"
   apt:
     - zsh
+    - zsh-syntax-highlighting
+    - zsh-autosuggestions
     - powerline
     - fonts-powerline
+  # fonts:
+  #   folder: "{{install_server_zsh.user_home}}/.local/share/fonts"
+  #   sources:
+  #     - url: >
+  #         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf
+  #       folder: nerd-fonts
+  #       name: "Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf"
+  #     - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-Bold.otf
+  #       folder: JetBrainsMono
+  #       name: "JetBrainsMono-Bold.otf"
+  #     - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-BoldItalic.otf
+  #     - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-ExtraBold.otf
+  #     - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-ExtraBoldItalic.otf
+  #     - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-ExtraLight.otf
+  #     - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-ExtraLightItalic.otf
+  #     - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-Italic.otf
+  #     - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-Light.otf
+  #     - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-LightItalic.otf
+  #     - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-Medium.otf
+  #     - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-MediumItalic.otf
+  #     - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-Regular.otf
+  #     - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-SemiBold.otf
+  #     - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-SemiBoldItalic.otf
+  #     - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-Thin.otf
+  #     - url: https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/otf/JetBrainsMono-ThinItalic.otf
   git:
     ohmyzsh:
       url: https://github.com/robbyrussell/oh-my-zsh.git
       folder: .oh-my-zsh
-    spaceship:
-      url: https://github.com/denysdovhan/spaceship-prompt.git
-      folder: .oh-my-zsh/themes/spaceship-prompt
+      version: master
+    themes_folder: .oh-my-zsh/themes
+    themes:
+      - url: https://github.com/denysdovhan/spaceship-prompt.git
+        name: spaceship
+        theme_name: spaceship.zsh-theme
+        version: master
+      - url: https://github.com/Moarram/headline.git
+        name: headline
+        theme_name: headline.zsh-theme
+        version: main
     zshTheme:
       url: https://github.com/zsh-users/zsh-syntax-highlighting.git
       folder: .zsh-syntax-highlighting
   zshrc: .zshrc
   theme: spaceship
   # spaceship | agnoster
-  plugins: tmux git vscode ubuntu sudo npm ng adb ansible colored-man-pages command-not-found cp docker fd git-flow gitignore history man nmap node ufw vim-interaction python pip kubectl git-flow docker-compose
+  plugins: >
+    tmux git vscode terraform kubectl ubuntu sudo npm ng adb ansible colored-man-pages
+    command-not-found cp docker fd git-flow gitignore history man nmap
+    node ufw vim-interaction python pip kubectl git-flow docker-compose
   append_file:
     - template: zshrc-append.j2
       path: ~/.zshrc-append
       append_as: source ~/.zshrc-append
-    # - template: zshrc-append-hack.j2
-    #   path: ~/.zshrc-append-hack
-    #   append_as: source ~/.zshrc-append-hack
-    # - template: zshrc-append-vpn.j2
-    #   path: ~/.zshrc-append-vpn
-    #   append_as: source ~/.zshrc-append-vpn
+    - append_as: source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh 2>/dev/null
+    - append_as: source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null
 
 # ------------------------------------------------------------------------------
 # TMUX
@@ -264,7 +365,7 @@ install_server_zsh:
 # https://github.com/gpakosz/.tmux#configuration
 # https://gist.github.com/henrik/1967800
 install_server_tmux:
-  update: yes
+  update: true
   git: https://github.com/tmux/tmux.git
   style:
     git: https://github.com/gpakosz/.tmux.git
@@ -284,6 +385,160 @@ install_server_tmux:
   aliases_path: "~/.zshrc"
 
 # ------------------------------------------------------------------------------
+# OS TUNNING'S
+# install_server_config.env_tun_setup
+install_server_os_tun:
+  install: "{{ install_server_config.env_tun_setup | default('no') | bool }}"
+  net_tun_lines:
+    - key: net.ipv6.conf.all.disable_ipv6
+      value: 1
+    - key: net.ipv6.conf.default.disable_ipv6
+      value: 1
+    - key: net.ipv6.conf.lo.disable_ipv6
+      value: 1
+
+    - key: kernel.randomize_va_space
+      value: 2
+    - key: fs.suid_dumpable
+      value: 0
+
+    - key: net.ipv4.conf.all.send_redirects
+      value: 0
+    - key: net.ipv4.conf.default.send_redirects
+      value: 0
+
+    - key: net.ipv4.ip_forward
+      value: 0
+    - key: net.ipv6.conf.all.forwarding
+      value: 0
+
+    - key: net.ipv4.conf.all.accept_source_route
+      value: 0
+    - key: net.ipv4.conf.default.accept_source_route
+      value: 0
+    - key: net.ipv6.conf.all.accept_source_route
+      value: 0
+    - key: net.ipv6.conf.default.accept_source_route
+      value: 0
+
+    - key: net.ipv4.conf.all.accept_redirects
+      value: 0
+    - key: net.ipv4.conf.default.accept_redirects
+      value: 0
+    - key: net.ipv6.conf.all.accept_redirects
+      value: 0
+    - key: net.ipv6.conf.default.accept_redirects
+      value: 0
+
+    - key: net.ipv4.conf.all.secure_redirects
+      value: 0
+    - key: net.ipv4.conf.default.secure_redirects
+      value: 0
+    - key: net.ipv4.conf.all.log_martians
+      value: 1
+    - key: net.ipv4.conf.default.log_martians
+      value: 1
+    - key: net.ipv4.icmp_echo_ignore_broadcasts
+      value: 1
+    - key: net.ipv4.icmp_ignore_bogus_error_responses
+      value: 1
+    - key: net.ipv4.conf.all.rp_filter
+      value: 1
+    - key: net.ipv4.conf.default.rp_filter
+      value: 1
+    - key: net.ipv4.tcp_syncookies
+      value: 1
+
+    - key: net.ipv6.conf.all.accept_ra
+      value: 0
+    - key: net.ipv6.conf.default.accept_ra
+      value: 0
+
+    - key: net.ipv4.route.flush
+      value: 1
+    - key: net.ipv6.route.flush
+      value: 1
+
+    # allow testing with buffers up to 128MB
+    - key: net.core.rmem_max
+      value: 134217728
+    - key: net.core.wmem_max
+      value: 134217728
+    #
+    - key: net.ipv4.tcp_mem
+      value: 4096 87380 67108864
+    # increase Linux autotuning TCP buffer limit to 64MB
+    - key: net.ipv4.tcp_window_scaling
+      value: 1
+    - key: net.ipv4.tcp_rmem
+      value: 4096 87380 67108864
+    - key: net.ipv4.tcp_wmem
+      value: 4096 87380 67108864
+    # recommended default congestion control is htcp
+    - key: net.ipv4.tcp_congestion_control
+      value: htcp
+    # recommended for hosts with jumbo frames enabled
+    # - key: net.ipv4.tcp_mtu_probing
+    #   value: 1
+    # recommended to enable 'fair queueing'
+    - key: net.core.default_qdisc
+      value: fq
+
+    - key: vm.max_map_count
+      value: 262144
+
+# ------------------------------------------------------------------------------
+# SNMP
+# install_server_config.snmp
+install_server_snmp_user: snmp
+install_server_snmp_password: snmp_password
+install_server_snmp_encryption: snmp_encryption
+install_server_snmp_location:
+install_server_snmp_contact:
+install_server_snmp_address_ipv4: "127.0.0.1"
+install_server_snmp_address_ipv6: "::1"
+install_server_snmp_port_ipv4: 161
+install_server_snmp_port_ipv6: 161
+install_server_snmp:
+  snmp_user: "{{ install_server_snmp_user }}"
+  snmp_password: "{{ install_server_snmp_password }}"
+  snmp_encryption: "{{ install_server_snmp_encryption }}"
+
+  snmp_location: "{{ install_server_snmp_location }}"
+  snmp_contact: "{{ install_server_snmp_contact }}"
+
+  snmp_additional_packages: []
+
+  snmp_extension_scripts: "/usr/local/lib/snmpd"
+  snmp_packages:
+    - snmp
+    - snmpd
+
+  snmp_config: "/etc/snmp/snmpd.conf"
+  snmp_daemon_config: "/etc/default/snmpd"
+  snmp_service_name: "snmpd"
+
+  # template::
+  snmp_agent_address_protocol:
+    ipv4: udp
+    ipv6: udp6
+  snmp_agent_address_address:
+    ipv4: "{{ ansible_default_ipv4.address if ansible_default_ipv4.address is defined else install_server_snmp_address_ipv4 }}"
+    ipv6: "{{ ansible_default_ipv6.address if ansible_default_ipv6.address is defined else install_server_snmp_address_ipv6 }}"
+  snmp_agent_address_port:
+    ipv4: "{{ install_server_snmp_port_ipv4 | default(161) }}"
+    ipv6: "{{ install_server_snmp_port_ipv6 | default(161) }}"
+
+  snmp_extension_list:
+    - url: "https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/distro"
+      extend: ".1.3.6.1.4.1.2021.7890.1 distro {{ snmp_extension_scripts }}/distro"
+    - url: "https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/osupdate"
+      extend: "osupdate {{ snmp_extension_scripts }}/osupdate"
+  snmp_extension_proxmox:
+    url: "https://raw.githubusercontent.com/librenms/librenms-agent/master/agent-local/proxmox"
+    extend: "proxmox /usr/bin/sudo {{ snmp_extension_scripts }}/proxmox"
+
+# ------------------------------------------------------------------------------
 # PYTHON
 # install_server_config.python
 install_server_python:
@@ -293,10 +548,15 @@ install_server_python:
     - python3-pip
     - python3-venv
     - python3-dev
-  #  - pip3 install --upgrade pip
+    #  - pip3 install --upgrade pip
+    # TOOLS
+    - s-tui
+    # - bpytop # TODO: change with https://github.com/aristocratos/btop or "sudo snap install btop"
   pip:
     - virtualenv
     - autopep8
+    - black
+    - pre-commit
 
 # ------------------------------------------------------------------------------
 # ANSIBLE
@@ -310,16 +570,6 @@ install_server_ansible:
     - ansible
 
 # ------------------------------------------------------------------------------
-# GO
-# install_server_config.go
-install_server_go:
-  file: "{{ install_server_links_to_check_update.go_file }}"
-  url: "{{ install_server_links_to_check_update.go_url }}"
-  checksum: "{{ install_server_links_to_check_update.go_checksum }}"
-  version: "{{ install_server_links_to_check_update.go_version }}"
-  set_path: yes
-
-# ------------------------------------------------------------------------------
 # RUBY
 # install_server_config.ruby
 install_server_ruby:
@@ -327,7 +577,7 @@ install_server_ruby:
     - ruby-full
     - build-essential
     - zlib1g-dev
-  set_path: yes
+  set_path: true
 
 # ------------------------------------------------------------------------------
 # GO packages
@@ -344,17 +594,17 @@ install_server_npm:
     url: "{{ install_server_links_to_check_update.npm_url }}"
     file: "{{ install_server_links_to_check_update.npm_file }}"
   apt: nodejs
-  set_path: yes
+  set_path: true
 install_server_npm_pkg:
   - typescript
   - jshint
-#- "@angular/cli"
-#- typescript
-#- jshint
-#- ts-node
-#- tslint
-#- nodemon
-#- pm2
+# - "@angular/cli"
+# - typescript
+# - jshint
+# - ts-node
+# - tslint
+# - nodemon
+# - pm2
 
 # ------------------------------------------------------------------------------
 # MONGODB
@@ -363,7 +613,7 @@ install_server_mongodb:
   packages:
     - mongodb-org
   service: mongod
-  enabled: yes
+  enabled: true
   repo_name: mongodb
   repo: https://repo.mongodb.org/apt/ubuntu
   version: multiverse
@@ -374,12 +624,12 @@ install_server_mongodb:
 # ------------------------------------------------------------------------------
 # JAVA
 # install_server_config.java
+install_server_java_version: 11
 install_server_java:
   apt:
-    - openjdk-8-jre-headless
-    - openjdk-11-jre-headless
+    - "openjdk-{{ install_server_java_version }}-jre-headless"
   dev:
     - ant
   os_env:
     - variable: JAVA_HOME
-      path: /usr/lib/jvm/java-8-openjdk-amd64
+      path: "/usr/lib/jvm/java-{{ install_server_java_version }}-openjdk-amd64"

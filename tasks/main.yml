@@ -4,44 +4,42 @@
 # ------------------------------------------------------------------------------
 # SETUP USERS
 - name: setup users
-  include: setup_users.yml
+  include_tasks: setup_users.yml
 
 # ------------------------------------------------------------------------------
 # DEFAULT PACKAGES
 - name: install default packages
-  include: install_apt.yml
+  include_tasks: install_apt.yml
 
 # ------------------------------------------------------------------------------
 # CHANGE HOST DEFAULTS
 
 # --- HOSTNAME ---
-- name: set hostname
-  become: yes
-  shell: "hostnamectl set-hostname {{ install_server_hostname }}"
+- name: "set hostname:: update /etc/hosts"
+  become: true
+  ansible.builtin.replace:
+    path: /etc/hosts
+    regexp: "{{ ansible_hostname }}"
+    replace: "{{ install_server_hostname }}"
+    owner: root
+    group: root
+    mode: "0644"
   when: install_server_hostname is defined
   tags:
     - install_server
     - hostname
-# - name: set hostname
-#   become: yes
-#   ansible.builtin.hostname:
-#     name: "{{ install_server_hostname }}"
-#   when: install_server_hostname is defined
-#   tags:
-#     - install_server
-#     - hostname
 
-# --- AUTOUPDATE ---
-- name: set auto update over unattended-upgrades
-  become: yes
-  shell: "dpkg-reconfigure -f noninteractive --priority low unattended-upgrades"
+- name: "set hostname:: use hostnamectl"
+  become: true
+  ansible.builtin.command: "hostnamectl set-hostname {{ install_server_hostname }}"
+  when: install_server_hostname is defined
   tags:
     - install_server
-    - auto_update
+    - hostname
 
 # --- DEFAULT FOLDER ---
 - name: "create default folder per client"
-  become: yes
+  become: true
   become_user: "{{ item.name }}"
   ansible.builtin.file:
     path: "~/.local/bin"
@@ -54,101 +52,140 @@
     - create_default_folder
 
 # ------------------------------------------------------------------------------
-# ENV
-- name: set env variables
-  become: yes
-  lineinfile:
-    dest: "/etc/environment"
-    state: present
-    regexp: "^{{ item.key }}="
-    line: "{{ item.key }}={{ item.value}}"
-  with_items:
-    - key: LC_CTYPE
-      value: C.UTF-8
-  tags:
-    - install_server
-    - env_variables
+# --- TUNNING OS ---
+- name: run os tunning's
+  include_tasks: tun_os.yml
+  when: (install_server_os_tun is defined) and (install_server_os_tun.install is defined and install_server_os_tun.install | bool)
+
+# ------------------------------------------------------------------------------
+# --- SNMP ---
+- name: install and activate snmp
+  include_tasks: install_snmp.yml
+  when: (install_server_config.snmp is defined and install_server_config.snmp | bool)
+
+# # ------------------------------------------------------------------------------
+# # ENV
+# - name: set env variables
+#   become: true
+#   lineinfile:
+#     dest: "/etc/environment"
+#     state: present
+#     regexp: "^{{ item.key }}="
+#     line: "{{ item.key }}={{ item.value}}"
+#   with_items:
+#     - key: LC_CTYPE
+#       value: C.UTF-8
+#   tags:
+#     - install_server
+#     - env_variables
 
 # ------------------------------------------------------------------------------
 # INSTALL GIT
 # - will be installed per client, need to set clients
 - name: install git (per user)
-  include: install_git.yml
+  include_tasks: install_git.yml
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
-  when: (install_server_config.git is defined and install_server_config.git | bool) and (clients is defined and outer_item.dev is defined and outer_item.dev | bool)
+  when: >
+    (install_server_config.git is defined
+    and install_server_config.git | bool)
+    and (clients is defined
+    and outer_item.dev is defined
+    and outer_item.dev | bool)
 
 # ------------------------------------------------------------------------------
 # INSTALL ZSH
 # - will be installed per client, need to set clients
 - name: install zsh (per user)
-  include: install_zsh.yml
+  include_tasks: install_zsh.yml
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
-  when: (install_server_config.zsh is defined and install_server_config.zsh | bool) and (clients is defined and outer_item.dev is defined and outer_item.dev | bool)
+  when: >
+    (install_server_config.zsh is defined
+    and install_server_config.zsh | bool)
+    and (clients is defined
+    and outer_item.dev is defined
+    and outer_item.dev | bool)
 
 # ------------------------------------------------------------------------------
 # INSTALL TMUX
 # - will be installed per client, need to set clients
 - name: install tmux (per user)
-  include: install_tmux.yml
+  include_tasks: install_tmux.yml
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
-  when: (install_server_config.tmux is defined and install_server_config.tmux | bool) and (clients is defined and outer_item.dev is defined and outer_item.dev | bool)
+  when: >
+    (install_server_config.tmux is defined
+    and install_server_config.tmux | bool)
+    and (clients is defined
+    and outer_item.dev is defined
+    and outer_item.dev | bool)
 
 # ------------------------------------------------------------------------------
 # DPKG PACKAGES
 - name: install dpkg packages
-  include: install_dpkg.yml
+  include_tasks: install_dpkg.yml
 
 # ------------------------------------------------------------------------------
 # SNAP PACKAGES
 - name: install snap packages
-  include: install_snap.yml
+  include_tasks: install_snap.yml
 
 # ------------------------------------------------------------------------------
 # PYTHON PACKAGES
-- name: install python packages
-  include: install_python.yml
+- name: install python
+  include_tasks: install_python.yml
   when: install_server_config.python is defined and install_server_config.python | bool
 
-# ------------------------------------------------------------------------------
-# GO PACKAGES
-- name: install go packages
-  include: install_go.yml
-  when: install_server_config.go is defined and install_server_config.go | bool
+# - will be installed per client, need to set clients
+- name: install python packages (per user)
+  include_tasks: install_python_pkg.yml
+  loop: "{{ clients | flatten(levels=1) }}"
+  loop_control:
+    loop_var: outer_item
+  when: >
+    (install_server_config.python is defined
+    and install_server_config.python | bool)
+    and (clients is defined
+    and outer_item.dev is defined
+    and outer_item.dev | bool)
 
 # ------------------------------------------------------------------------------
 # RUBY PACKAGES
 - name: install ruby packages
-  include: install_ruby.yml
+  include_tasks: install_ruby.yml
   when: install_server_config.ruby is defined and install_server_config.ruby | bool
 
 # ------------------------------------------------------------------------------
-# NPM
+# NPM PACKAGES
 - name: install npm
-  include: install_npm.yml
+  include_tasks: install_npm.yml
   when: install_server_config.npm is defined and install_server_config.npm | bool
 
 # - will be installed per client, need to set clients
 - name: install npm packages (per user)
-  include: install_npm_pkg.yml
+  include_tasks: install_npm_pkg.yml
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
-  when: (install_server_config.npm is defined and install_server_config.npm | bool) and (clients is defined and outer_item.dev is defined and outer_item.dev | bool)
+  when: >
+    (install_server_config.npm is defined
+    and install_server_config.npm | bool)
+    and (clients is defined
+    and outer_item.dev is defined
+    and outer_item.dev | bool)
 
 # ------------------------------------------------------------------------------
 # MONGODB PACKAGES
 - name: install mongodb
-  include: install_mongodb.yml
+  include_tasks: install_mongodb.yml
   when: install_server_config.mongodb is defined and install_server_config.mongodb | bool
 
 # ------------------------------------------------------------------------------
 # JAVA PACKAGES
 - name: install java packages
-  include: install_java.yml
+  include_tasks: install_java.yml
   when: install_server_config.java is defined and install_server_config.java | bool
