@@ -351,7 +351,7 @@ install_server_zsh:
   plugins: >
     tmux git vscode terraform kubectl ubuntu sudo npm ng adb ansible colored-man-pages
     command-not-found cp docker fd git-flow gitignore history man nmap
-    node ufw vim-interaction python pip kubectl git-flow docker-compose
+    node ufw vim-interaction python pip kubectl git-flow docker-compose web-search
   append_file:
     - template: zshrc-append.j2
       path: ~/.zshrc-append
