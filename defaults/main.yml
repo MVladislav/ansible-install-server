@@ -286,9 +286,11 @@ install_server_git:
         scope: global
     hook:
       base_path: ~/.git-hooks
-      commit_msg:
-        template: "commit-msg.j2"
-        filename: "commit-msg"
+      files:
+        - template: "commit-msg.j2"
+          filename: "commit-msg"
+        - template: "pre-commit.j2"
+          filename: "pre-commit"
 
 # ------------------------------------------------------------------------------
 # ZSH
