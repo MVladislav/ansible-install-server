@@ -241,7 +241,7 @@ install_server_apt:
     install: "{{ install_server_config.apt_rasp_pi_pkg | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   - name: qemu-guest-agent
-    install: "{{ install_client_config.apt_qemu_guest_agent | default('no') | bool }}"
+    install: "{{ install_server_config.apt_qemu_guest_agent | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # DPKG packages
