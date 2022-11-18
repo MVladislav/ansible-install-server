@@ -31,6 +31,7 @@ install_server_config:
   # dpkg_...: no
   # SNAP ----------------------------------
   snap_microk8s: no
+  snap_multipass: no
   snap_btop: no
   # OTHER --------------------------------
   git: no

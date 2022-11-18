@@ -33,6 +33,7 @@ install_server_config:
   # dpkg_...: false
   # SNAP ----------------------------------
   snap_microk8s: false
+  snap_multipass: false
   snap_btop: false
   # OTHER --------------------------------
   git: false
@@ -256,6 +257,10 @@ install_server_snap:
     classic: true
     beta: false
     install: "{{ install_server_config.snap_microk8s | default('no') | bool }}"
+  - name: multipass
+    classic: false
+    beta: false
+    install: "{{ install_server_config.snap_multipass | default('no') | bool }}"
   - name: btop
     classic: false
     beta: false
