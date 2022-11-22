@@ -3,7 +3,6 @@
 
 # ------------------------------------------------------------------------------
 install_server_service_name: default-server
-install_server_hostname: "{{ install_server_service_name }}"
 
 install_server_links_to_check_update:
   mongodb_pgp: https://www.mongodb.org/static/pgp/server-5.0.asc
