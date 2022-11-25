@@ -21,19 +21,6 @@ if [ -d /etc/zsh/profile.d ]; then
   fi
 fi
 
-### LS ###
-alias ls='ls --color'
-# ls, the common ones I use a lot shortened for rapid fire usage
-alias l='ls -lFh'   #size,show type,human readable
-alias la='ls -lAFh' #long list,show almost all,show type,human readable
-alias lr='ls -tRFh' #sorted by date,recursive,show type,human readable
-alias lt='ls -ltFh' #long list,sorted by date,show type,human readable
-alias ll='ls -l'    #long list
-alias ldot='ls -ld .*'
-alias lS='ls -1FSsh'
-alias lart='ls -1Fcart'
-alias lrt='ls -1Fcrt'
-
 ### LS as EXA ###
 # $sudo apt install exa
 alias ls='exa'
@@ -47,14 +34,16 @@ alias tree='exa --tree --long -L 3'
 
 ### CAT as BAT ###
 # $sudo apt install bat
-alias cat='batcat -p'
-alias cat-b='batcat'
+alias cat='batcat -p -P --color always'
+alias cat-b='batcat -P --color always'
 
 ### RSYNC ###
 alias cp='rsync --info=progress2 -auvz'
+#alias scp='rsync --info=progress2 -auvz -e ssh'
 
 ### DOCKER ###
 alias docker='DOCKER_BUILDKIT=1 docker'
+alias docker-compose='DOCKER_BUILDKIT=1 docker-compose'
 alias docker-swarm-compose='docker-compose config | CONFIG_VERSION=1 docker stack deploy --resolve-image=never --with-registry-auth --compose-file -'
 
 ### KUBERNETES ###
@@ -90,8 +79,11 @@ alias grep='grep --color'
 alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS}'
 
 alias t='tail -f'
+alias dus='du -hs * | sort -h'
+alias ip='ip -c'
 
 alias vm_random='openssl rand -base64'
+function vm_random2() { tr -dc A-Za-z0-9 </dev/urandom | head -c $1 ; echo '' }
 alias vm_find_command='apropos'
 
 ### TOOLS ###
@@ -124,6 +116,36 @@ vm_ii() {
   vm_my_country
   vm_my_ua
   echo
+}
+
+######################################################################
+##
+##
+##
+######################################################################
+function vm_shortcut_appimage() {
+  if [[ "$#" != "3" ]]; then
+      echo "Illegal number of parameters" >&2
+      echo "$0 <NAME> <APPIMAGE> <PNG>"
+  else
+    name="$1"
+    appimage="$2"
+    image_png="$3"
+    sudo mkdir -p "/opt/$name"
+    sudo mv $appimage "/opt/$name/${name}.AppImage"
+    sudo mv $image_png "/opt/$name/${name}.png"
+    sudo chmod u+x "/opt/$name/${name}.AppImage"
+
+    echo "[Desktop Entry]" | sudo tee "/usr/share/applications/${name}.desktop"
+    echo "Name=$name" | sudo tee -a "/usr/share/applications/${name}.desktop"
+    echo "Exec=/opt/$name/${name}.AppImage" | sudo tee -a "/usr/share/applications/${name}.desktop"
+    echo "Icon=/opt/$name/${name}.png" | sudo tee -a "/usr/share/applications/${name}.desktop"
+    echo "comment=$name" | sudo tee -a "/usr/share/applications/${name}.desktop"
+    echo "Type=Application" | sudo tee -a "/usr/share/applications/${name}.desktop"
+    echo "Terminal=false" | sudo tee -a "/usr/share/applications/${name}.desktop"
+    echo "Encoding=UTF-8" | sudo tee -a "/usr/share/applications/${name}.desktop"
+    echo "Categories=Utility;" | sudo tee -a "/usr/share/applications/${name}.desktop"
+  fi
 }
 
 ######################################################################

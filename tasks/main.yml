@@ -11,32 +11,6 @@
 - name: install default packages
   include_tasks: install_apt.yml
 
-# ------------------------------------------------------------------------------
-# CHANGE HOST DEFAULTS
-
-# --- HOSTNAME ---
-- name: "set hostname:: update /etc/hosts"
-  become: true
-  ansible.builtin.replace:
-    path: /etc/hosts
-    regexp: "{{ ansible_hostname }}"
-    replace: "{{ install_server_hostname }}"
-    owner: root
-    group: root
-    mode: "0644"
-  when: install_server_hostname is defined
-  tags:
-    - install_server
-    - hostname
-
-- name: "set hostname:: use hostnamectl"
-  become: true
-  ansible.builtin.command: "hostnamectl set-hostname {{ install_server_hostname }}"
-  when: install_server_hostname is defined
-  tags:
-    - install_server
-    - hostname
-
 # --- DEFAULT FOLDER ---
 - name: "create default folder per client"
   become: true

@@ -10,7 +10,6 @@ _Any pre-requisites that may not be covered by Ansible itself or the role should
 
 ```yml
 install_server_service_name: "{{ service_name }}"
-install_server_hostname: "{{ install_server_service_name }}"
 install_server_git_user: "{{ ansible_user }}"
 install_server_git_email: "{{ ansible_user }}"
 install_server_config:
@@ -31,6 +30,7 @@ install_server_config:
   # dpkg_...: no
   # SNAP ----------------------------------
   snap_microk8s: no
+  snap_multipass: no
   snap_btop: no
   # OTHER --------------------------------
   git: no
@@ -61,7 +61,6 @@ Including an example of how to use your role (for instance, with variables passe
   roles:
     - role: install_server
       install_server_service_name: "{{ service_name }}"
-      install_server_hostname: "{{ install_server_service_name }}"
       install_server_git_user: "{{ ansible_user }}"
       install_server_git_email: "{{ ansible_user }}"
       install_server_config: []

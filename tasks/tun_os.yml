@@ -11,6 +11,7 @@
   loop: "{{ install_server_os_tun.net_tun_lines|flatten(levels=1) }}"
   when: install_server_os_tun.net_tun_lines is defined
   register: tunning_network_result
+  ignore_errors: true
   tags:
     - install_server
     - apt

@@ -3,7 +3,6 @@
 
 # ------------------------------------------------------------------------------
 install_server_service_name: default-server
-install_server_hostname: "{{ install_server_service_name }}"
 
 install_server_links_to_check_update:
   mongodb_pgp: https://www.mongodb.org/static/pgp/server-5.0.asc
@@ -33,6 +32,7 @@ install_server_config:
   # dpkg_...: false
   # SNAP ----------------------------------
   snap_microk8s: false
+  snap_multipass: false
   snap_btop: false
   # OTHER --------------------------------
   git: false
@@ -241,7 +241,7 @@ install_server_apt:
     install: "{{ install_server_config.apt_rasp_pi_pkg | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   - name: qemu-guest-agent
-    install: "{{ install_client_config.apt_qemu_guest_agent | default('no') | bool }}"
+    install: "{{ install_server_config.apt_qemu_guest_agent | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # DPKG packages
@@ -256,6 +256,10 @@ install_server_snap:
     classic: true
     beta: false
     install: "{{ install_server_config.snap_microk8s | default('no') | bool }}"
+  - name: multipass
+    classic: false
+    beta: false
+    install: "{{ install_server_config.snap_multipass | default('no') | bool }}"
   - name: btop
     classic: false
     beta: false
@@ -286,9 +290,11 @@ install_server_git:
         scope: global
     hook:
       base_path: ~/.git-hooks
-      commit_msg:
-        template: "commit-msg.j2"
-        filename: "commit-msg"
+      files:
+        - template: "commit-msg.j2"
+          filename: "commit-msg"
+        - template: "pre-commit.j2"
+          filename: "pre-commit"
 
 # ------------------------------------------------------------------------------
 # ZSH
@@ -348,10 +354,41 @@ install_server_zsh:
   zshrc: .zshrc
   theme: spaceship
   # spaceship | agnoster
+  ## https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins
   plugins: >
-    tmux git vscode terraform kubectl ubuntu sudo npm ng adb ansible colored-man-pages
-    command-not-found cp docker fd git-flow gitignore history man nmap
-    node ufw vim-interaction python pip kubectl git-flow docker-compose
+    ubuntu
+    sudo
+    history
+    man
+    colored-man-pages
+    command-not-found
+    vim-interaction
+    ufw
+    cp
+    lxd
+    tmux
+    git
+    git-flow
+    gitignore
+    vscode
+    terraform
+    ansible
+    docker
+    docker-compose
+    kubectl
+    helm
+    oc
+    python
+    pip
+    node
+    npm
+    golang
+    rust
+    ruby
+    bundler
+    adb
+    nmap
+    web-search
   append_file:
     - template: zshrc-append.j2
       path: ~/.zshrc-append
@@ -390,28 +427,28 @@ install_server_tmux:
 install_server_os_tun:
   install: "{{ install_server_config.env_tun_setup | default('no') | bool }}"
   net_tun_lines:
+    - key: kernel.printk
+      value: 3 4 1 3
+    - key: kernel.randomize_va_space
+      value: 2
+    - key: fs.suid_dumpable
+      value: 0
+    - key: vm.overcommit_memory
+      value: 1
     - key: net.ipv6.conf.all.disable_ipv6
       value: 1
     - key: net.ipv6.conf.default.disable_ipv6
       value: 1
     - key: net.ipv6.conf.lo.disable_ipv6
       value: 1
-
-    - key: kernel.randomize_va_space
-      value: 2
-    - key: fs.suid_dumpable
-      value: 0
-
     - key: net.ipv4.conf.all.send_redirects
       value: 0
     - key: net.ipv4.conf.default.send_redirects
       value: 0
-
     - key: net.ipv4.ip_forward
       value: 0
     - key: net.ipv6.conf.all.forwarding
       value: 0
-
     - key: net.ipv4.conf.all.accept_source_route
       value: 0
     - key: net.ipv4.conf.default.accept_source_route
@@ -420,7 +457,6 @@ install_server_os_tun:
       value: 0
     - key: net.ipv6.conf.default.accept_source_route
       value: 0
-
     - key: net.ipv4.conf.all.accept_redirects
       value: 0
     - key: net.ipv4.conf.default.accept_redirects
@@ -429,7 +465,6 @@ install_server_os_tun:
       value: 0
     - key: net.ipv6.conf.default.accept_redirects
       value: 0
-
     - key: net.ipv4.conf.all.secure_redirects
       value: 0
     - key: net.ipv4.conf.default.secure_redirects
@@ -446,46 +481,50 @@ install_server_os_tun:
       value: 1
     - key: net.ipv4.conf.default.rp_filter
       value: 1
+    - key: net.ipv4.conf.lo.rp_filter
+      value: 1
     - key: net.ipv4.tcp_syncookies
       value: 1
-
+    - key: net.ipv4.tcp_sack
+      value: 1
+    - key: net.ipv4.tcp_timestamps
+      value: 0
     - key: net.ipv6.conf.all.accept_ra
       value: 0
     - key: net.ipv6.conf.default.accept_ra
       value: 0
-
     - key: net.ipv4.route.flush
       value: 1
     - key: net.ipv6.route.flush
       value: 1
-
-    # allow testing with buffers up to 128MB
     - key: net.core.rmem_max
       value: 134217728
     - key: net.core.wmem_max
       value: 134217728
-    #
-    - key: net.ipv4.tcp_mem
-      value: 4096 87380 67108864
-    # increase Linux autotuning TCP buffer limit to 64MB
+    - key: net.core.netdev_max_backlog
+      value: 300000
     - key: net.ipv4.tcp_window_scaling
       value: 1
     - key: net.ipv4.tcp_rmem
-      value: 4096 87380 67108864
+      value: 4096 87380 134217728
     - key: net.ipv4.tcp_wmem
-      value: 4096 87380 67108864
-    # recommended default congestion control is htcp
+      value: 4096 87380 134217728
     - key: net.ipv4.tcp_congestion_control
       value: htcp
-    # recommended for hosts with jumbo frames enabled
-    # - key: net.ipv4.tcp_mtu_probing
-    #   value: 1
-    # recommended to enable 'fair queueing'
     - key: net.core.default_qdisc
       value: fq
-
+    - key: net.ipv4.tcp_moderate_rcvbuf
+      value: 1
+    - key: net.ipv4.tcp_no_metrics_save
+      value: 1
     - key: vm.max_map_count
       value: 262144
+    - key: net.bridge.bridge-nf-call-iptables
+      value: 0
+    - key: net.bridge.bridge-nf-call-arptables
+      value: 0
+    - key: net.bridge.bridge-nf-call-ip6tables
+      value: 0
 
 # ------------------------------------------------------------------------------
 # SNMP
