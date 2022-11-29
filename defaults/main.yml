@@ -19,6 +19,7 @@ install_server_config:
   snmp: false
   # APT (1) -------------------------------
   apt_base: false
+  apt_archive: false
   apt_dev: false
   apt_build: false
   apt_libs: false
@@ -74,17 +75,6 @@ install_server_apt:
   - name: libfido2-dev
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   # --------------------------------
-  - name: rar
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  - name: unrar
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  - name: zip
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  - name: p7zip-full
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  - name: xz-utils
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  # --------------------------------
   - name: openssl
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: ca-certificates
@@ -93,6 +83,17 @@ install_server_apt:
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: gnupg
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  # --------------------------------
+  - name: rar
+    install: "{{ install_server_config.apt_archive | default('no') | bool }}"
+  - name: unrar
+    install: "{{ install_server_config.apt_archive | default('no') | bool }}"
+  - name: zip
+    install: "{{ install_server_config.apt_archive | default('no') | bool }}"
+  - name: p7zip-full
+    install: "{{ install_server_config.apt_archive | default('no') | bool }}"
+  - name: xz-utils
+    install: "{{ install_server_config.apt_archive | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   # monitoring: lsof|tcpdump -i ...|netstat -a | more|htop|iotop|iostat|s-tui|watch zpool iostat -vy 1 1|smem -tuwa|bpytop
   - name: jq
