@@ -31,12 +31,6 @@
   include_tasks: tun_os.yml
   when: (install_server_os_tun is defined) and (install_server_os_tun.install is defined and install_server_os_tun.install | bool)
 
-# ------------------------------------------------------------------------------
-# --- SNMP ---
-- name: install and activate snmp
-  include_tasks: install_snmp.yml
-  when: (install_server_config.snmp is defined and install_server_config.snmp | bool)
-
 # # ------------------------------------------------------------------------------
 # # ENV
 # - name: set env variables
