@@ -1,6 +1,10 @@
 ### ZSH ###
 setopt NO_NOMATCH
 
+export ZSH_WEB_SEARCH_ENGINES=(
+    startpage https://www.startpage.com
+)
+
 ######################################################################
 ##
 ## set PATH so it includes user's private bin if it exists
@@ -46,6 +50,8 @@ alias docker='DOCKER_BUILDKIT=1 docker'
 alias docker-compose='DOCKER_BUILDKIT=1 docker-compose'
 alias docker-swarm-compose='docker-compose config | CONFIG_VERSION=1 docker stack deploy --resolve-image=never --with-registry-auth --compose-file -'
 
+alias vm_quick_docker_ubuntu="mkdir -p ${HOME}/docker/$(date +'%Y-%m-%d') && docker run -it --network host -v ${HOME}/docker/$(date +'%Y-%m-%d'):/tmp/docker ubuntu:22.10"
+
 ### KUBERNETES ###
 alias k='kubectl'
 alias kn='k config set-context --current --namespace'
@@ -53,6 +59,38 @@ alias h='helm'
 
 ### TERRAFORM ###
 alias tf='terraform'
+
+### VMs ###
+function vm_quick_ubuntu() {
+	TMP_CLOUD_INIT=~/vm_quick_ubuntu_cloud_init.yaml
+	touch "$TMP_CLOUD_INIT"
+	echo '#cloud-config' >"$TMP_CLOUD_INIT"
+	echo 'packages_update: true' >>"$TMP_CLOUD_INIT"
+	echo 'packages_upgrade: true' >>"$TMP_CLOUD_INIT"
+	echo 'packages:' >>"$TMP_CLOUD_INIT"
+	echo '  - cowsay' >>"$TMP_CLOUD_INIT"
+	echo 'ssh_authorized_keys:' >>"$TMP_CLOUD_INIT"
+	echo '  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJOBsi+JPb9GLFKA83kRpaphBrvb2uM9r0U0S+SPx1Mo ansible-admin' >>"$TMP_CLOUD_INIT"
+	#echo 'users:' >>"$TMP_CLOUD_INIT"
+	#echo '  - name: ubuntu' >>"$TMP_CLOUD_INIT"
+	#echo '    sudo: ALL=(ALL) NOPASSWD:ALL' >>"$TMP_CLOUD_INIT"
+	#echo '    shell: /bin/bash' >>"$TMP_CLOUD_INIT"
+	#echo '    passwd: $6$ngoYt.rUbybjQko6$QWROXbhLqcnwcJ4qACIZIao0t/HO0dfQIrnH2uJlvIf5J.j1QKHdlVb1NyRs2RoG.41MlwX4bxGzsuM0bee9A/' >>$TMP_CLOUD_INIT
+	#echo 'runcmd:' >>"$TMP_CLOUD_INIT"
+	#echo '  - apt update' >>"$TMP_CLOUD_INIT"
+	#echo '  - apt install -y qemu-guest-agent' >>"$TMP_CLOUD_INIT"
+	#echo '  - systemctl start qemu-guest-agent' >>"$TMP_CLOUD_INIT"
+
+	multipass launch "$1" -n "ubuntu-$(echo "$1" | sed 's|\.||g' | tr ':' '-')" -c 2 -d 16G -m 4G --cloud-init "$TMP_CLOUD_INIT"
+	rm "$TMP_CLOUD_INIT"
+	multipass exec "ubuntu-$(echo "$1" | sed 's|\.||g' | tr ':' '-')" -- bash
+}
+function vm_quick_ubuntu_rm() {
+	multipass stop "ubuntu-$(echo "$1" | sed 's|\.||g' | tr ':' '-')"
+	multipass delete "ubuntu-$(echo "$1" | sed 's|\.||g' | tr ':' '-')"
+	multipass purge
+	multipass list
+}
 
 ### PYTHON TOOLS ###
 alias vm_url_decode='python3 -c "import sys, urllib.parse as ul; print(ul.unquote_plus(sys.argv[1]))"'
@@ -82,6 +120,9 @@ alias t='tail -f'
 alias dus='du -hs * | sort -h'
 alias ip='ip -c'
 
+alias chmod_ux="chmod u+x"
+alias vm_ux_term="tr -d '\r' <"
+
 alias vm_random='openssl rand -base64'
 function vm_random2() { tr -dc A-Za-z0-9 </dev/urandom | head -c $1 ; echo '' }
 alias vm_find_command='apropos'
@@ -93,6 +134,9 @@ alias vm_my_ip='curl ifconfig.io/ip'
 alias vm_my_country='curl ifconfig.io/country_code'
 alias vm_my_ua='curl ifconfig.io/ua'
 alias vm_my_all='curl ifconfig.io/all.json | jq'
+
+alias vm_speed='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python3 - --secure'
+alias vm_weather='curl https://wttr.in/Albershausen,de'
 
 ######################################################################
 ##
