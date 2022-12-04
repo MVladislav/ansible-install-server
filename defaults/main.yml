@@ -103,27 +103,29 @@ install_server_apt:
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: iotop
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: nvtop
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: powertop
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: sysstat
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: sysbench
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: smem
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: iozone3
+    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  - name: haveged
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: ethtool
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: net-tools
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
-  - name: haveged
-    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: iperf3
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: stress
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
-  - name: nvtop
-    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
-  - name: sysbench
-    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: stress-ng
-    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
-  - name: iozone3
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   # - name: exfat-fuse
