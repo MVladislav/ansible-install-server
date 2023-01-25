@@ -1,9 +1,81 @@
+### COLOR ### (https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux)
+NC='\033[0m' # No Color
+# Regular Colors
+BLACK='\033[0;30m'        # Black
+RED='\033[0;31m'          # Red
+GREEN='\033[0;32m'        # Green
+YELLOW='\033[0;33m'       # Yellow
+BLUE='\033[0;34m'         # Blue
+PURPLE='\033[0;35m'       # Purple
+CYAN='\033[0;36m'         # Cyan
+WHITE='\033[0;37m'        # White
+
+# Bold
+BBLACK='\033[1;30m'       # Black
+BRED='\033[1;31m'         # Red
+BGREEN='\033[1;32m'       # Green
+BYELLOW='\033[1;33m'      # Yellow
+BBLUE='\033[1;34m'        # Blue
+BPURPLE='\033[1;35m'      # Purple
+BCYAN='\033[1;36m'        # Cyan
+BWHITE='\033[1;37m'       # White
+
+# Underline
+UBLACK='\033[4;30m'       # Black
+URED='\033[4;31m'         # Red
+UGREEN='\033[4;32m'       # Green
+UYELLOW='\033[4;33m'      # Yellow
+UBLUE='\033[4;34m'        # Blue
+UPURPLE='\033[4;35m'      # Purple
+UCYAN='\033[4;36m'        # Cyan
+UWHITE='\033[4;37m'       # White
+
+# Background
+ON_BLACK='\033[40m'       # Black
+ON_RED='\033[41m'         # Red
+ON_GREEN='\033[42m'       # Green
+ON_YELLOW='\033[43m'      # Yellow
+ON_BLUE='\033[44m'        # Blue
+ON_PURPLE='\033[45m'      # Purple
+ON_CYAN='\033[46m'        # Cyan
+ON_WHITE='\033[47m'       # White
+
+# High Intensity
+IBLACK='\033[0;90m'       # Black
+IRED='\033[0;91m'         # Red
+IGREEN='\033[0;92m'       # Green
+IYELLOW='\033[0;93m'      # Yellow
+IBLUE='\033[0;94m'        # Blue
+IPURPLE='\033[0;95m'      # Purple
+ICYAN='\033[0;96m'        # Cyan
+IWHITE='\033[0;97m'       # White
+
+# Bold High Intensity
+BIBLACK='\033[1;90m'      # Black
+BIRED='\033[1;91m'        # Red
+BIGREEN='\033[1;92m'      # Green
+BIYELLOW='\033[1;93m'     # Yellow
+BIBLUE='\033[1;94m'       # Blue
+BIPURPLE='\033[1;95m'     # Purple
+BICYAN='\033[1;96m'       # Cyan
+BIWHITE='\033[1;97m'      # White
+
+# High Intensity backgrounds
+ON_IBLACK='\033[0;100m'   # Black
+ON_IRED='\033[0;101m'     # Red
+ON_IGREEN='\033[0;102m'   # Green
+ON_IYELLOW='\033[0;103m'  # Yellow
+ON_IBLUE='\033[0;104m'    # Blue
+ON_IPURPLE='\033[0;105m'  # Purple
+ON_ICYAN='\033[0;106m'    # Cyan
+ON_IWHITE='\033[0;107m'   # White
+
 ### ZSH ###
 setopt NO_NOMATCH
 
-export ZSH_WEB_SEARCH_ENGINES=(
-    startpage https://www.startpage.com
-)
+### BASH ###
+export HISTTIMEFORMAT="%F %T "
+alias sudo-env='sudo -E env "PATH=$PATH"'
 
 ######################################################################
 ##
@@ -41,8 +113,8 @@ alias tree='exa --tree --long -L 3'
 alias cat='batcat -p -P --color always'
 alias cat-b='batcat -P --color always'
 
-### RSYNC ###
-alias cp='rsync --info=progress2 -auvz'
+### CP as RSYNC ###
+alias cp='rsync --info=progress2 --stats -auvz'
 #alias scp='rsync --info=progress2 -auvz -e ssh'
 
 ### DOCKER ###
@@ -69,6 +141,7 @@ function vm_quick_ubuntu() {
 	echo 'packages_upgrade: true' >>"$TMP_CLOUD_INIT"
 	echo 'packages:' >>"$TMP_CLOUD_INIT"
 	echo '  - cowsay' >>"$TMP_CLOUD_INIT"
+	echo '  - neofetch' >>"$TMP_CLOUD_INIT"
 	echo 'ssh_authorized_keys:' >>"$TMP_CLOUD_INIT"
 	echo '  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJOBsi+JPb9GLFKA83kRpaphBrvb2uM9r0U0S+SPx1Mo ansible-admin' >>"$TMP_CLOUD_INIT"
 	#echo 'users:' >>"$TMP_CLOUD_INIT"
@@ -81,9 +154,10 @@ function vm_quick_ubuntu() {
 	#echo '  - apt install -y qemu-guest-agent' >>"$TMP_CLOUD_INIT"
 	#echo '  - systemctl start qemu-guest-agent' >>"$TMP_CLOUD_INIT"
 
-	multipass launch "$1" -n "ubuntu-$(echo "$1" | sed 's|\.||g' | tr ':' '-')" -c 2 -d 16G -m 4G --cloud-init "$TMP_CLOUD_INIT"
+	VM_NAME_VERSION=$(echo "$1" | sed 's|\.||g' | tr ':' '-')
+	multipass launch "$1" -n "ubuntu-$VM_NAME_VERSION" -c 2 -d 16G -m 4G --cloud-init "$TMP_CLOUD_INIT"
 	rm "$TMP_CLOUD_INIT"
-	multipass exec "ubuntu-$(echo "$1" | sed 's|\.||g' | tr ':' '-')" -- bash
+	multipass exec "ubuntu-$VM_NAME_VERSION" -- sh -c "${2:-neofetch}"
 }
 function vm_quick_ubuntu_rm() {
 	multipass stop "ubuntu-$(echo "$1" | sed 's|\.||g' | tr ':' '-')"
@@ -104,8 +178,8 @@ alias vm_hun_to_min="python3 -c 'import sys;x = sys.argv[1].split(\":\");x3 = (i
 alias vm_copyFromClip='python3 -c "import sys, pyperclip; pyperclip.copy(sys.argv[1])"'
 
 ### GIT ###
-alias vm_lg1="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all"
-alias vm_lg2="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all"
+alias vm_git_log1="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all"
+alias vm_git_log2="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all"
 
 ### TMUX ###
 alias vm_tl='tmux ls'
@@ -134,8 +208,20 @@ alias vm_my_ip='curl ifconfig.io/ip'
 alias vm_my_country='curl ifconfig.io/country_code'
 alias vm_my_ua='curl ifconfig.io/ua'
 alias vm_my_all='curl ifconfig.io/all.json | jq'
+function vm_my_bios() {
+  #if [ "$EUID" -ne 0 ]; then
+  #  echo "not run as root"
+  #else
+  for d in system-manufacturer system-product-name bios-release-date bios-version; do echo "${d}: $(sudo dmidecode -s $d)"; done
+  #fi
+}
 
 alias vm_speed='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python3 - --secure'
+alias vm_speed_1='clear && iperf3 -c speedtest.serverius.net -p 5002 -Ts1 -4 -b0 -i3 -O1 -P1 -w128M -R'
+alias vm_speed_2='clear && iperf3 -c ping.online.net -p 5200 -Ts2 -4 -b0 -i3 -O1 -P1 -w128M -R'
+alias vm_speed_3='clear && iperf3 -c paris.testdebit.info -p 9210 -Ts3 -4 -b0 -i3 -O1 -P1 -w32M -R'
+alias vm_speed_4='clear && iperf3 -c paris.testdebit.info -p 9212 -Ts4 -4 -b0 -i3 -O1 -P1 -w32M -R'
+
 alias vm_weather='curl https://wttr.in/Albershausen,de'
 
 ######################################################################
@@ -144,18 +230,20 @@ alias vm_weather='curl https://wttr.in/Albershausen,de'
 ##
 ######################################################################
 vm_ii() {
-  echo -e "\\n${RED}You are logged on:$NC"
+  echo -e "\\n${BRED}You are logged on:$NC"
   hostname
-  echo -e "\\n${RED}Additional information:$NC"
+  echo -e "\\n${BRED}Additional information:$NC"
   uname -a
   lsb_release -d
-  echo -e "\\n${RED}Users logged on:$NC"
+  echo -e "\\n${BRED}Users logged on:$NC"
   w -h
-  echo -e "\\n${RED}Current date:$NC"
+  echo -e "\\n${BRED}Current date:$NC"
   date
-  echo -e "\\n${RED}Machine stats:$NC"
+  echo -e "\\n${BRED}Machine stats:$NC"
   uptime
-  echo -e "\\n${RED}Public facing IP Address:$NC"
+  echo -e "\\n${BRED}Machine BIOS:$NC"
+  vm_my_bios
+  echo -e "\\n${BRED}Public facing IP Address:$NC"
   vm_my_ip
   vm_my_country
   vm_my_ua
