@@ -38,12 +38,20 @@ install_server_config:
   git: no
   zsh: no
   tmux: no
-  python: no # base|dev
-  go_kompose: no
-  ruby: no
-  npm: no
-  mongodb: no
-  java: no # base|dev
+  # PYTHON --------------------------------
+  python: false # base|dev
+  pip_s_tui: false
+  pip_virtualenv: false
+  pip_autopep8: false
+  pip_black: false
+  pip_pre_commit: false
+  pip_openconnect_sso: false
+  # OTHER --------------------------------
+  go_kompose: false
+  ruby: false
+  npm: false
+  mongodb: false
+  java: false # base|dev
 clients:
   - name: "{{ ansible_user }}"
     dev: yes

@@ -38,7 +38,15 @@ install_server_config:
   git: false
   zsh: false
   tmux: false
+  # PYTHON --------------------------------
   python: false # base|dev
+  pip_s_tui: false
+  pip_virtualenv: false
+  pip_autopep8: false
+  pip_black: false
+  pip_pre_commit: false
+  pip_openconnect_sso: false
+  # OTHER --------------------------------
   go_kompose: false
   ruby: false
   npm: false
@@ -538,15 +546,19 @@ install_server_python:
     - python3-pip
     - python3-venv
     - python3-dev
-    #  - pip3 install --upgrade pip
-    # TOOLS
-    - s-tui
-    # - bpytop # TODO: change with https://github.com/aristocratos/btop or "sudo snap install btop"
   pip:
-    - virtualenv
-    - autopep8
-    - black
-    - pre-commit
+    - name: s-tui
+      install: "{{ install_server_config.pip_s_tui | default('no') | bool }}"
+    - name: virtualenv
+      install: "{{ install_server_config.pip_virtualenv | default('no') | bool }}"
+    - name: autopep8
+      install: "{{ install_server_config.pip_autopep8 | default('no') | bool }}"
+    - name: black
+      install: "{{ install_server_config.pip_black | default('no') | bool }}"
+    - name: pre-commit
+      install: "{{ install_server_config.pip_pre_commit | default('no') | bool }}"
+    - name: openconnect-sso
+      install: "{{ install_server_config.pip_openconnect_sso | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # ANSIBLE

@@ -6,7 +6,7 @@
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.pip:
-    name: "{{ item }}"
+    name: "{{ item.name }}"
     executable: pip3
   loop: "{{ install_server_python.pip | flatten(levels=1) }}"
   when: >
@@ -14,6 +14,7 @@
     and install_server_config.dev | bool)
     and (install_server_python is defined
     and install_server_python.pip is defined)
+    and (item.install is defined and item.install | bool)
   tags:
     - install_server
     - install_python
