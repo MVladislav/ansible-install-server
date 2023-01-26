@@ -19,8 +19,8 @@
   ansible.builtin.command: sysctl -p --system
   when:
     - tunning_network_result is defined
-    - and tunning_network_result.changed is defined
-    - and tunning_network_result.changed | bool
+    - tunning_network_result.changed is defined
+    - tunning_network_result.changed | bool
   tags:
     - install_server
     - apt
