@@ -1,0 +1,164 @@
+#
+# /etc/sysctl.conf - Configuration file for setting system variables
+# See /etc/sysctl.d/ for additional system variables.
+# See sysctl.conf (5) for information.
+#
+
+# https://en.wikipedia.org/wiki/Syslog#Severity_levels
+# Uncomment the following to stop low-level messages on console
+kernel.printk=3 4 1 3
+
+# Enable process address space protection
+# This makes it more difficult for an attacker to predict the location of key data structures in memory
+kernel.randomize_va_space=2
+# Disable core dumps
+# This prevents core dumps from being written to disk if a setuid program crashes
+fs.suid_dumpable=0
+
+fs.inotify.max_user_instances=8192
+# Cache extend
+fs.inotify.max_user_watches=524288
+
+###################################################################
+# Magic system request Key
+# 0=disable, 1=enable all, >1 bitmask of sysrq functions
+# See https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html
+# for what other values do
+#kernel.sysrq=438
+
+# Background save may fail under low memory condition
+vm.overcommit_memory=1
+
+# Disable IPv6 usage complete, we do not need it internal
+# think about let it active on device which needs it
+net.ipv6.conf.all.disable_ipv6=1
+net.ipv6.conf.default.disable_ipv6=1
+net.ipv6.conf.lo.disable_ipv6=1
+
+# Do not send ICMP redirects (we are not a router)
+net.ipv4.conf.all.send_redirects=0
+net.ipv4.conf.default.send_redirects=0
+
+# Disable IP forwarding for IPv4 & IPv6
+# This prevents the system from forwarding packets between interfaces, which can help prevent man-in-the-middle attacks
+net.ipv4.ip_forward=0
+#  Enabling this option disables Stateless Address Autoconfiguration
+#  based on Router Advertisements for this host
+net.ipv6.conf.all.forwarding=0
+
+# Do not accept IP source route packets (we are not a router)
+# This makes it more difficult for an attacker to control the path that packets take through the network
+net.ipv4.conf.all.accept_source_route=0
+net.ipv4.conf.default.accept_source_route=0
+net.ipv6.conf.all.accept_source_route=0
+net.ipv6.conf.default.accept_source_route=0
+
+# Do not accept ICMP redirects (prevent MITM attacks)
+# This makes it more difficult for an attacker to control the routing of packets on the network
+net.ipv4.conf.all.accept_redirects=0
+net.ipv4.conf.default.accept_redirects=0
+net.ipv6.conf.all.accept_redirects=0
+net.ipv6.conf.default.accept_redirects=0
+
+# Do not accept ICMP redirects only for gateways listed in our default
+net.ipv4.conf.all.secure_redirects=0
+net.ipv4.conf.default.secure_redirects=0
+# _or_
+# Accept ICMP redirects only for gateways listed in our default
+# gateway list (enabled by default)
+#net.ipv4.conf.all.secure_redirects=1
+#net.ipv4.conf.default.secure_redirects=1
+
+# Log Martian Packets
+net.ipv4.conf.all.log_martians=1
+net.ipv4.conf.default.log_martians=1
+
+net.ipv4.icmp_echo_ignore_broadcasts=1
+net.ipv4.icmp_ignore_bogus_error_responses=1
+
+# Uncomment the next two lines to enable Spoof protection (reverse-path filter)
+# Turn on Source Address Verification in all interfaces to
+# prevent some spoofing attacks
+net.ipv4.conf.all.rp_filter=1
+net.ipv4.conf.default.rp_filter=1
+net.ipv4.conf.lo.rp_filter=1
+
+# Enable TCP SYN cookie protection
+# This makes it more difficult for an attacker to perform a SYN flood attack
+net.ipv4.tcp_syncookies=1
+# Enable the use of TCP selective acknowledgements
+# This allows the system to acknowledge only the packets that were received and improves performance
+net.ipv4.tcp_sack=1
+
+# Disable the ability to change the MTU
+# This makes it more difficult for an attacker to control the maximum transmission unit (MTU) of packets on the network
+net.ipv4.ip_no_pmtu_disc=1
+
+# Disable TCP timestamps (RFC1323/RFC7323)
+net.ipv4.tcp_timestamps=0
+
+# ?
+# Enable the use of TCP timestamps
+# This makes it more difficult for an attacker to perform a TCP spoofing attack
+#net.ipv4.tcp_timestamps=1
+
+# Enable source address verification for IPv6
+# This makes it more difficult for an attacker to spoof their IP address
+net.ipv6.conf.all.accept_ra=0
+net.ipv6.conf.default.accept_ra=0
+
+net.ipv4.route.flush=1
+net.ipv6.route.flush=1
+
+# allow testing with buffers up to 128MB (64MB)
+## Maximum receive socket buffer size
+net.core.rmem_max=134217728 #67108864
+## Maximum send socket buffer size
+net.core.wmem_max=134217728 #67108864
+
+# Maximum number of packets queued on the input side
+net.core.netdev_max_backlog=300000
+
+# Enable the use of TCP fast open
+# This allows the system to establish a TCP connection more quickly and improves performance
+net.ipv4.tcp_fastopen=1
+
+# Enable the use of TCP window scaling
+# increase Linux autotuning TCP buffer limit to 128MB (64MB)
+# This allows the system to handle large TCP window sizes and improves performance
+net.ipv4.tcp_window_scaling=1
+## Minimum, initial and max TCP Receive buffer size in Bytes
+net.ipv4.tcp_rmem=4096 87380 134217728 #67108864
+## Minimum, initial and max buffer space allocated
+net.ipv4.tcp_wmem=4096 87380 134217728 #67108864
+
+# recommended default congestion control is htcp
+# The Hamilton TCP (HighSpeed-TCP) algorithm is a
+# packet loss based congestion control and is more
+# aggressive pushing up to max bandwidth (total BDP)
+# and favors hosts with lower TTL / VARTTL.
+net.ipv4.tcp_congestion_control=htcp
+
+# recommended for hosts with jumbo frames enabled
+#net.ipv4.tcp_mtu_probing=1
+
+# recommended to enable 'fair queueing'
+net.core.default_qdisc=fq
+
+# Auto tuning
+net.ipv4.tcp_moderate_rcvbuf=1
+# Don't cache ssthresh from previous connection
+net.ipv4.tcp_no_metrics_save=1
+
+vm.max_map_count=262144
+
+# to be tested
+fs.file-max=262144
+net.core.somaxconn=4096
+net.ipv4.tcp_max_syn_backlog=4096
+net.ipv4.tcp_mem=4194304 4194304 4194304
+
+# Netfilter should be turned off on bridge devices
+net.bridge.bridge-nf-call-iptables=0
+net.bridge.bridge-nf-call-arptables=0
+net.bridge.bridge-nf-call-ip6tables=0
