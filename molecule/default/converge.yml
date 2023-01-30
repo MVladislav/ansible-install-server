@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include ansible-install-server"
+      include_role:
+        name: "ansible-install-server"
