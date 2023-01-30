@@ -3,7 +3,7 @@
 
 # ------------------------------------------------------------------------------
 # hook templates
-- name: "init tunning's step:: copy template sysctl.conf"
+- name: "SERVER | os | init tunning's step:: copy template sysctl.conf"
   become: true
   ansible.builtin.template:
     src: "sysctl.conf.j2"
@@ -14,7 +14,7 @@
     - install_server
     - apt
 
-- name: "init tunning's step:: run 'sysctl -p --system'"
+- name: "SERVER | os | init tunning's step:: run 'sysctl -p --system'"
   become: true
   ansible.builtin.command: sysctl -p --system
   when:

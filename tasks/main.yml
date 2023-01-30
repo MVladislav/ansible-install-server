@@ -3,16 +3,16 @@
 
 # ------------------------------------------------------------------------------
 # SETUP USERS
-- name: setup users
-  include_tasks: setup_users.yml
+- name: "SERVER | user | setup users"
+  ansible.builtin.include_tasks: setup_users.yml
 
 # ------------------------------------------------------------------------------
 # DEFAULT PACKAGES
-- name: install default packages
-  include_tasks: install_apt.yml
+- name: "SERVER | apt | install default packages"
+  ansible.builtin.include_tasks: install_apt.yml
 
 # --- DEFAULT FOLDER ---
-- name: "create default folder per client"
+- name: "SERVER | folder | create default folder per client"
   become: true
   become_user: "{{ item.name }}"
   ansible.builtin.file:
@@ -27,9 +27,12 @@
 
 # ------------------------------------------------------------------------------
 # --- TUNNING OS ---
-- name: run os tunning's
-  include_tasks: tun_os.yml
-  when: (install_server_os_tun is defined) and (install_server_os_tun.install is defined and install_server_os_tun.install | bool)
+- name: "SERVER | os | run os tunning's"
+  ansible.builtin.include_tasks: tun_os.yml
+  when:
+    - install_server_os_tun is defined
+    - install_server_os_tun.install is defined
+    - install_server_os_tun.install | bool
 
 # # ------------------------------------------------------------------------------
 # # ENV
@@ -50,110 +53,114 @@
 # ------------------------------------------------------------------------------
 # INSTALL GIT
 # - will be installed per client, need to set clients
-- name: install git (per user)
-  include_tasks: install_git.yml
+- name: "SERVER | git | install git (per user)"
+  ansible.builtin.include_tasks: install_git.yml
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
-  when: >
-    (install_server_config.git is defined
-    and install_server_config.git | bool)
-    and (clients is defined
-    and outer_item.dev is defined
-    and outer_item.dev | bool)
+  when:
+    - install_server_config.git is defined
+    - install_server_config.git | bool
+    - clients is defined
+    - outer_item.dev is defined
+    - outer_item.dev | bool
 
 # ------------------------------------------------------------------------------
 # INSTALL ZSH
 # - will be installed per client, need to set clients
-- name: install zsh (per user)
-  include_tasks: install_zsh.yml
+- name: "SERVER | zsh | install zsh (per user)"
+  ansible.builtin.include_tasks: install_zsh.yml
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
-  when: >
-    (install_server_config.zsh is defined
-    and install_server_config.zsh | bool)
-    and (clients is defined
-    and outer_item.dev is defined
-    and outer_item.dev | bool)
+  when:
+    - install_server_config.zsh is defined
+    - install_server_config.zsh | bool
+    - clients is defined
+    - outer_item.dev is defined
+    - outer_item.dev | bool
 
 # ------------------------------------------------------------------------------
 # INSTALL TMUX
 # - will be installed per client, need to set clients
-- name: install tmux (per user)
-  include_tasks: install_tmux.yml
+- name: "SERVER | tmux | install tmux (per user)"
+  ansible.builtin.include_tasks: install_tmux.yml
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
-  when: >
-    (install_server_config.tmux is defined
-    and install_server_config.tmux | bool)
-    and (clients is defined
-    and outer_item.dev is defined
-    and outer_item.dev | bool)
+  when:
+    - install_server_config.tmux is defined
+    - install_server_config.tmux | bool
+    - clients is defined
+    - outer_item.dev is defined
+    - outer_item.dev | bool
 
 # ------------------------------------------------------------------------------
 # DPKG PACKAGES
-- name: install dpkg packages
-  include_tasks: install_dpkg.yml
+- name: "SERVER | dpkg | install dpkg packages"
+  ansible.builtin.include_tasks: install_dpkg.yml
 
 # ------------------------------------------------------------------------------
 # SNAP PACKAGES
-- name: install snap packages
-  include_tasks: install_snap.yml
+- name: "SERVER | snap | install snap packages"
+  ansible.builtin.include_tasks: install_snap.yml
 
 # ------------------------------------------------------------------------------
 # PYTHON PACKAGES
-- name: install python
-  include_tasks: install_python.yml
+- name: "SERVER | python | install python"
+  ansible.builtin.include_tasks: install_python.yml
   when: install_server_config.python is defined and install_server_config.python | bool
 
 # - will be installed per client, need to set clients
-- name: install python packages (per user)
-  include_tasks: install_python_pkg.yml
+- name: "SERVER | python | install python packages (per user)"
+  ansible.builtin.include_tasks: install_python_pkg.yml
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
-  when: >
-    (install_server_config.python is defined
-    and install_server_config.python | bool)
-    and (clients is defined
-    and outer_item.dev is defined
-    and outer_item.dev | bool)
+  when:
+    - install_server_config.python is defined
+    - install_server_config.python | bool
+    - clients is defined
+    - outer_item.dev is defined
+    - outer_item.dev | bool
 
 # ------------------------------------------------------------------------------
 # RUBY PACKAGES
-- name: install ruby packages
-  include_tasks: install_ruby.yml
+- name: "SERVER | ruby | install ruby packages"
+  ansible.builtin.include_tasks: install_ruby.yml
   when: install_server_config.ruby is defined and install_server_config.ruby | bool
 
 # ------------------------------------------------------------------------------
 # NPM PACKAGES
-- name: install npm
-  include_tasks: install_npm.yml
+- name: "SERVER | npm | install npm"
+  ansible.builtin.include_tasks: install_npm.yml
   when: install_server_config.npm is defined and install_server_config.npm | bool
 
 # - will be installed per client, need to set clients
-- name: install npm packages (per user)
-  include_tasks: install_npm_pkg.yml
+- name: "SERVER | npm | install npm packages (per user)"
+  ansible.builtin.include_tasks: install_npm_pkg.yml
   loop: "{{ clients | flatten(levels=1) }}"
   loop_control:
     loop_var: outer_item
-  when: >
-    (install_server_config.npm is defined
-    and install_server_config.npm | bool)
-    and (clients is defined
-    and outer_item.dev is defined
-    and outer_item.dev | bool)
+  when:
+    - install_server_config.npm is defined
+    - install_server_config.npm | bool
+    - clients is defined
+    - outer_item.dev is defined
+    - outer_item.dev | bool
 
 # ------------------------------------------------------------------------------
 # MONGODB PACKAGES
-- name: install mongodb
-  include_tasks: install_mongodb.yml
-  when: install_server_config.mongodb is defined and install_server_config.mongodb | bool
+- name: "SERVER | mongodb | install mongodb"
+  ansible.builtin.include_tasks: install_mongodb.yml
+  when:
+    - install_server_config.mongodb is defined
+    - install_server_config.mongodb | bool
 
 # ------------------------------------------------------------------------------
 # JAVA PACKAGES
-- name: install java packages
-  include_tasks: install_java.yml
-  when: install_server_config.java is defined and install_server_config.java | bool
+- name: "SERVER | java | install java packages"
+  ansible.builtin.include_tasks: install_java.yml
+  when:
+    - install_server_config.java is defined
+    - install_server_config.java | bool

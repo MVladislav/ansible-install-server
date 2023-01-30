@@ -5,7 +5,7 @@
 # here will install per user without root needed
 
 # ------------------------------------------------------------------------------
-- name: "npm | create a directory, for ~/.npm-packages"
+- name: "SERVER | npm | create a directory, for ~/.npm-packages"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.file:
@@ -18,7 +18,7 @@
     - npm
 
 # ------------------------------------------------------------------------------
-- name: Setup NPM prefix
+- name: "SERVER | npm | setup NPM prefix"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.command: "npm config set prefix ~/.npm-packages"
@@ -28,7 +28,7 @@
     - npm
 
 # ------------------------------------------------------------------------------
-- name: npm | install npm packages globally
+- name: "SERVER | npm | install npm packages globally"
   become: true
   become_user: "{{ outer_item.name }}"
   community.general.npm:

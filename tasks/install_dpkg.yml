@@ -2,11 +2,11 @@
 # tasks file for ./roles/install_server
 
 # ------------------------------------------------------------------------------
-- name: install a .deb package from the internet [main]
+- name: "SERVER | deb | install a .deb package from the internet"
   become: true
   ansible.builtin.apt:
     deb: "{{ item.url }}"
-  loop: "{{ install_server_dpkg|flatten(levels=1) }}"
+  loop: "{{ install_server_dpkg | flatten(levels=1) }}"
   when: (install_server_dpkg is defined) and (item.install is defined and item.install | bool)
   tags:
     - install_server

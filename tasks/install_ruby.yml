@@ -2,7 +2,7 @@
 # tasks file for ./roles/install_server
 
 # ------------------------------------------------------------------------------
-- name: ruby | install dependencies [apt]
+- name: "SERVER | ruby | install dependencies [apt]"
   become: true
   ansible.builtin.apt:
     pkg: "{{ install_server_ruby.apt_dependencies }}"
@@ -14,7 +14,7 @@
 
 # ------------------------------------------------------------------------------
 # TODO:
-- name: "ruby | create a directory, for /etc/zsh/profile.d"
+- name: "SERVER | ruby | create a directory, for /etc/zsh/profile.d"
   become: true
   ansible.builtin.file:
     path: "/etc/zsh/profile.d"
@@ -26,14 +26,17 @@
     - install_server
     - ruby
 
-- name: ruby | set GEM_HOME for all users
+- name: "SERVER | ruby | set GEM_HOME for all users"
   become: true
   ansible.builtin.copy:
     src: ruby-path.sh
     dest: /etc/zsh/profile.d
     mode: 0644
     # dest: /etc/profile.d
-  when: install_server_ruby is defined and install_server_ruby.set_path is defined and install_server_ruby.set_path | bool
+  when:
+    - install_server_ruby is defined
+    - install_server_ruby.set_path is defined
+    - install_server_ruby.set_path | bool
   tags:
     - install_server
     - ruby

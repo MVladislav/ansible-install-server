@@ -2,7 +2,7 @@
 # tasks file for ./roles/install_server
 
 # ------------------------------------------------------------------------------
-- name: npm | download npm step 1 [get/deb]
+- name: "SERVER | npm | download npm step 1 [get/deb]"
   ansible.builtin.get_url:
     url: "{{ install_server_npm.deb.url }}"
     dest: "/tmp/{{ install_server_npm.deb.file }}"
@@ -11,7 +11,7 @@
     - install_server
     - npm
 
-- name: npm | install npm step 2 [bash]
+- name: "SERVER | npm | install npm step 2 [bash]"
   become: true
   ansible.builtin.command: "/tmp/{{ install_server_npm.deb.file }}"
   register: npm_run_script_install
@@ -20,7 +20,7 @@
     - install_server
     - npm
 
-- name: npm | install npm step 3 [apt]
+- name: "SERVER | npm | install npm step 3 [apt]"
   become: true
   ansible.builtin.apt:
     pkg: "{{ install_server_npm.apt }}"
@@ -31,7 +31,7 @@
     - npm
 
 # ------------------------------------------------------------------------------
-- name: "npm | create a directory, for /etc/zsh/profile.d"
+- name: "SERVER | npm | create a directory, for /etc/zsh/profile.d"
   become: true
   ansible.builtin.file:
     path: "/etc/zsh/profile.d"
@@ -40,19 +40,25 @@
     group: "root"
     state: directory
     mode: "0755"
-  when: install_server_npm is defined and install_server_npm.set_path is defined and install_server_npm.set_path | bool
+  when:
+    - install_server_npm is defined
+    - install_server_npm.set_path is defined
+    - install_server_npm.set_path | bool
   tags:
     - install_server
     - npm
 
-- name: npm | set npm-PATH for all users
+- name: "SERVER | npm | set npm-PATH for all users"
   become: true
   ansible.builtin.copy:
     src: npm-path.sh
     dest: /etc/zsh/profile.d
     mode: 0644
     # dest: /etc/profile.d
-  when: install_server_npm is defined and install_server_npm.set_path is defined and install_server_npm.set_path | bool
+  when:
+    - install_server_npm is defined
+    - install_server_npm.set_path is defined
+    - install_server_npm.set_path | bool
   tags:
     - install_server
     - npm

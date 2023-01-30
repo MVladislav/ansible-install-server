@@ -2,7 +2,7 @@
 # tasks file for ./roles/install_server
 
 # ------------------------------------------------------------------------------
-- name: add mongodb apt signing key, will not download if present
+- name: "SERVER | mongodb | add mongodb apt signing key, will not download if present"
   become: true
   ansible.builtin.apt_key:
     url: "{{ install_server_mongodb.pgp }}"
@@ -11,12 +11,12 @@
     - install_server
     - install_mongodb
 
-# - name: get OS distribution
+# - name: "SERVER | mongodb | get OS distribution"
 #   command: lsb_release -sc
 #   register: deb_distribution
 #   tags: install_server
 
-- name: get OS architecture
+- name: "SERVER | mongodb | get OS architecture"
   ansible.builtin.command: dpkg --print-architecture
   register: os_architecture
   changed_when: os_architecture.rc != 0
@@ -24,7 +24,7 @@
     - install_server
     - install_mongodb
 
-- name: add mongodb repository into sources list
+- name: "SERVER | mongodb | add mongodb repository into sources list"
   become: true
   ansible.builtin.apt_repository:
     filename: "{{ install_server_mongodb.repo_name }}"
@@ -37,7 +37,7 @@
     - install_mongodb
 
 # ------------------------------------------------------------------------------
-- name: install mongodb packages
+- name: "SERVER | mongodb | install mongodb packages"
   become: true
   ansible.builtin.apt:
     # allow_unauthenticated: true

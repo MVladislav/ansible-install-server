@@ -2,14 +2,17 @@
 # tasks file for ./roles/install_server
 
 # ------------------------------------------------------------------------------
-- name: install snap services [main]
+- name: "SERVER | snap | install snap services"
   become: true
-  snap:
+  community.general.snap:
     name: "{{ item.name }}"
     classic: "{{ item.classic | bool }}"
     # beta: "{{ item.beta | bool }}"
-  loop: "{{ install_server_snap|flatten(levels=1) }}"
-  when: (install_server_snap is defined) and (item.install is defined and item.install | bool)
+  loop: "{{ install_server_snap | flatten(levels=1) }}"
+  when:
+    - install_server_snap is defined
+    - item.install is defined
+    - item.install | bool
   tags:
     - install_server
     - snap

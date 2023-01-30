@@ -2,35 +2,40 @@
 # tasks file for ./roles/install_server
 
 # ------------------------------------------------------------------------------
-- name: "install git step 1 [apt]"
+- name: "SERVER | git | install git step 1 [apt]"
   become: true
   ansible.builtin.apt:
     pkg: "{{ install_server_git.apt }}"
     state: present
     force_apt_get: true # apt-get instead of aptitude
-  when: install_server_git is defined and install_server_git.apt is defined
+  when:
+    - install_server_git is defined
+    - install_server_git.apt is defined
   tags:
     - install_server
     - git
 
 # ------------------------------------------------------------------------------
 # user.email
-- name: "config git step 2.1.1 [{{ item.key }}:: {{ item.value }}]"
+- name: "SERVER | git | config git step 2.1"
   become: true
   become_user: "{{ outer_item.name }}"
   community.general.git_config:
     name: "{{ item.key }}"
     scope: "{{ item.scope }}"
     value: "{{ item.value }}"
-  loop: "{{ install_server_git.git.config|flatten(levels=1) }}"
-  when: install_server_git is defined and install_server_git.git is defined and install_server_git.git.config is defined
+  loop: "{{ install_server_git.git.config | flatten(levels=1) }}"
+  when:
+    - install_server_git is defined
+    - install_server_git.git is defined
+    - install_server_git.git.config is defined
   tags:
     - install_server
     - git
 
 # ------------------------------------------------------------------------------
 # folder
-- name: "config git step 2.2.1 [create folder for hook templates as: ~/.git-hooks]"
+- name: "SERVER | git | config git step 2.2.1 [create folder for hook templates as: ~/.git-hooks]"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.file:
@@ -43,21 +48,21 @@
     - git
 
 # hook templates
-- name: "config git step 2.2.2 [copy hook templates into ~/.git-hooks]"
+- name: "SERVER | git | config git step 2.2.2 [copy hook templates into ~/.git-hooks]"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.template:
     src: "{{ item.template }}"
     dest: "{{ install_server_git.git.hook.base_path }}/{{ item.filename }}"
     mode: "0770"
-  loop: "{{ install_server_git.git.hook.files|flatten(levels=1) }}"
+  loop: "{{ install_server_git.git.hook.files | flatten(levels=1) }}"
   when: install_server_git is defined
   tags:
     - install_server
     - git
 
 # core.hooksPath
-- name: "config git step 2.2.3 [core.hooksPath]"
+- name: "SERVER | git | config git step 2.2.3 [core.hooksPath]"
   become: true
   become_user: "{{ outer_item.name }}"
   community.general.git_config:

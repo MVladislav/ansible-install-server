@@ -2,19 +2,20 @@
 # tasks file for ./roles/install_server
 
 # ------------------------------------------------------------------------------
-- name: install python packages by pip [main/dev]
+- name: "SERVER | python | install python packages by pip [main/dev]"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.pip:
     name: "{{ item.name }}"
     executable: pip3
   loop: "{{ install_server_python.pip | flatten(levels=1) }}"
-  when: >
-    (install_server_config.dev is defined
-    and install_server_config.dev | bool)
-    and (install_server_python is defined
-    and install_server_python.pip is defined)
-    and (item.install is defined and item.install | bool)
+  when:
+    - install_server_config.dev is defined
+    - install_server_config.dev | bool
+    - install_server_python is defined
+    - install_server_python.pip is defined
+    - item.install is defined
+    - item.install | bool
   tags:
     - install_server
     - install_python
