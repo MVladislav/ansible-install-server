@@ -18,7 +18,7 @@
   become_user: "{{ outer_item.name }}"
   ansible.builtin.git:
     repo: "{{ install_server_zsh.git.ohmyzsh.url }}"
-    dest: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.git.ohmyzsh.folder }}"
+    dest: "{{ install_server_zsh.git.ohmyzsh.folder }}"
     force: true
     update: false
     version: "{{ install_server_zsh.git.ohmyzsh.version | default('master') }}"
@@ -31,8 +31,8 @@
   become_user: "{{ outer_item.name }}"
   ansible.builtin.command: >
     cp
-    {{ install_server_zsh.user_home }}/{{ install_server_zsh.git.ohmyzsh.folder }}/templates/zshrc.zsh-template
-    {{ install_server_zsh.user_home }}/{{ install_server_zsh.zshrc }}
+    {{ install_server_zsh.git.ohmyzsh.folder }}/templates/zshrc.zsh-template
+    {{ install_server_zsh.zshrc_folder }}
   register: zsh_cp_ohmyzsh
   changed_when: zsh_cp_ohmyzsh.rc != 0
   tags:
@@ -45,7 +45,7 @@
   become_user: "{{ outer_item.name }}"
   ansible.builtin.git:
     repo: "{{ item.url }}"
-    dest: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.git.themes_folder }}/{{ item.name }}"
+    dest: "{{ install_server_zsh.zsh_themes_folder }}/{{ item.name }}"
     force: true
     update: false
     version: "{{ item.version | default('master') }}"
@@ -58,8 +58,8 @@
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.file:
-    src: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.git.themes_folder }}/{{ item.name }}/{{ item.theme_name }}"
-    dest: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.git.themes_folder }}/{{ item.theme_name }}"
+    src: "{{ install_server_zsh.zsh_themes_folder }}/{{ item.name }}/{{ item.theme_name }}"
+    dest: "{{ install_server_zsh.zsh_themes_folder }}/{{ item.theme_name }}"
     state: link
     force: true
   loop: "{{ install_server_zsh.git.themes|flatten(levels=1) }}"
@@ -68,28 +68,16 @@
     - zsh
 
 # ------------------------------------------------------------------------------
-- name: install zsh step 4 [git]
+- name: install zsh step 4 [git plugins]
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.git:
-    repo: "{{ install_server_zsh.git.zshTheme.url }}"
-    dest: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.git.zshTheme.folder }}"
+    repo: "{{ item.url }}"
+    dest: "{{ item.folder }}"
     depth: 1
     update: false
     version: master
-  tags:
-    - install_server
-    - zsh
-
-- name: install zsh step 4.1 [echo]
-  become: true
-  become_user: "{{ outer_item.name }}"
-  ansible.builtin.shell: >
-    echo
-    "source {{ install_server_zsh.user_home }}/{{ install_server_zsh.git.zshTheme.folder }}/zsh-syntax-highlighting.zsh"
-    >> {{ install_server_zsh.user_home }}/{{ install_server_zsh.zshrc }}
-  register: zsh_echo_zsh_theme
-  changed_when: zsh_echo_zsh_theme.rc != 0
+  loop: "{{ install_server_zsh.git.zshEnableSourcePlugs|flatten(levels=1) }}"
   tags:
     - install_server
     - zsh
@@ -99,7 +87,7 @@
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.lineinfile:
-    path: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.zshrc }}"
+    path: "{{ install_server_zsh.zshrc_folder }}"
     regexp: 'ZSH_THEME="(.*?)"'
     line: 'ZSH_THEME="{{ install_server_zsh.theme }}"'
     mode: "0660"
@@ -112,7 +100,7 @@
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.lineinfile:
-    path: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.zshrc }}"
+    path: "{{ install_server_zsh.zshrc_folder }}"
     regexp: 'plugins=\((.*?)\)'
     line: "plugins=({{ install_server_zsh.plugins }})"
     mode: "0660"
@@ -125,7 +113,7 @@
 #   become: true
 #   become_user: "{{ outer_item.name }}"
 #   lineinfile:
-#     path: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.zshrc }}"
+#     path: "{{ install_server_zsh.zshrc_folder }}"
 #     regexp: 'alias docker-swarm-compose="(.*?)"'
 #     line: 'alias docker-swarm-compose="docker-compose config | docker stack deploy --compose-file -"'
 #     mode: "0660"
@@ -153,7 +141,7 @@
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.lineinfile:
-    path: "{{ install_server_zsh.user_home }}/{{ install_server_zsh.zshrc }}"
+    path: "{{ install_server_zsh.zshrc_folder }}"
     regexp: "{{ item.append_as }}"
     line: "{{ item.append_as }}"
     mode: "0660"
