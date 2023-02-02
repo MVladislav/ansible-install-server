@@ -19,3 +19,42 @@
   tags:
     - install_server
     - install_python
+
+# ------------------------------------------------------------------------------
+- name: "SERVER | python | get list of outdated pip packages"
+  become: true
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.shell: >
+    set -o pipefail &&
+    python3 -m pip list -o | cut -f1 -d" " | tr " " "\n" | awk "{if(NR>=3)print}" | cut -d" " -f1
+  args:
+    executable: /bin/bash
+  register: pip_outdated
+  changed_when: pip_outdated.rc in [1]
+  failed_when: pip_outdated.rc not in [0, 1]
+  when:
+    - install_server_config.dev is defined
+    - install_server_config.dev | bool
+    - install_server_python is defined
+    - install_server_python.pip is defined
+  tags:
+    - install_server
+    - install_python
+
+- name: "SERVER | python | update all installed pip packages"
+  become: true
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.pip:
+    name: "{{ item }}"
+    extra_args: --upgrade
+    executable: pip3
+  with_items: "{{ pip_outdated.stdout_lines }}"
+  ignore_errors: yes
+  when:
+    - install_server_config.dev is defined
+    - install_server_config.dev | bool
+    - install_server_python is defined
+    - install_server_python.pip is defined
+  tags:
+    - install_server
+    - install_python
