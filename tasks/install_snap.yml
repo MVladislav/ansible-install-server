@@ -9,6 +9,26 @@
   register: is_snap_exist
   changed_when: is_snap_exist.rc not in [0, 1]
   failed_when: is_snap_exist.rc not in [0, 1]
+  when:
+    - install_server_snap is defined
+  tags:
+    - install_server
+    - snap
+
+# ------------------------------------------------------------------------------
+- name: "SERVER | snap | start udev and snapd"
+  become: true
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  with_items:
+    - udev
+    - snapd
+  when:
+    - install_server_snap is defined
+    - is_snap_exist.rc is defined
+    - is_snap_exist.rc == 0
   tags:
     - install_server
     - snap
@@ -19,14 +39,13 @@
   community.general.snap:
     name: "{{ item.name }}"
     classic: "{{ item.classic | bool }}"
-    # beta: "{{ item.beta | bool }}"
   loop: "{{ install_server_snap | flatten(levels=1) }}"
   when:
     - install_server_snap is defined
-    - item.install is defined
-    - item.install | bool
     - is_snap_exist.rc is defined
     - is_snap_exist.rc == 0
+    - item.install is defined
+    - item.install | bool
   tags:
     - install_server
     - snap
