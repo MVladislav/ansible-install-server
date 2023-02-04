@@ -32,9 +32,9 @@ provisioner:
     ssh_connection:
       scp_if_ssh: true
       transfer_method: piped
-  inventory:
-    group_vars:
-      all:
-        ansible_python_interpreter: /usr/bin/python3
+  # inventory:
+  #   group_vars:
+  #     all:
+  #       ansible_python_interpreter: /usr/bin/python3
 verifier:
   name: ansible

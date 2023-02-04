@@ -20,7 +20,8 @@
     state: directory
     mode: "0774"
   loop: "{{ clients | flatten(levels=1) }}"
-  when: clients is defined
+  when:
+    - clients is defined
   tags:
     - install_server
     - create_default_folder
@@ -109,7 +110,9 @@
 # PYTHON PACKAGES
 - name: "SERVER | python | install python"
   ansible.builtin.include_tasks: install_python.yml
-  when: install_server_config.python is defined and install_server_config.python | bool
+  when:
+    - install_server_config.python is defined
+    - install_server_config.python | bool
 
 # - will be installed per client, need to set clients
 - name: "SERVER | python | install python packages (per user)"

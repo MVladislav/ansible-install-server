@@ -1,7 +1,7 @@
 ---
 # tasks file for ./roles/install_server
 
-# # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 - name: "SERVER | tmux | install tmux dependecies step 1 [apt]"
   become: true
   ansible.builtin.apt:
@@ -12,12 +12,12 @@
     - install_server
     - tmux
 
-# # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 - name: "SERVER | tmux | install tmux step 1 [git clone]"
   become: true
   ansible.builtin.git:
     repo: "{{ install_server_tmux.git }}"
-    dest: "/tmp/tmux"
+    dest: "/opt/tmux"
     force: true
     update: "{{ install_server_tmux.update | bool }}"
     version: master
@@ -25,13 +25,14 @@
     - install_server
     - tmux
 
-# # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 - name: "SERVER | tmux | install tmux step 2.1 [run autogen.sh]"
   become: true
   ansible.builtin.command: ./autogen.sh
   args:
-    chdir: "/tmp/tmux"
-    creates: "/tmp/tmux/configure"
+    chdir: "/opt/tmux"
+    creates: "/opt/tmux/configure"
+    executable: /bin/bash
   tags:
     - install_server
     - tmux
@@ -40,8 +41,9 @@
   become: true
   ansible.builtin.command: ./configure
   args:
-    chdir: "/tmp/tmux"
-    creates: "/tmp/tmux/Makefile"
+    chdir: "/opt/tmux"
+    creates: "/opt/tmux/Makefile"
+    executable: /bin/bash
   tags:
     - install_server
     - tmux
@@ -50,7 +52,7 @@
   become: true
   ansible.builtin.shell: set -o pipefail && make && make install
   args:
-    chdir: "/tmp/tmux"
+    chdir: "/opt/tmux"
     executable: /bin/bash
   register: tmux_make_run
   changed_when: tmux_make_run.rc != 0

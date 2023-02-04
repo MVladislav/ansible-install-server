@@ -2,11 +2,16 @@
 # defaults file for ./roles/install_server
 
 # ------------------------------------------------------------------------------
+# CLIENTS for adding access (ex. zsh)
+clients:
+  - name: "{{ ansible_user }}"
+
+# ------------------------------------------------------------------------------
 install_server_service_name: default-server
 
 install_server_links_to_check_update:
-  mongodb_pgp: https://www.mongodb.org/static/pgp/server-5.0.asc
-  mongodb_distribution: buster/mongodb-org/5.0
+  mongodb_pgp: https://www.mongodb.org/static/pgp/server-6.0.asc
+  mongodb_distribution: focal/mongodb-org/6.0
   # https://github.com/nodesource/distributions/blob/master/README.md
   npm_url: https://deb.nodesource.com/setup_lts.x
   npm_file: setup_lts.x.sh
@@ -39,7 +44,10 @@ install_server_config:
   zsh: false
   tmux: false
   # PYTHON --------------------------------
-  python: false # base|dev
+  python: false
+  python_pip: false
+  python_venv: false
+  python_dev: false
   pip_s_tui: false
   pip_virtualenv: false
   pip_autopep8: false
@@ -51,12 +59,8 @@ install_server_config:
   ruby: false
   npm: false
   mongodb: false
-  java: false # base|dev
-
-# ------------------------------------------------------------------------------
-# CLIENTS for adding access (ex. zsh)
-clients:
-  - name: "{{ ansible_user }}"
+  java: false
+  java_ant: false
 
 # ------------------------------------------------------------------------------
 # APT
@@ -309,12 +313,12 @@ install_server_git:
 # ------------------------------------------------------------------------------
 # ZSH
 # install_server_config.zsh
+install_server_zsh_user_home: "~"
+install_server_zsh_custom_folder: "{{ install_server_zsh_user_home }}/.oh-my-zsh/custom"
 install_server_zsh:
   update: false
-  user_home: "~"
-  zsh_custom_folder: "{{ install_server_zsh.user_home }}/.oh-my-zsh/custom"
-  zsh_themes_folder: "{{ install_server_zsh.user_home }}/.oh-my-zsh/themes"
-  zshrc_folder: "{{ install_server_zsh.user_home }}/.zshrc"
+  zsh_themes_folder: "{{ install_server_zsh_user_home }}/.oh-my-zsh/themes"
+  zshrc_folder: "{{ install_server_zsh_user_home }}/.zshrc"
   apt:
     - zsh
     - powerline
@@ -323,7 +327,7 @@ install_server_zsh:
   git:
     ohmyzsh:
       url: https://github.com/robbyrussell/oh-my-zsh.git
-      folder: "{{ install_server_zsh.user_home }}/.oh-my-zsh"
+      folder: "{{ install_server_zsh_user_home }}/.oh-my-zsh"
       version: master
     themes:
       - url: https://github.com/denysdovhan/spaceship-prompt.git
@@ -340,9 +344,9 @@ install_server_zsh:
         version: master
     zshEnableSourcePlugs:
       - url: https://github.com/zsh-users/zsh-autosuggestions.git
-        folder: "{{ install_server_zsh.zsh_custom_folder }}/plugins/zsh-autosuggestions"
+        folder: "{{ install_server_zsh_custom_folder }}/plugins/zsh-autosuggestions"
       - url: https://github.com/zsh-users/zsh-syntax-highlighting.git
-        folder: "{{ install_server_zsh.zsh_custom_folder }}/plugins/zsh-syntax-highlighting"
+        folder: "{{ install_server_zsh_custom_folder }}/plugins/zsh-syntax-highlighting"
   # spaceship | agnoster
   theme: spaceship
   ## https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins
@@ -401,6 +405,7 @@ install_server_tmux:
     git: https://github.com/gpakosz/.tmux.git
   apt_dependecies:
     - build-essential
+    - git-core
     - wget
     - tar
     - libevent-dev
@@ -425,11 +430,16 @@ install_server_os_tun:
 # install_server_config.python
 install_server_python:
   apt:
-    - python3
-  dev:
-    - python3-pip
-    - python3-venv
-    - python3-dev
+    - name: python3
+      install: "{{ install_server_config.python | default('no') | bool }}"
+    - name: python3-setuptools
+      install: "{{ install_server_config.python | default('no') | bool }}"
+    - name: python3-pip
+      install: "{{ install_server_config.python_pip | default('no') | bool }}"
+    - name: python3-venv
+      install: "{{ install_server_config.python_venv | default('no') | bool }}"
+    - name: python3-dev
+      install: "{{ install_server_config.python_dev | default('no') | bool }}"
   pip:
     - name: s-tui
       install: "{{ install_server_config.pip_s_tui | default('no') | bool }}"
@@ -447,6 +457,7 @@ install_server_python:
 # ------------------------------------------------------------------------------
 # ANSIBLE
 # install_server_config.ansible
+# TODO: implement install task
 install_server_ansible:
   apt:
     - python3
@@ -512,9 +523,10 @@ install_server_mongodb:
 install_server_java_version: 11
 install_server_java:
   apt:
-    - "openjdk-{{ install_server_java_version }}-jre-headless"
-  dev:
-    - ant
+    - name: "openjdk-{{ install_server_java_version }}-jre-headless"
+      install: "{{ install_server_config.java | default('no') | bool }}"
+    - name: ant
+      install: "{{ install_server_config.java_ant | default('no') | bool }}"
   os_env:
     - variable: JAVA_HOME
       path: "/usr/lib/jvm/java-{{ install_server_java_version }}-openjdk-amd64"

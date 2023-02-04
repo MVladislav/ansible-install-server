@@ -186,6 +186,11 @@ alias vm_tl='tmux ls'
 alias vm_ta='tmux attach -t'
 alias vm_tk='tmux kill-session -t'
 
+### updater ###
+$alias vm_up_py_pip='python3 -m pip list -o | cut -f1 -d" " | tr " " "\n" | awk "{if(NR>=3)print}" | cut -d" " -f1 | xargs -n1 python3 -m pip install -U'
+$alias vm_up_flatpak='flatpak update'
+$alias vm_up_snap='snap refresh'
+
 ### OTHER ###
 alias grep='grep --color'
 alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS}'

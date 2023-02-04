@@ -12,6 +12,10 @@ _Any pre-requisites that may not be covered by Ansible itself or the role should
 ## Role Variables
 
 ```yml
+clients:
+  - name: "{{ ansible_user }}"
+    dev: yes
+    updateOrCreate: no
 install_server_service_name: "{{ service_name }}"
 install_server_git_user: "{{ ansible_user }}"
 install_server_git_email: "{{ ansible_user }}"
@@ -40,7 +44,10 @@ install_server_config:
   zsh: no
   tmux: no
   # PYTHON --------------------------------
-  python: false # base|dev
+  python: false
+  python_pip: false
+  python_venv: false
+  python_dev: false
   pip_s_tui: false
   pip_virtualenv: false
   pip_autopep8: false
@@ -52,11 +59,8 @@ install_server_config:
   ruby: false
   npm: false
   mongodb: false
-  java: false # base|dev
-clients:
-  - name: "{{ ansible_user }}"
-    dev: yes
-    updateOrCreate: no
+  java: false
+  java_dev: false
 ```
 
 ## Dependencies
@@ -71,14 +75,14 @@ Including an example of how to use your role (for instance, with variables passe
 - hosts: servers
   roles:
     - role: install_server
-      install_server_service_name: "{{ service_name }}"
-      install_server_git_user: "{{ ansible_user }}"
-      install_server_git_email: "{{ ansible_user }}"
-      install_server_config: []
       clients:
         - name: "{{ ansible_user }}"
           dev: yes
           updateOrCreate: no
+      install_server_service_name: "{{ service_name }}"
+      install_server_git_user: "{{ ansible_user }}"
+      install_server_git_email: "{{ ansible_user }}"
+      install_server_config: []
 ```
 
 ## License

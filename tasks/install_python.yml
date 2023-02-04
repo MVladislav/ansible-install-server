@@ -2,31 +2,54 @@
 # tasks file for ./roles/install_server
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | python | install python by apt packages [main]"
+- name: "SERVER | python | install apt python packages"
   become: true
   ansible.builtin.apt:
-    pkg: "{{ install_server_python.apt }}"
+    pkg: "{{ item.name }}"
     state: present
     force_apt_get: true # apt-get instead of aptitude
+    update_cache: true
+  loop: "{{ install_server_python.apt | flatten(levels=1) }}"
   when:
     - install_server_python is defined
     - install_server_python.apt is defined
+    - item.install is defined
+    - item.install | bool
   tags:
     - install_server
     - install_python
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | python | install python by apt packages [dev]"
+- name: "SERVER | python | get list of outdated pip packages"
   become: true
-  ansible.builtin.apt:
-    pkg: "{{ install_server_python.dev }}"
-    state: present
-    force_apt_get: true # apt-get instead of aptitude
+  ansible.builtin.shell: >
+    set -o pipefail &&
+    python3 -m pip list -o | cut -f1 -d" " | tr " " "\n" | awk "{if(NR>=3)print}" | cut -d" " -f1
+  args:
+    executable: /bin/bash
+  register: pip_outdated
+  changed_when: pip_outdated.rc in [1]
+  failed_when: pip_outdated.rc not in [0, 1]
   when:
-    - install_server_config.dev is defined
-    - install_server_config.dev | bool
     - install_server_python is defined
-    - install_server_python.dev is defined
+    - install_server_python.pip is defined
+  tags:
+    - install_server
+    - install_python
+
+- name: "SERVER | python | update all installed pip packages"
+  become: true
+  ansible.builtin.pip:
+    name: "{{ item }}"
+    extra_args: --upgrade
+    executable: pip3
+  with_items: "{{ pip_outdated.stdout_lines }}"
+  # register: python_pip_upgrade
+  # # NOTE: ignore error, when there is nothing to upgrade
+  # failed_when: python_pip_upgrade not in [0,1]
+  when:
+    - install_server_python is defined
+    - install_server_python.pip is defined
   tags:
     - install_server
     - install_python

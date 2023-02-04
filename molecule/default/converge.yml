@@ -5,3 +5,56 @@
     - name: "Include ansible-install-server"
       include_role:
         name: "ansible-install-server"
+  vars:
+    # --- in inventory ---
+    clients:
+      - name: ubuntu
+        dev: yes
+        updateOrCreate: no
+    install_server_service_name: default-server
+    install_server_git_user: ubuntu
+    install_server_git_email: ubuntu
+    # --- in playbook ---
+    install_server_config:
+      dev: true
+      env_tun_setup: true
+      # APT (1) -------------------------------
+      apt_base: true
+      apt_archive: true
+      apt_dev: true
+      apt_build: true
+      apt_libs: true
+      # APT (2) -------------------------------
+      apt_vpn: true
+      apt_go: true
+      apt_php: true
+      # apt_rasp_pi_pkg: false
+      # apt_qemu_guest_agent: false
+      # DPKG ----------------------------------
+      # dpkg_...: false
+      # SNAP ----------------------------------
+      snap_microk8s: true
+      # snap_multipass: false
+      snap_btop: true
+      # OTHER --------------------------------
+      git: true
+      zsh: true
+      tmux: true
+      # PYTHON --------------------------------
+      python: true
+      python_pip: true
+      python_venv: true
+      python_dev: true
+      pip_s_tui: true
+      pip_virtualenv: true
+      pip_autopep8: true
+      pip_black: true
+      pip_pre_commit: true
+      pip_openconnect_sso: true
+      # OTHER --------------------------------
+      go_kompose: true
+      ruby: true
+      npm: true
+      mongodb: true
+      java: true
+      java_ant: true

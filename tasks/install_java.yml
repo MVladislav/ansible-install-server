@@ -2,43 +2,38 @@
 # tasks file for ./roles/install_server
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | java | install java packages [apt]"
+- name: "SERVER | java | install java packages"
   become: true
   ansible.builtin.apt:
-    pkg: "{{ install_server_java.apt }}"
+    pkg: "{{ item.name }}"
     state: present
     force_apt_get: true # apt-get instead of aptitude
-  when: install_server_java is defined and install_server_java.apt is defined
-  tags:
-    - install_server
-    - install_java
-
-# ------------------------------------------------------------------------------
-- name: "SERVER | java | install java packages [apt]"
-  become: true
-  ansible.builtin.apt:
-    pkg: "{{ install_server_java.apt }}"
-    state: present
-    force_apt_get: true # apt-get instead of aptitude
+    update_cache: true
+  loop: "{{ install_server_java.apt | flatten(levels=1) }}"
   when:
-    - install_server_config.dev is defined
-    - install_server_config.dev | bool
     - install_server_java is defined
-    - install_server_java.dev is defined
+    - install_server_java.apt is defined
+    - item.install is defined
+    - item.install | bool
   tags:
     - install_server
     - install_java
 
 # ------------------------------------------------------------------------------
 
-- name: "SERVER | java | set java env variables"
+- name: "SERVER | java | set java env variables into /etc/environment"
   become: true
   ansible.builtin.lineinfile:
     dest: "/etc/environment"
     state: present
     regexp: "^{{ item.variable }}="
     line: "{{ item.variable }}={{ item.path }}"
-  with_items: "{{ install_server_java.os_env }}"
+  loop: "{{ install_server_java.os_env | flatten(levels=1) }}"
+  when:
+    - install_server_java is defined
+    - install_server_java.os_env is defined
+    - item.variable is defined
+    - item.path is defined
   tags:
     - install_server
     - install_java
