@@ -131,13 +131,17 @@
 # RUBY PACKAGES
 - name: "SERVER | ruby | install ruby packages"
   ansible.builtin.include_tasks: install_ruby.yml
-  when: install_server_config.ruby is defined and install_server_config.ruby | bool
+  when:
+    - install_server_config.ruby is defined
+    - install_server_config.ruby | bool
 
 # ------------------------------------------------------------------------------
 # NPM PACKAGES
 - name: "SERVER | npm | install npm"
   ansible.builtin.include_tasks: install_npm.yml
-  when: install_server_config.npm is defined and install_server_config.npm | bool
+  when:
+    - install_server_config.npm is defined
+    - install_server_config.npm | bool
 
 # - will be installed per client, need to set clients
 - name: "SERVER | npm | install npm packages (per user)"

@@ -53,8 +53,8 @@
   ansible.builtin.copy:
     src: npm-path.sh
     dest: /etc/zsh/profile.d
-    mode: 0644
     # dest: /etc/profile.d
+    mode: 0644
   when:
     - install_server_npm is defined
     - install_server_npm.set_path is defined

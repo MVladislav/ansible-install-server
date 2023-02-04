@@ -42,11 +42,8 @@
   ansible.builtin.pip:
     name: "{{ item }}"
     extra_args: --upgrade
-    executable: pip3
+    executable: pip3.3
   with_items: "{{ pip_outdated.stdout_lines }}"
-  # register: python_pip_upgrade
-  # # NOTE: ignore error, when there is nothing to upgrade
-  # failed_when: python_pip_upgrade not in [0,1]
   when:
     - install_server_python is defined
     - install_server_python.pip is defined

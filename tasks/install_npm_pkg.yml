@@ -12,7 +12,8 @@
     path: "~/.npm-packages"
     state: directory
     mode: "0750"
-  when: install_server_npm_pkg
+  when:
+    - install_server_npm_pkg is defined
   tags:
     - install_server
     - npm
@@ -22,7 +23,8 @@
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.command: "npm config set prefix ~/.npm-packages"
-  when: install_server_npm_pkg
+  when:
+    - install_server_npm_pkg is defined
   tags:
     - install_server
     - npm
@@ -36,7 +38,8 @@
     path: "~/.npm-packages"
     global: true
   loop: "{{ install_server_npm_pkg | flatten(levels=1) }}"
-  when: install_server_npm_pkg is defined
+  when:
+    - install_server_npm_pkg is defined
   tags:
     - install_server
     - npm
