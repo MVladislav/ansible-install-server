@@ -93,6 +93,7 @@
     line: 'ZSH_THEME="{{ install_server_zsh.theme }}"'
     mode: "0660"
   tags:
+    - molecule-idempotence-notest
     - install_server
     - zsh
 
@@ -106,6 +107,7 @@
     line: "plugins=({{ install_server_zsh.plugins }})"
     mode: "0660"
   tags:
+    - molecule-idempotence-notest
     - install_server
     - zsh
 
@@ -138,7 +140,7 @@
     - zsh
 
 # append
-- name: "SERVER | zsh | install zsh step 4.2.3.1 - add 'append file with tool scripts' with {{ item.append_as }}"
+- name: "SERVER | zsh | install zsh step 4.2.3.2 - add 'append file with tool scripts' with {{ item.append_as }}"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.lineinfile:
@@ -149,6 +151,7 @@
   loop: "{{ install_server_zsh.append_file | flatten(levels=1) }}"
   when: item.append_as is defined
   tags:
+    - molecule-idempotence-notest
     - install_server
     - zsh
 

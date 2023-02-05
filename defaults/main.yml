@@ -228,7 +228,7 @@ install_server_apt:
   # - name: network-manager-l2tp
   #   install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
   # ----------------------------------------------------------------------------
-  - name: snap
+  - name: snapd
     install: "{{ install_server_config.apt_snap | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   - name: golang

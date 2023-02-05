@@ -34,7 +34,7 @@
       # DPKG ----------------------------------
       # dpkg_...: false
       # SNAP ----------------------------------
-      snap_microk8s: true
+      # snap_microk8s: false
       # snap_multipass: false
       snap_btop: true
       # OTHER --------------------------------

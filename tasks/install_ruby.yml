@@ -32,8 +32,8 @@
   ansible.builtin.copy:
     src: ruby-path.sh
     dest: /etc/zsh/profile.d
-    mode: 0644
     # dest: /etc/profile.d
+    mode: 0644
   when:
     - install_server_ruby is defined
     - install_server_ruby.set_path is defined

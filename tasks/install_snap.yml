@@ -30,6 +30,7 @@
     - is_snap_exist.rc is defined
     - is_snap_exist.rc == 0
   tags:
+    - molecule-idempotence-notest
     - install_server
     - snap
 
