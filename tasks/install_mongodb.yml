@@ -40,11 +40,10 @@
 - name: "SERVER | mongodb | install mongodb packages"
   become: true
   ansible.builtin.apt:
-    # allow_unauthenticated: true
     name: "{{ install_server_mongodb.packages }}"
     state: present
-    update_cache: true
     force_apt_get: true # apt-get instead of aptitude
+    update_cache: true
   notify: restart mongodb
   tags:
     - install_server

@@ -8,6 +8,7 @@
     pkg: "{{ install_server_git.apt }}"
     state: present
     force_apt_get: true # apt-get instead of aptitude
+    update_cache: true
   when:
     - install_server_git is defined
     - install_server_git.apt is defined

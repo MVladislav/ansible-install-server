@@ -8,6 +8,7 @@
     pkg: "{{ install_server_zsh.apt }}"
     state: present
     force_apt_get: true # apt-get instead of aptitude
+    update_cache: true
   tags:
     - install_server
     - zsh

@@ -42,7 +42,6 @@
   ansible.builtin.pip:
     name: "{{ item }}"
     extra_args: --upgrade
-    executable: pip3.3
   with_items: "{{ pip_outdated.stdout_lines }}"
   when:
     - install_server_python is defined

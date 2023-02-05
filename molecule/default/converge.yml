@@ -25,6 +25,7 @@
       apt_build: true
       apt_libs: true
       # APT (2) -------------------------------
+      apt_snap: true
       apt_vpn: true
       apt_go: true
       apt_php: true
@@ -41,20 +42,20 @@
       zsh: true
       tmux: true
       # PYTHON --------------------------------
-      python: true
-      python_pip: true
-      python_venv: true
-      python_dev: true
-      pip_s_tui: true
-      pip_virtualenv: true
-      pip_autopep8: true
-      pip_black: true
-      pip_pre_commit: true
-      pip_openconnect_sso: true
+      # python: false
+      # python_pip: false
+      # python_venv: false
+      # python_dev: false
+      # pip_s_tui: false
+      # pip_virtualenv: false
+      # pip_autopep8: false
+      # pip_black: false
+      # pip_pre_commit: false
+      # pip_openconnect_sso: false
       # OTHER --------------------------------
       go_kompose: true
       ruby: true
-      npm: true
-      mongodb: true
+      # npm: false
+      # mongodb: false
       java: true
       java_ant: true

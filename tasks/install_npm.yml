@@ -5,7 +5,7 @@
 - name: "SERVER | npm | download npm step 1 [get/deb]"
   ansible.builtin.get_url:
     url: "{{ install_server_npm.deb.url }}"
-    dest: "/tmp/{{ install_server_npm.deb.file }}"
+    dest: "/opt/{{ install_server_npm.deb.file }}"
     mode: "0700"
   tags:
     - install_server
@@ -13,7 +13,9 @@
 
 - name: "SERVER | npm | install npm step 2 [bash]"
   become: true
-  ansible.builtin.command: "/tmp/{{ install_server_npm.deb.file }}"
+  ansible.builtin.shell: "/opt/{{ install_server_npm.deb.file }}"
+  args:
+    executable: /bin/bash
   register: npm_run_script_install
   changed_when: npm_run_script_install.rc != 0
   tags:
@@ -26,6 +28,7 @@
     pkg: "{{ install_server_npm.apt }}"
     state: present
     force_apt_get: true # apt-get instead of aptitude
+    update_cache: true
   tags:
     - install_server
     - npm

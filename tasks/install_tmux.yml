@@ -8,6 +8,7 @@
     pkg: "{{ install_server_tmux.apt_dependecies }}"
     state: present
     force_apt_get: true # apt-get instead of aptitude
+    update_cache: true
   tags:
     - install_server
     - tmux
@@ -28,7 +29,7 @@
 # ------------------------------------------------------------------------------
 - name: "SERVER | tmux | install tmux step 2.1 [run autogen.sh]"
   become: true
-  ansible.builtin.command: ./autogen.sh
+  ansible.builtin.shell: ./autogen.sh
   args:
     chdir: "/opt/tmux"
     creates: "/opt/tmux/configure"
@@ -39,7 +40,7 @@
 
 - name: "SERVER | tmux | install tmux step 2.2 [run configure]"
   become: true
-  ansible.builtin.command: ./configure
+  ansible.builtin.shell: ./configure
   args:
     chdir: "/opt/tmux"
     creates: "/opt/tmux/Makefile"
