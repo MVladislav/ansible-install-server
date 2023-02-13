@@ -37,7 +37,10 @@ install_server_config:
   # DPKG ----------------------------------
   # dpkg_...: false
   # SNAP ----------------------------------
+  snap_juju: false
+  snap_maas: false
   snap_microk8s: false
+  snap_kubectl: false
   snap_multipass: false
   snap_btop: false
   # OTHER --------------------------------
@@ -146,6 +149,7 @@ install_server_apt:
   # - name: exfat-utils
   #   install: "{{ install_server_config.apt_exfat | default('no') | bool }}"
   # ----------------------------------------------------------------------------
+  # TODO:: check, not found on lunar
   - name: freeglut3
     install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: freeglut3-dev
@@ -270,9 +274,18 @@ install_server_dpkg: []
 # SNAP packages
 # install_server_config.snap_...
 install_server_snap:
+  - name: juju
+    classic: true
+    install: "{{ install_server_config.snap_juju | default('no') | bool }}"
+  - name: maas
+    classic: false
+    install: "{{ install_server_config.snap_maas | default('no') | bool }}"
   - name: microk8s
     classic: true
     install: "{{ install_server_config.snap_microk8s | default('no') | bool }}"
+  - name: kubectl
+    classic: true
+    install: "{{ install_server_config.snap_kubectl | default('no') | bool }}"
   - name: multipass
     classic: false
     install: "{{ install_server_config.snap_multipass | default('no') | bool }}"
@@ -434,6 +447,8 @@ install_server_python:
     - name: python3
       install: "{{ install_server_config.python | default('no') | bool }}"
     - name: python3-setuptools
+      install: "{{ install_server_config.python | default('no') | bool }}"
+    - name: python3-debian
       install: "{{ install_server_config.python | default('no') | bool }}"
     - name: python3-pip
       install: "{{ install_server_config.python_pip | default('no') | bool }}"
