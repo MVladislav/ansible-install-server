@@ -43,9 +43,11 @@
     name: "{{ item }}"
     extra_args: --upgrade
   with_items: "{{ pip_outdated.stdout_lines }}"
-  # register: python_pip_upgrade
-  # # NOTE: ignore error, when there is nothing to upgrade
+  register: python_pip_upgrade
+  # NOTE: ignore error, when there is nothing to upgrade
+  # NOTE: or any package can not be upgraded
   # failed_when: python_pip_upgrade not in [0,1]
+  ignore_errors: true
   when:
     - install_server_python is defined
     - install_server_python.pip is defined

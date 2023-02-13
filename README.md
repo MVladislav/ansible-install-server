@@ -14,35 +14,38 @@ _Any pre-requisites that may not be covered by Ansible itself or the role should
 ```yml
 clients:
   - name: "{{ ansible_user }}"
-    dev: yes
-    updateOrCreate: no
+    dev: true
+    updateOrCreate: false
 install_server_service_name: "{{ service_name }}"
 install_server_git_user: "{{ ansible_user }}"
 install_server_git_email: "{{ ansible_user }}"
 install_server_config:
-  dev: no
-  env_tun_setup: no
+  dev: false
+  env_tun_setup: false
   # APT (1) -------------------------------
-  apt_base: no
-  apt_dev: no
-  apt_build: no
-  apt_libs: no
+  apt_base: false
+  apt_dev: false
+  apt_build: false
+  apt_libs: false
   # APT (2) -------------------------------
-  apt_vpn: no
-  apt_go: no
-  apt_php: no
-  apt_rasp_pi_pkg: no
-  apt_qemu_guest_agent: no
+  apt_vpn: false
+  apt_go: false
+  apt_php: false
+  apt_rasp_pi_pkg: false
+  apt_qemu_guest_agent: false
   # DPKG ----------------------------------
-  # dpkg_...: no
+  # dpkg_...: false
   # SNAP ----------------------------------
-  snap_microk8s: no
-  snap_multipass: no
-  snap_btop: no
+  snap_juju: false
+  snap_maas: false
+  snap_microk8s: false
+  snap_kubectl: false
+  snap_multipass: false
+  snap_btop: false
   # OTHER --------------------------------
-  git: no
-  zsh: no
-  tmux: no
+  git: false
+  zsh: false
+  tmux: false
   # PYTHON --------------------------------
   python: false
   python_pip: false
@@ -77,8 +80,8 @@ Including an example of how to use your role (for instance, with variables passe
     - role: install_server
       clients:
         - name: "{{ ansible_user }}"
-          dev: yes
-          updateOrCreate: no
+          dev: true
+          updateOrCreate: false
       install_server_service_name: "{{ service_name }}"
       install_server_git_user: "{{ ansible_user }}"
       install_server_git_email: "{{ ansible_user }}"
