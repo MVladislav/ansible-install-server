@@ -17,11 +17,11 @@
 - name: "SERVER | os | init tunning's step:: run 'sysctl -p --system'"
   become: true
   ansible.builtin.command: sysctl -p --system
+  changed_when: tunning_network_result.changed | default(false) | bool
   when:
     - tunning_network_result is defined
     - tunning_network_result.changed is defined
     - tunning_network_result.changed | bool
   tags:
-    - molecule-idempotence-notest
     - install_server
     - apt
