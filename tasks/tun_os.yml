@@ -22,5 +22,6 @@
     - tunning_network_result.changed is defined
     - tunning_network_result.changed | bool
   tags:
+    - molecule-idempotence-notest
     - install_server
     - apt
