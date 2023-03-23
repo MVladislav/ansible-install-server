@@ -23,7 +23,7 @@
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.command: "npm config set prefix ~/.npm-packages"
-  changed_when: false | bool
+  changed_when: true
   when:
     - install_server_npm_pkg is defined
   tags:
