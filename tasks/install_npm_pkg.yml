@@ -22,13 +22,10 @@
 - name: "SERVER | npm | setup NPM prefix"
   become: true
   become_user: "{{ outer_item.name }}"
-  ansible.builtin.shell: >
-    set -o pipefail
-    && npm config get prefix
-    | grep -q -F ~/.npm-packages || npm config set prefix ~/.npm-packages
-  args:
-    executable: /bin/bash
-  when: install_server_npm_pkg is defined
+  ansible.builtin.command: "npm config set prefix ~/.npm-packages"
+  changed_when: false | bool
+  when:
+    - install_server_npm_pkg is defined
   tags:
     - install_server
     - npm
