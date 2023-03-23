@@ -152,8 +152,8 @@ install_server_apt:
   #   install: "{{ install_server_config.apt_exfat | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   # TODO:: check, not found on lunar
-  - name: freeglut3
-    install: "{{ install_server_config.apt_build | default('no') | bool }}"
+  #- name: freeglut3
+  #  install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: freeglut3-dev
     install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: cmake
