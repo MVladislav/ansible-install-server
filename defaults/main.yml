@@ -111,6 +111,8 @@ install_server_apt:
     install: "{{ install_server_config.apt_archive | default('no') | bool }}"
   - name: xz-utils
     install: "{{ install_server_config.apt_archive | default('no') | bool }}"
+  - name: pigz
+    install: "{{ install_server_config.apt_archive | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   # monitoring: lsof|tcpdump -i ...|netstat -a | more|htop|iotop|iostat|s-tui|watch zpool iostat -vy 1 1|smem -tuwa|bpytop
   - name: jq
