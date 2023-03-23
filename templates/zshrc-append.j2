@@ -100,13 +100,14 @@ fi
 ### LS as EXA ###
 # $sudo apt install exa
 alias ls='exa'
-alias l='exa -1'
-alias ll='exa -alh'
+alias l='ls -1'
+alias ll='ls -alhg'
+alias lg='ls -alhg --grid'
 alias lm='ll -t modified'
 alias la='ll -t accessed'
 alias lc='ll -t created'
-alias ld='exa -ld .*'
-alias tree='exa --tree --long -L 3'
+alias ld='ls -ld .*'
+alias tree='ls --tree --long -L 3'
 
 ### CAT as BAT ###
 # $sudo apt install bat
@@ -195,6 +196,8 @@ alias vm_up_snap='snap refresh'
 alias grep='grep --color'
 alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS}'
 
+alias pigz='pigz -k -p$(( $(nproc) / 2 ))'
+
 alias t='tail -f'
 alias dus='du -hs * | sort -h'
 alias ip='ip -c'
@@ -238,14 +241,21 @@ vm_ii() {
   echo -e "\\n${BRED}You are logged on:$NC"
   hostname
   echo -e "\\n${BRED}Additional information:$NC"
-  uname -a
-  lsb_release -d
+  echo -e "  - description           : $(lsb_release -d | cut -d':' -f2 | awk '{$1=$1};1')"
+  echo -e "  - kernel name           : $(uname -s)"
+  echo -e "  - network node hostname : $(uname -n)"
+  echo -e "  - kernel release        : $(uname -r)"
+  echo -e "  - kernel version        : $(uname -v)"
+  echo -e "  - machine hardware name : $(uname -m)"
+  echo -e "  - processor type        : $(uname -p)"
+  echo -e "  - hardware platform     : $(uname -i)"
+  echo -e "  - operating system      : $(uname -o)"
   echo -e "\\n${BRED}Users logged on:$NC"
   w -h
   echo -e "\\n${BRED}Current date:$NC"
   date
   echo -e "\\n${BRED}Machine stats:$NC"
-  uptime
+  uptime | awk '{$1=$1};1'
   echo -e "\\n${BRED}Machine BIOS:$NC"
   vm_my_bios
   echo -e "\\n${BRED}Public facing IP Address:$NC"
