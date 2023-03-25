@@ -24,10 +24,12 @@ install_server_config:
   env_tun_setup: false
   # APT (1) -------------------------------
   apt_base: false
+  apt_archive: false
   apt_dev: false
   apt_build: false
   apt_libs: false
   # APT (2) -------------------------------
+  apt_snap: false
   apt_vpn: false
   apt_go: false
   apt_php: false
@@ -63,7 +65,7 @@ install_server_config:
   npm: false
   mongodb: false
   java: false
-  java_dev: false
+  java_ant: false
 ```
 
 ## Dependencies
