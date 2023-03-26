@@ -7,6 +7,7 @@
   become_user: "{{ outer_item.name }}"
   ansible.builtin.pip:
     name: "{{ item.name }}"
+    extra_args: --break-system-packages
   loop: "{{ install_server_python.pip | flatten(levels=1) }}"
   when:
     - install_server_python is defined
@@ -41,7 +42,7 @@
   become_user: "{{ outer_item.name }}"
   ansible.builtin.pip:
     name: "{{ item }}"
-    extra_args: --upgrade
+    extra_args: --upgrade --break-system-packages
   with_items: "{{ pip_outdated.stdout_lines }}"
   register: python_pip_upgrade
   # NOTE: ignore error, when there is nothing to upgrade
