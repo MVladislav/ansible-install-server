@@ -462,7 +462,7 @@ install_server_python:
       install: "{{ install_server_config.python_dev | default('no') | bool }}"
     # NOTE: missing libs when updating python
     - name: libcairo2-dev
-      install: "{{ install_server_config.python_dev | default('no') | bool }}"
+      install: "{{ install_server_config.python_pip | default('no') | bool }}"
     - name: libgirepository1.0-dev
       install: "{{ install_server_config.python_pip | default('no') | bool }}"
   pip:
