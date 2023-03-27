@@ -44,6 +44,7 @@ install_server_config:
   snap_kubectl: false
   snap_multipass: false
   snap_btop: false
+  snap_glow: false
   # OTHER --------------------------------
   git: false
   zsh: false
