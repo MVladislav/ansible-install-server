@@ -31,7 +31,6 @@ install_server_config:
   # APT (2) -------------------------------
   apt_snap: false
   apt_vpn: false
-  apt_go: false
   apt_php: false
   apt_rasp_pi_pkg: false
   apt_qemu_guest_agent: false
@@ -42,9 +41,11 @@ install_server_config:
   snap_maas: false
   snap_microk8s: false
   snap_kubectl: false
+  snap_helm: false
   snap_multipass: false
   snap_btop: false
   snap_glow: false
+  snap_go: false
   # OTHER --------------------------------
   git: false
   zsh: false
