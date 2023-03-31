@@ -60,6 +60,7 @@ install_server_config:
   pip_black: false
   pip_pre_commit: false
   pip_openconnect_sso: false
+  pip_ansible: false
   # OTHER --------------------------------
   go_kompose: false
   ruby: false
@@ -319,7 +320,7 @@ install_server_git:
   git:
     config:
       - key: user.email
-        value: "{{ install_server_git_user }}"
+        value: "{{ install_server_git_email }}"
         scope: global
       - key: user.name
         value: "{{ install_server_git_user }}"
@@ -470,6 +471,8 @@ install_server_python:
       install: "{{ install_server_config.python_venv | default('no') | bool }}"
     - name: python3-dev
       install: "{{ install_server_config.python_dev | default('no') | bool }}"
+    - name: sshpass
+      install: "{{ install_server_config.pip_ansible | default('no') | bool }}"
     # NOTE: missing libs when updating python
     - name: libcairo2-dev
       install: "{{ install_server_config.python_pip | default('no') | bool }}"
@@ -488,18 +491,10 @@ install_server_python:
       install: "{{ install_server_config.pip_pre_commit | default('no') | bool }}"
     - name: openconnect-sso
       install: "{{ install_server_config.pip_openconnect_sso | default('no') | bool }}"
-
-# ------------------------------------------------------------------------------
-# ANSIBLE
-# install_server_config.ansible
-# TODO: implement install task
-install_server_ansible:
-  apt:
-    - python3
-    - python3-pip
-    - sshpass
-  pip:
-    - ansible
+    - name: ansible
+      install: "{{ install_server_config.pip_ansible | default('no') | bool }}"
+    - name: ansible-lint
+      install: "{{ install_server_config.pip_ansible | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # RUBY

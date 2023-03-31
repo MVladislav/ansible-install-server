@@ -61,6 +61,7 @@ install_server_config:
   pip_black: false
   pip_pre_commit: false
   pip_openconnect_sso: false
+  pip_ansible: false
   # OTHER --------------------------------
   go_kompose: false
   ruby: false
