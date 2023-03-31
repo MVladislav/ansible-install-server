@@ -59,6 +59,7 @@ install_server_config:
   pip_virtualenv: false
   pip_autopep8: false
   pip_black: false
+  pip_mypy: false
   pip_pre_commit: false
   pip_openconnect_sso: false
   pip_ansible: false

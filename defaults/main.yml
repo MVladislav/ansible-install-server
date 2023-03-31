@@ -58,6 +58,7 @@ install_server_config:
   pip_virtualenv: false
   pip_autopep8: false
   pip_black: false
+  pip_mypy: false
   pip_pre_commit: false
   pip_openconnect_sso: false
   pip_ansible: false
@@ -487,6 +488,8 @@ install_server_python:
       install: "{{ install_server_config.pip_autopep8 | default('no') | bool }}"
     - name: black
       install: "{{ install_server_config.pip_black | default('no') | bool }}"
+    - name: mypy
+      install: "{{ install_server_config.pip_mypy | default('no') | bool }}"
     - name: pre-commit
       install: "{{ install_server_config.pip_pre_commit | default('no') | bool }}"
     - name: openconnect-sso
