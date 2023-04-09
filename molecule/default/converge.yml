@@ -27,31 +27,38 @@
       # APT (2) -------------------------------
       apt_snap: true
       apt_vpn: true
-      apt_go: true
       apt_php: true
       # apt_rasp_pi_pkg: false
-      # apt_qemu_guest_agent: false
+      apt_qemu_guest_agent: true
       # DPKG ----------------------------------
       # dpkg_...: false
       # SNAP ----------------------------------
+      # snap_juju: false
+      # snap_maas: false
       # snap_microk8s: false
+      snap_kubectl: true
+      snap_helm: true
       # snap_multipass: false
       snap_btop: true
+      snap_glow: true
+      snap_go: true
       # OTHER --------------------------------
       git: true
       zsh: true
       tmux: true
       # PYTHON --------------------------------
-      # python: false
-      # python_pip: false
-      # python_venv: false
-      # python_dev: false
-      # pip_s_tui: false
-      # pip_virtualenv: false
-      # pip_autopep8: false
-      # pip_black: false
-      # pip_pre_commit: false
-      # pip_openconnect_sso: false
+      python: true
+      python_pip: true
+      python_venv: true
+      python_dev: true
+      pip_s_tui: true
+      pip_virtualenv: true
+      pip_autopep8: true
+      pip_black: true
+      pip_mypy: true
+      pip_pre_commit: true
+      pip_openconnect_sso: true
+      pip_ansible: true
       # OTHER --------------------------------
       go_kompose: true
       ruby: true
