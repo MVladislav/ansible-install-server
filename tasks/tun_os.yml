@@ -22,6 +22,7 @@
     - tunning_network_result is defined
     - tunning_network_result.changed is defined
     - tunning_network_result.changed | bool
+    - ansible_virtualization_type != "docker"
   tags:
     - install_server
     - apt
