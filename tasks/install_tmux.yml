@@ -8,7 +8,6 @@
     pkg: "{{ install_server_tmux.apt_dependecies }}"
     state: present
     force_apt_get: true # apt-get instead of aptitude
-    update_cache: true
   tags:
     - install_server
     - tmux
@@ -62,25 +61,7 @@
     - tmux
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | tmux | install tmux step 3 [enable aliases .bashrc]"
-  become: true
-  become_user: "{{ outer_item.name }}"
-  ansible.builtin.lineinfile:
-    dest: "{{ install_server_tmux.aliases_path }}"
-    state: present
-    line: "{{ item }}"
-  with_items:
-    - alias tl='tmux ls'
-    - alias ta='tmux attach -t'
-    - alias tk='tmux kill-session -t'
-  when: install_server_tmux.aliases
-  tags:
-    - molecule-idempotence-notest
-    - install_server
-    - tmux
-
-# ------------------------------------------------------------------------------
-- name: "SERVER | tmux | install tmux step 4.1 [git clone style]"
+- name: "SERVER | tmux | install tmux step 3.1 [git clone style]"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.git:
@@ -93,7 +74,7 @@
     - install_server
     - tmux
 
-- name: "SERVER | tmux | install tmux step 4.2 [symbolic .tmux.conf]"
+- name: "SERVER | tmux | install tmux step 3.2 [symbolic .tmux.conf]"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.file:
@@ -104,7 +85,7 @@
     - install_server
     - tmux
 
-- name: "SERVER | tmux | install tmux step 4.3 [symbolic .tmux.conf.local]"
+- name: "SERVER | tmux | install tmux step 3.3 [symbolic .tmux.conf.local]"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.file:
@@ -116,7 +97,7 @@
     - tmux
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | tmux | install tmux step 4.4 [append command to .tmux.conf.local]"
+- name: "SERVER | tmux | install tmux step 3.4 [append command to .tmux.conf.local]"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.lineinfile:

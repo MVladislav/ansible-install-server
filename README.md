@@ -1,26 +1,35 @@
-# Role Name
-
-**install server**
+# Install Server
 
 [![Ansible Lint](https://github.com/MVladislav/ansible-install-server/actions/workflows/ansible-lint.yml/badge.svg)](https://github.com/MVladislav/ansible-install-server/actions/workflows/ansible-lint.yml)
 [![Ansible Molecule Test](https://github.com/MVladislav/ansible-install-server/actions/workflows/ci.yml/badge.svg)](https://github.com/MVladislav/ansible-install-server/actions/workflows/ci.yml)
 
-## Requirements
+- [Install Server](#install-server)
+  - [Role Variables](#role-variables)
+  - [Example Playbook](#example-playbook)
+  - [License](#license)
 
-_Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required._
+---
+
+Tested with:
+
+- Ubuntu 22.04
+- Ubuntu 23.04
 
 ## Role Variables
 
 ```yml
 clients:
   - name: "{{ ansible_user }}"
-    dev: true
-    updateOrCreate: false
+    dev: true # will used for install (git|zsh|tmux|python|npm) per user
+    updateOrCreate: false # if the user should be updated with below values
+    # shell: /bin/bash
+    # group: 'adm, cdrom, sudo'
+    # createhome: true
+    # password:
 install_server_service_name: "{{ service_name }}"
 install_server_git_user: "{{ ansible_user }}"
 install_server_git_email: "{{ ansible_user }}"
 install_server_config:
-  dev: false
   env_tun_setup: false
   # APT (1) -------------------------------
   apt_base: false
@@ -46,6 +55,8 @@ install_server_config:
   snap_btop: false
   snap_glow: false
   snap_go: false
+  snap_node: false
+  snap_ruby: false
   # OTHER --------------------------------
   git: false
   zsh: false
@@ -63,18 +74,15 @@ install_server_config:
   pip_pre_commit: false
   pip_openconnect_sso: false
   pip_ansible: false
-  # OTHER --------------------------------
+  # NPM --------------------------------
+  npm_typescript: false
+  # GO --------------------------------
   go_kompose: false
-  ruby: false
-  npm: false
+  # OTHER --------------------------------
   mongodb: false
   java: false
   java_ant: false
 ```
-
-## Dependencies
-
-_A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles._
 
 ## Example Playbook
 
@@ -96,8 +104,4 @@ Including an example of how to use your role (for instance, with variables passe
 
 ## License
 
-GNU AFFERO GENERAL PUBLIC LICENSE
-
-## Author Information
-
-MVladislav
+MIT

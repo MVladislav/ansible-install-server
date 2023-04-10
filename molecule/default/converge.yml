@@ -16,7 +16,6 @@
     install_server_git_email: ubuntu
     # --- in playbook ---
     install_server_config:
-      dev: true
       env_tun_setup: true
       # APT (1) -------------------------------
       apt_base: true
@@ -42,6 +41,8 @@
       snap_btop: true
       snap_glow: true
       snap_go: true
+      # snap_node: false
+      snap_ruby: true
       # OTHER --------------------------------
       git: true
       zsh: true
@@ -59,10 +60,11 @@
       pip_pre_commit: true
       pip_openconnect_sso: true
       pip_ansible: true
-      # OTHER --------------------------------
+      # NPM --------------------------------
+      # npm_typescript: false
+      # GO --------------------------------
       go_kompose: true
-      ruby: true
-      # npm: false
+      # OTHER --------------------------------
       # mongodb: false
       java: true
       java_ant: true

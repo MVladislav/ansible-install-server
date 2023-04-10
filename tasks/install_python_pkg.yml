@@ -2,12 +2,25 @@
 # tasks file for ./roles/install_server
 
 # ------------------------------------------------------------------------------
+- name: "SERVER | python | check python version for arg '--break-system-packages'"
+  become: true
+  ansible.builtin.set_fact:
+    install_server_fact_py_extra_args: "--break-system-packages"
+  when:
+    - install_server_python is defined
+    - install_server_python.pip is defined
+    - ansible_facts['python_version'] >= "3.11"
+  tags:
+    - install_server
+    - install_python
+
+# ------------------------------------------------------------------------------
 - name: "SERVER | python | install python packages by pip - for user {{ outer_item.name }}"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.pip:
     name: "{{ item.name }}"
-    extra_args: --break-system-packages
+    extra_args: "{{ install_server_fact_py_extra_args | default('') }}"
   loop: "{{ install_server_python.pip | flatten(levels=1) }}"
   when:
     - install_server_python is defined
@@ -15,6 +28,7 @@
     - item.install is defined
     - item.install | bool
   tags:
+    - molecule-idempotence-notest
     - install_server
     - install_python
 
@@ -42,7 +56,7 @@
   become_user: "{{ outer_item.name }}"
   ansible.builtin.pip:
     name: "{{ item }}"
-    extra_args: --upgrade --break-system-packages
+    extra_args: "--upgrade {{ install_server_fact_py_extra_args | default('') }}"
   with_items: "{{ pip_outdated.stdout_lines }}"
   register: python_pip_upgrade
   # NOTE: ignore error, when there is nothing to upgrade
@@ -53,5 +67,6 @@
     - install_server_python is defined
     - install_server_python.pip is defined
   tags:
+    - molecule-idempotence-notest
     - install_server
     - install_python

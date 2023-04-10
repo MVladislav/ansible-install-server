@@ -7,8 +7,8 @@
   become: true
   ansible.builtin.command: which snap
   register: is_snap_exist
-  changed_when: is_snap_exist.rc not in [0, 1]
-  failed_when: is_snap_exist.rc not in [0, 1]
+  changed_when: false
+  failed_when: false
   when:
     - install_server_snap is defined
   tags:
@@ -39,7 +39,8 @@
   become: true
   community.general.snap:
     name: "{{ item.name }}"
-    classic: "{{ item.classic | bool }}"
+    classic: "{{ item.classic | default(false) | bool }}"
+    channel: "{{ item.channel | default('stable') }}"
   loop: "{{ install_server_snap | flatten(levels=1) }}"
   when:
     - install_server_snap is defined

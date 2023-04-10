@@ -1,0 +1,45 @@
+---
+# tasks file for ./roles/install_server
+
+# ------------------------------------------------------------------------------
+- name: "SERVER | PRE | run apt cache update"
+  ansible.builtin.apt:
+    force_apt_get: true
+    update_cache: true
+  changed_when: false
+  tags:
+    - install_server
+    - pre
+
+# ------------------------------------------------------------------------------
+- name: "SERVER | PRE | check available shells"
+  ansible.builtin.command: cat /etc/shells
+  register: install_server_reg_shells_output
+  changed_when: false
+  tags:
+    - install_server
+    - pre
+    - shell
+
+- name: "SERVER | PRE | set preferred shell"
+  ansible.builtin.set_fact:
+    install_server_preferred_shell:
+      shell: "{{ item.shell }}"
+      aliases_path: "{{ item.aliases_path }}"
+  loop:
+    - shell: /bin/sh
+      aliases_path: ~/.bashrc
+      profile_d: /etc/profile.d
+    - shell: /bin/bash
+      aliases_path: ~/.bashrc
+      profile_d: /etc/profile.d
+    - shell: /bin/zsh
+      aliases_path: ~/.zshrc
+      profile_d: /etc/zsh/profile.d
+  loop_control:
+    label: "{{ item.shell }}"
+  when: item.shell in install_server_reg_shells_output.stdout_lines
+  tags:
+    - install_server
+    - pre
+    - shell

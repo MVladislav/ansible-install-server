@@ -2,14 +2,14 @@
 # tasks file for ./roles/install_server
 
 # ------------------------------------------------------------------------------
+# PRE
+- name: "SERVER | PRE | run pre tasks to collect needed info's"
+  ansible.builtin.include_tasks: pre.yml
+
+# ------------------------------------------------------------------------------
 # SETUP USERS
 - name: "SERVER | user | setup users"
   ansible.builtin.include_tasks: setup_users.yml
-
-# ------------------------------------------------------------------------------
-# DEFAULT PACKAGES
-- name: "SERVER | apt | install default packages"
-  ansible.builtin.include_tasks: install_apt.yml
 
 # --- DEFAULT FOLDER ---
 - name: "SERVER | folder | create default folder per client"
@@ -35,21 +35,20 @@
     - install_server_os_tun.install is defined
     - install_server_os_tun.install | bool
 
-# # ------------------------------------------------------------------------------
-# # ENV
-# - name: set env variables
-#   become: true
-#   lineinfile:
-#     dest: "/etc/environment"
-#     state: present
-#     regexp: "^{{ item.key }}="
-#     line: "{{ item.key }}={{ item.value}}"
-#   with_items:
-#     - key: LC_CTYPE
-#       value: C.UTF-8
-#   tags:
-#     - install_server
-#     - env_variables
+# ------------------------------------------------------------------------------
+# DEFAULT PACKAGES
+- name: "SERVER | apt | install default packages"
+  ansible.builtin.include_tasks: install_apt.yml
+
+# ------------------------------------------------------------------------------
+# DPKG PACKAGES
+- name: "SERVER | dpkg | install dpkg packages"
+  ansible.builtin.include_tasks: install_dpkg.yml
+
+# ------------------------------------------------------------------------------
+# SNAP PACKAGES
+- name: "SERVER | snap | install snap packages"
+  ansible.builtin.include_tasks: install_snap.yml
 
 # ------------------------------------------------------------------------------
 # INSTALL GIT
@@ -97,16 +96,6 @@
     - outer_item.dev | bool
 
 # ------------------------------------------------------------------------------
-# DPKG PACKAGES
-- name: "SERVER | dpkg | install dpkg packages"
-  ansible.builtin.include_tasks: install_dpkg.yml
-
-# ------------------------------------------------------------------------------
-# SNAP PACKAGES
-- name: "SERVER | snap | install snap packages"
-  ansible.builtin.include_tasks: install_snap.yml
-
-# ------------------------------------------------------------------------------
 # PYTHON PACKAGES
 - name: "SERVER | python | install python"
   ansible.builtin.include_tasks: install_python.yml
@@ -129,19 +118,33 @@
 
 # ------------------------------------------------------------------------------
 # RUBY PACKAGES
-- name: "SERVER | ruby | install ruby packages"
-  ansible.builtin.include_tasks: install_ruby.yml
+- name: "SERVER | ruby | set GEM_HOME for all users"
+  become: true
+  ansible.builtin.copy:
+    src: ruby-path.sh
+    dest: "{{ install_server_preferred_shell.profile_d }}"
+    mode: 0644
   when:
-    - install_server_config.ruby is defined
-    - install_server_config.ruby | bool
+    - install_server_config.snap_ruby is defined
+    - install_server_config.snap_ruby | bool
+  tags:
+    - install_server
+    - ruby
 
 # ------------------------------------------------------------------------------
 # NPM PACKAGES
-- name: "SERVER | npm | install npm"
-  ansible.builtin.include_tasks: install_npm.yml
+- name: "SERVER | npm | set npm-PATH for all users"
+  become: true
+  ansible.builtin.copy:
+    src: npm-path.sh
+    dest: "{{ install_server_preferred_shell.profile_d }}"
+    mode: 0644
   when:
-    - install_server_config.npm is defined
-    - install_server_config.npm | bool
+    - install_server_config.snap_node is defined
+    - install_server_config.snap_node | bool
+  tags:
+    - install_server
+    - npm
 
 # - will be installed per client, need to set clients
 - name: "SERVER | npm | install npm packages (per user)"
@@ -150,8 +153,8 @@
   loop_control:
     loop_var: outer_item
   when:
-    - install_server_config.npm is defined
-    - install_server_config.npm | bool
+    - install_server_config.snap_node is defined
+    - install_server_config.snap_node | bool
     - clients is defined
     - outer_item.dev is defined
     - outer_item.dev | bool

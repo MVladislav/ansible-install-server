@@ -22,8 +22,8 @@
 - name: "SERVER | npm | setup NPM prefix"
   become: true
   become_user: "{{ outer_item.name }}"
-  ansible.builtin.command: "npm config set prefix ~/.npm-packages"
-  changed_when: true
+  ansible.builtin.command: /snap/bin/npm config set prefix ~/.npm-packages
+  changed_when: false
   when:
     - install_server_npm_pkg is defined
   tags:
@@ -35,12 +35,14 @@
   become: true
   become_user: "{{ outer_item.name }}"
   community.general.npm:
-    name: "{{ item }}"
+    name: "{{ item.source }}"
     path: "~/.npm-packages"
     global: true
   loop: "{{ install_server_npm_pkg | flatten(levels=1) }}"
   when:
     - install_server_npm_pkg is defined
+    - item.install is defined
+    - item.install | bool
   tags:
     - install_server
     - npm

@@ -5,9 +5,21 @@
 # CLIENTS for adding access (ex. zsh)
 clients:
   - name: "{{ ansible_user }}"
+    # dev: true
+    # shell: /bin/bash
+    # group: 'adm, cdrom, sudo'
+    # createhome: true
+    # password:
+    # updateOrCreate: false
 
 # ------------------------------------------------------------------------------
 install_server_service_name: default-server
+
+# will be changed in 'pre.yml' and on install 'zsh'
+install_server_preferred_shell:
+  shell: /bin/sh
+  aliases_path: ~/.shrc
+  profile_d: /etc/profile.d
 
 install_server_links_to_check_update:
   mongodb_pgp: https://www.mongodb.org/static/pgp/server-6.0.asc
@@ -19,7 +31,6 @@ install_server_links_to_check_update:
 # ------------------------------------------------------------------------------
 # WHAT TO INSTALL
 install_server_config:
-  dev: false
   env_tun_setup: false
   # APT (1) -------------------------------
   apt_base: false
@@ -45,6 +56,8 @@ install_server_config:
   snap_btop: false
   snap_glow: false
   snap_go: false
+  snap_node: false
+  snap_ruby: false
   # OTHER --------------------------------
   git: false
   zsh: false
@@ -62,10 +75,11 @@ install_server_config:
   pip_pre_commit: false
   pip_openconnect_sso: false
   pip_ansible: false
-  # OTHER --------------------------------
+  # NPM --------------------------------
+  npm_typescript: false
+  # GO --------------------------------
   go_kompose: false
-  ruby: false
-  npm: false
+  # OTHER --------------------------------
   mongodb: false
   java: false
   java_ant: false
@@ -308,6 +322,13 @@ install_server_snap:
   - name: go
     classic: true
     install: "{{ install_server_config.snap_go | default('no') | bool }}"
+  - name: node
+    classic: true
+    channel: 19/stable
+    install: "{{ install_server_config.snap_node | default('no') | bool }}"
+  - name: ruby
+    classic: true
+    install: "{{ install_server_config.snap_ruby | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # GIT
@@ -446,8 +467,7 @@ install_server_tmux:
     - bison
     - xclip
   aliases: true
-  # aliases_path: "~/.bashrc"
-  aliases_path: "~/.zshrc"
+  aliases_path: "{{ install_server_preferred_shell.aliases_path }}"
 
 # ------------------------------------------------------------------------------
 # OS TUNNING'S
@@ -500,17 +520,7 @@ install_server_python:
       install: "{{ install_server_config.pip_ansible | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
-# RUBY
-# install_server_config.ruby
-install_server_ruby:
-  apt_dependencies:
-    - ruby-full
-    - build-essential
-    - zlib1g-dev
-  set_path: true
-
-# ------------------------------------------------------------------------------
-# GO packages
+# TODO: GO packages
 # install_server_config.go_...
 install_server_go_sources:
   - source: github.com/kubernetes/kompose
@@ -518,17 +528,11 @@ install_server_go_sources:
 
 # ------------------------------------------------------------------------------
 # NPM
-# install_server_config.npm
-install_server_npm:
-  deb:
-    url: "{{ install_server_links_to_check_update.npm_url }}"
-    file: "{{ install_server_links_to_check_update.npm_file }}"
-  apt: nodejs
-  set_path: true
+# install_server_config.npm_...
 install_server_npm_pkg:
-  - typescript
+  - source: typescript
+    install: "{{ install_server_config.npm_typescript | default('no') | bool }}"
 # - "@angular/cli"
-# - typescript
 # - jshint
 # - ts-node
 # - tslint

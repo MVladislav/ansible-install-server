@@ -86,9 +86,9 @@ if [ -d "$HOME/.local/bin" ]; then
   PATH="$HOME/.local/bin:$PATH"
 fi
 
-if [ -d /etc/zsh/profile.d ]; then
-  if ls /etc/zsh/profile.d/*.sh 1>/dev/null 2>&1; then
-    for i in /etc/zsh/profile.d/*.sh; do
+if [ -d {{ install_server_preferred_shell.profile_d }} ]; then
+  if ls {{ install_server_preferred_shell.profile_d }}/*.sh 1>/dev/null 2>&1; then
+    for i in {{ install_server_preferred_shell.profile_d }}/*.sh; do
       if [ -r $i ]; then
         . $i
       fi

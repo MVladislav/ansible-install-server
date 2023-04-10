@@ -8,13 +8,25 @@
     pkg: "{{ item.name }}"
     state: present
     force_apt_get: true # apt-get instead of aptitude
-    update_cache: true
   loop: "{{ install_server_python.apt | flatten(levels=1) }}"
   when:
     - install_server_python is defined
     - install_server_python.apt is defined
     - item.install is defined
     - item.install | bool
+  tags:
+    - install_server
+    - install_python
+
+# ------------------------------------------------------------------------------
+- name: "SERVER | python | check python version for arg '--break-system-packages'"
+  become: true
+  ansible.builtin.set_fact:
+    install_server_fact_py_extra_args: "--break-system-packages"
+  when:
+    - install_server_python is defined
+    - install_server_python.pip is defined
+    - ansible_facts['python_version'] >= "3.11"
   tags:
     - install_server
     - install_python
@@ -41,7 +53,7 @@
   become: true
   ansible.builtin.pip:
     name: "{{ item }}"
-    extra_args: --upgrade --break-system-packages
+    extra_args: "--upgrade {{ install_server_fact_py_extra_args | default('') }}"
   with_items: "{{ pip_outdated.stdout_lines }}"
   register: python_pip_upgrade
   # NOTE: ignore error, when there is nothing to upgrade

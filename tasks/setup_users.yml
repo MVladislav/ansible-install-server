@@ -17,14 +17,16 @@
   ansible.builtin.user:
     name: "{{ item.name }}"
     state: present
-    # shell: "{{ item.shell | default('/bin/bash')}}"
+    shell: "{{ item.shell | default(install_server_preferred_shell.shell) }}"
     groups: "{{ item.group | default('adm, cdrom, sudo') }}"
-    createhome: "{{ item.createhome | default('yes') | bool }}"
+    createhome: "{{ item.createhome | default('true') | bool }}"
     # sudo apt install whois && mkpasswd --method=sha-512
     password: "{{ item.password }}"
     # update_password: on_create
   loop: "{{ clients | flatten(levels=1) }}"
-  when: item.updateOrCreate is defined and item.updateOrCreate | bool
+  when:
+    - item.updateOrCreate is defined
+    - item.updateOrCreate | bool
   tags:
     - install_server
     - user_setup

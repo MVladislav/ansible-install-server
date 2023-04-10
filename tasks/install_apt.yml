@@ -8,9 +8,11 @@
     pkg: "{{ item.name }}"
     state: present
     force_apt_get: true # apt-get instead of aptitude
-    update_cache: true
   loop: "{{ install_server_apt | flatten(levels=1) }}"
-  when: (install_server_apt is defined) and (item.install is defined and item.install | bool)
+  when:
+    - install_server_apt is defined
+    - item.install is defined
+    - item.install | bool
   tags:
     - install_server
     - apt

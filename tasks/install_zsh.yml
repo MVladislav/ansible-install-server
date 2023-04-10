@@ -8,7 +8,6 @@
     pkg: "{{ install_server_zsh.apt }}"
     state: present
     force_apt_get: true # apt-get instead of aptitude
-    update_cache: true
   tags:
     - install_server
     - zsh
@@ -36,6 +35,27 @@
     {{ install_server_zsh.zshrc_folder }}
   register: zsh_cp_ohmyzsh
   changed_when: zsh_cp_ohmyzsh.rc != 0
+  tags:
+    - install_server
+    - zsh
+
+# ------------------------------------------------------------------------------
+
+- name: "SERVER | zsh | config zsh step 2.2.1 [get zsh path]"
+  ansible.builtin.command: which zsh
+  register: zsh_path
+  changed_when: false
+  tags:
+    - install_server
+    - zsh
+
+- name: "SERVER | zsh | config zsh step 2.2.2 [set preferred shell]"
+  ansible.builtin.set_fact:
+    install_server_preferred_shell:
+      shell: "{{ zsh_path.stdout }}"
+      aliases_path: ~/.zshrc
+      profile_d: /etc/zsh/profile.d
+  when: zsh_path.stdout is defined
   tags:
     - install_server
     - zsh
@@ -111,20 +131,6 @@
     - install_server
     - zsh
 
-# # alias
-# - name: "SERVER | zsh | install zsh step 4.2.3 [replace 'alias docker-swarm-compose' with {{ install_server_zsh.plugins }}]"
-#   become: true
-#   become_user: "{{ outer_item.name }}"
-#   lineinfile:
-#     path: "{{ install_server_zsh.zshrc_folder }}"
-#     regexp: 'alias docker-swarm-compose="(.*?)"'
-#     line: 'alias docker-swarm-compose="docker-compose config | docker stack deploy --compose-file -"'
-#     mode: "0660"
-#   ignore_errors: true
-#   tags:
-#     - install_server
-#     - zsh
-
 # template
 - name: "SERVER | zsh | install zsh step 4.2.3.1 - copy 'template for zsh script tools' with {{ item.path }}"
   become: true
@@ -156,29 +162,20 @@
     - zsh
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | zsh | get zsh path"
-  ansible.builtin.command: which zsh
-  register: zsh_path
-  changed_when: zsh_path.rc != 0
-  tags:
-    - install_server
-    - zsh
-
 - name: "SERVER | zsh | switch to zsh - for user: {{ outer_item.name }}"
   become: true
   ansible.builtin.user:
     name: "{{ outer_item.name }}"
-    shell: "{{ zsh_path.stdout }}"
-  when: zsh_path.stdout is defined
+    shell: "{{ install_server_preferred_shell.shell }}"
   tags:
     - install_server
     - zsh
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | zsh | create a directory, for /etc/zsh/profile.d"
+- name: "SERVER | zsh | create a directory, for {{ install_server_preferred_shell.profile_d }}"
   become: true
   ansible.builtin.file:
-    path: "/etc/zsh/profile.d"
+    path: "{{ install_server_preferred_shell.profile_d }}"
     owner: "root"
     group: "root"
     state: directory
