@@ -3,6 +3,7 @@
 
 # ------------------------------------------------------------------------------
 - name: "SERVER | PRE | run apt cache update"
+  become: true
   ansible.builtin.apt:
     force_apt_get: true
     update_cache: true
