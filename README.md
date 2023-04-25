@@ -64,6 +64,7 @@ install_server_config:
   # PYTHON --------------------------------
   python: false
   python_pip: false
+  python_pip_update: false
   python_venv: false
   python_dev: false
   pip_s_tui: false

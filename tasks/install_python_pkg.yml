@@ -45,6 +45,8 @@
   changed_when: pip_outdated.rc in [1]
   failed_when: pip_outdated.rc not in [0, 1]
   when:
+    - install_server_config.python_pip_update is defined
+    - install_server_config.python_pip_update
     - install_server_python is defined
     - install_server_python.pip is defined
   tags:
@@ -64,6 +66,8 @@
   # failed_when: python_pip_upgrade not in [0,1]
   ignore_errors: true
   when:
+    - install_server_config.python_pip_update is defined
+    - install_server_config.python_pip_update
     - install_server_python is defined
     - install_server_python.pip is defined
   tags:

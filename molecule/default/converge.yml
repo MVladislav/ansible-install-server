@@ -50,6 +50,7 @@
       # PYTHON --------------------------------
       python: true
       python_pip: true
+      python_pip_update: true
       python_venv: true
       python_dev: true
       pip_s_tui: true
