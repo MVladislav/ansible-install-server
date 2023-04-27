@@ -453,9 +453,15 @@ install_server_zsh:
 install_server_tmux:
   update: true
   git: https://github.com/tmux/tmux.git
+  plugins:
+    git: https://github.com/tmux-plugins/tpm.git
+    path: ~/.tmux/plugins/tpm
+    version: master
   style:
     git: https://github.com/gpakosz/.tmux.git
-  apt_dependecies:
+    path: ~/.tmux_style_git
+    version: master
+  apt_dependencies:
     - build-essential
     - git-core
     - wget
@@ -469,6 +475,20 @@ install_server_tmux:
     - xclip
   aliases: true
   aliases_path: "{{ install_server_preferred_shell.aliases_path }}"
+  append_config_style:
+    - set -g prefix C-y
+    - unbind C-y
+    - bind C-y send prefix
+    - setw -g mouse on
+    - tmux_conf_copy_to_os_clipboard=true
+    - tmux_conf_theme_left_separator_main="\uE0B0" # /!\ you don't need to install Powerline
+    - tmux_conf_theme_left_separator_sub="\uE0B1" #   you only need fonts patched with
+    - tmux_conf_theme_right_separator_main="\uE0B2" #   Powerline symbols or the standalone
+    - tmux_conf_theme_right_separator_sub="\uE0B3" #   PowerlineSymbols.otf font, see README.md
+    - tmux_conf_battery_status_charging="🔌" # U+1F50C
+    - tmux_conf_battery_status_discharging="🔋" # U+1F50B
+    - tmux_conf_battery_bar_symbol_full="♥"
+  append_config_tpm: []
 
 # ------------------------------------------------------------------------------
 # OS TUNNING'S

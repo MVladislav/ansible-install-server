@@ -2,10 +2,10 @@
 # tasks file for ./roles/install_server
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | tmux | install tmux dependecies step 1 [apt]"
+- name: "SERVER | tmux | step 1 | install dependencies"
   become: true
   ansible.builtin.apt:
-    pkg: "{{ install_server_tmux.apt_dependecies }}"
+    pkg: "{{ install_server_tmux.apt_dependencies }}"
     state: present
     force_apt_get: true # apt-get instead of aptitude
   tags:
@@ -13,7 +13,7 @@
     - tmux
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | tmux | install tmux step 1 [git clone]"
+- name: "SERVER | tmux | step 2 | install tmux | git clone"
   become: true
   ansible.builtin.git:
     repo: "{{ install_server_tmux.git }}"
@@ -26,7 +26,7 @@
     - tmux
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | tmux | install tmux step 2.1 [run autogen.sh]"
+- name: "SERVER | tmux | step 2.1 | install tmux  | run autogen.sh"
   become: true
   ansible.builtin.shell: ./autogen.sh
   args:
@@ -37,7 +37,7 @@
     - install_server
     - tmux
 
-- name: "SERVER | tmux | install tmux step 2.2 [run configure]"
+- name: "SERVER | tmux | step 2.2 | install tmux  | run configure"
   become: true
   ansible.builtin.shell: ./configure
   args:
@@ -48,7 +48,7 @@
     - install_server
     - tmux
 
-- name: "SERVER | tmux | install tmux step 2.3 [make and install]"
+- name: "SERVER | tmux | step 2.3 | install tmux  | make and install"
   become: true
   ansible.builtin.shell: set -o pipefail && make && make install
   args:
@@ -61,35 +61,49 @@
     - tmux
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | tmux | install tmux step 3.1 [git clone style]"
+- name: "SERVER | tmux | step 3.1 | setup tmux plugins | git clone"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.git:
-    repo: "{{ install_server_tmux.style.git }}"
-    dest: "~/.tmux_style_git"
+    repo: "{{ install_server_tmux.plugins.git }}"
+    dest: "{{ install_server_tmux.plugins.path }}"
     force: true
     update: false
-    version: master
+    version: "{{ install_server_tmux.plugins.version }}"
   tags:
     - install_server
     - tmux
 
-- name: "SERVER | tmux | install tmux step 3.2 [symbolic .tmux.conf]"
+# ------------------------------------------------------------------------------
+- name: "SERVER | tmux | step 4.1 | setup tmux style | git clone"
+  become: true
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.git:
+    repo: "{{ install_server_tmux.style.git }}"
+    dest: "{{ install_server_tmux.style.path }}"
+    force: true
+    update: false
+    version: "{{ install_server_tmux.style.version }}"
+  tags:
+    - install_server
+    - tmux
+
+- name: "SERVER | tmux | step 4.2 | setup tmux style | symbolic .tmux.conf"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.file:
-    src: ~/.tmux_style_git/.tmux.conf
+    src: "{{ install_server_tmux.style.path }}/.tmux.conf"
     dest: ~/.tmux.conf
     state: link
   tags:
     - install_server
     - tmux
 
-- name: "SERVER | tmux | install tmux step 3.3 [symbolic .tmux.conf.local]"
+- name: "SERVER | tmux | step 4.3 | setup tmux style | symbolic .tmux.conf.local"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.file:
-    src: ~/.tmux_style_git/.tmux.conf.local
+    src: "{{ install_server_tmux.style.path }}/.tmux.conf.local"
     dest: ~/.tmux.conf.local
     state: link
   tags:
@@ -97,32 +111,31 @@
     - tmux
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | tmux | install tmux step 3.4 [append command to .tmux.conf.local]"
+- name: "SERVER | tmux | step 5.1 | setup tmux style | append command to .tmux.conf.local"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.lineinfile:
-    dest: "~/.tmux_style_git/.tmux.conf.local"
+    dest: "{{ install_server_tmux.style.path }}/.tmux.conf.local"
     state: present
     line: "{{ item }}"
-  with_items:
-    - set -g prefix C-y
-    - unbind C-y
-    - bind C-y send prefix
-    - setw -g mouse on
-    - tmux_conf_copy_to_os_clipboard=true
-    - tmux_conf_theme_left_separator_main="\uE0B0" # /!\ you don't need to install Powerline
-    - tmux_conf_theme_left_separator_sub="\uE0B1" #   you only need fonts patched with
-    - tmux_conf_theme_right_separator_main="\uE0B2" #   Powerline symbols or the standalone
-    - tmux_conf_theme_right_separator_sub="\uE0B3" #   PowerlineSymbols.otf font, see README.md
-    - tmux_conf_battery_status_charging="🔌" # U+1F50C
-    - tmux_conf_battery_status_discharging="🔋" # U+1F50B
-    - tmux_conf_battery_bar_symbol_full="♥"
+  loop: "{{ install_server_tmux.append_config_style | flatten(levels=1) }}"
+  tags:
+    - install_server
+    - tmux
+
+- name: "SERVER | tmux | step 5.2 | setup tmux tpm | append command to .tmux.conf.local"
+  ansible.builtin.lineinfile:
+    dest: "{{ install_server_tmux.style.path }}/.tmux.conf.local"
+    state: present
+    insertafter: "# -- tpm ------"
+    line: "{{ item }}"
+  loop: "{{ install_server_tmux.append_config_tpm | flatten(levels=1) }}"
   tags:
     - install_server
     - tmux
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | tmux | install tmux step 5.1.1 [create folder for PowerlineSymbols.otf]"
+- name: "SERVER | tmux | step 6.1.1 | create fonts folder"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.file:
@@ -134,7 +147,7 @@
     - tmux
 
 # https://github.com/powerline/fonts
-- name: "SERVER | tmux | install tmux step 5.1.2 [download PowerlineSymbols.otf]"
+- name: "SERVER | tmux | step 6.1.2 | install fonts"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.get_url:
