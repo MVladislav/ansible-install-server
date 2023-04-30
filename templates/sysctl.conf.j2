@@ -73,8 +73,10 @@ net.ipv4.conf.default.secure_redirects=0
 net.ipv4.conf.all.log_martians=1
 net.ipv4.conf.default.log_martians=1
 
+# Ignore bogus ICMP errors
 net.ipv4.icmp_echo_ignore_broadcasts=1
 net.ipv4.icmp_ignore_bogus_error_responses=1
+net.ipv4.icmp_echo_ignore_all=0
 
 # Uncomment the next two lines to enable Spoof protection (reverse-path filter)
 # Turn on Source Address Verification in all interfaces to
