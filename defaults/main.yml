@@ -94,6 +94,8 @@ install_server_apt:
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: curl
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: rsync
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: git
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: git-flow
