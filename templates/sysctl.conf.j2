@@ -28,6 +28,11 @@ fs.inotify.max_user_watches=524288
 
 # Background save may fail under low memory condition
 vm.overcommit_memory=1
+#vm.overcommit_memory=2
+#vm.overcommit_ratio=100
+
+# swapp is not used, so we can turn it complete off
+vm.swappiness=0
 
 # Disable IPv6 usage complete, we do not need it internal
 # think about let it active on device which needs it
