@@ -27,12 +27,23 @@ fs.inotify.max_user_watches=524288
 #kernel.sysrq=438
 
 # Background save may fail under low memory condition
-vm.overcommit_memory=1
+vm.overcommit_memory=0
+#vm.overcommit_memory=1
 #vm.overcommit_memory=2
 #vm.overcommit_ratio=100
 
 # swapp is not used, so we can turn it complete off
 vm.swappiness=0
+
+# Enable Transparent Huge Pages (THP)
+#vm.nr_hugepages=128
+#vm.nr_hugepages_mempolicy=1
+
+# Adjust vfs cache
+# https://lonesysadmin.net/2013/12/22/better-linux-disk-caching-performance-vm-dirty_ratio/
+# Decriase dirty cache to faster flush on disk
+#vm.dirty_background_ratio=5
+#vm.dirty_ratio=10
 
 # Disable IPv6 usage complete, we do not need it internal
 # think about let it active on device which needs it
@@ -124,7 +135,7 @@ net.core.rmem_max=134217728 #67108864
 net.core.wmem_max=134217728 #67108864
 
 # Maximum number of packets queued on the input side
-net.core.netdev_max_backlog=300000
+net.core.netdev_max_backlog=3000
 
 # Enable the use of TCP fast open
 # This allows the system to establish a TCP connection more quickly and improves performance
@@ -133,18 +144,16 @@ net.ipv4.tcp_fastopen=1
 # Enable the use of TCP window scaling
 # increase Linux autotuning TCP buffer limit to 128MB (64MB)
 # This allows the system to handle large TCP window sizes and improves performance
-net.ipv4.tcp_window_scaling=1
+net.ipv4.tcp_window_scaling=3
 ## Minimum, initial and max TCP Receive buffer size in Bytes
 net.ipv4.tcp_rmem=4096 87380 134217728 #67108864
 ## Minimum, initial and max buffer space allocated
 net.ipv4.tcp_wmem=4096 87380 134217728 #67108864
 
-# recommended default congestion control is htcp
-# The Hamilton TCP (HighSpeed-TCP) algorithm is a
-# packet loss based congestion control and is more
-# aggressive pushing up to max bandwidth (total BDP)
-# and favors hosts with lower TTL / VARTTL.
+# recommended default congestion control is ...
 #net.ipv4.tcp_congestion_control=htcp
+#net.ipv4.tcp_congestion_control=bbr
+net.ipv4.tcp_congestion_control=cubic
 
 # recommended for hosts with jumbo frames enabled
 #net.ipv4.tcp_mtu_probing=1
