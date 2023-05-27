@@ -226,10 +226,12 @@ function vm_my_bios() {
 }
 
 alias vm_speed='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python3 - --secure'
+# https://github.com/R0GGER/public-iperf3-servers
 alias vm_speed_1='clear && iperf3 -c speedtest.serverius.net -p 5002 -Ts1 -4 -b0 -i3 -O1 -P1 -w128M -R'
 alias vm_speed_2='clear && iperf3 -c ping.online.net -p 5200 -Ts2 -4 -b0 -i3 -O1 -P1 -w128M -R'
-alias vm_speed_3='clear && iperf3 -c paris.testdebit.info -p 9210 -Ts3 -4 -b0 -i3 -O1 -P1 -w32M -R'
+alias vm_speed_3='clear && iperf3 -c speedtest.shinternet.ch -p 5200 -Ts3 -4 -b0 -i3 -O1 -P1 -R'
 alias vm_speed_4='clear && iperf3 -c paris.testdebit.info -p 9212 -Ts4 -4 -b0 -i3 -O1 -P1 -w32M -R'
+
 
 alias vm_weather='curl https://wttr.in/Albershausen,de'
 
