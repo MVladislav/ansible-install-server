@@ -240,7 +240,7 @@ alias vm_weather='curl https://wttr.in/Stuttgart,de'
 ## ii: display useful host related information
 ##
 ######################################################################
-vm_ii() {
+function vm_ii() {
   echo -e "\\n${BRED}You are logged on:$NC"
   hostname
   echo -e "\\n${BRED}Additional information:$NC"
@@ -328,7 +328,7 @@ function vm_md_to_pdf() {
 ##
 ######################################################################
 # usage:: vm_extract <file>
-vm_extract() {
+function vm_extract() {
   if [ -f "$1" ]; then
     case "$1" in
     *.tar.bz2) tar xjf "$1" ;;
@@ -355,7 +355,7 @@ vm_extract() {
 ## encrypt: encrypt to most know archives with one command
 ##
 ######################################################################
-vm_encrypt() {
+function vm_encrypt() {
   if [ -n "$3" ]; then
     case "$3" in
     sec)
