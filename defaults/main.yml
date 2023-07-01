@@ -517,6 +517,8 @@ install_server_python:
       install: "{{ install_server_config.python_dev | default('no') | bool }}"
     - name: sshpass
       install: "{{ install_server_config.pip_ansible | default('no') | bool }}"
+    - name: libyaml
+      install: "{{ install_server_config.pip_ansible | default('no') | bool }}"
     # NOTE: missing libs when updating python
     - name: libcairo2-dev
       install: "{{ install_server_config.python_pip | default('no') | bool }}"
