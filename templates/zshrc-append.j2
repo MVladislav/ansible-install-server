@@ -99,15 +99,15 @@ fi
 
 ### LS as EXA ###
 # $sudo apt install exa
-alias ls='exa'
-alias l='ls -1'
-alias ll='ls -alhg'
-alias lg='ls -alhg --grid'
-alias lm='ll -t modified'
-alias la='ll -t accessed'
-alias lc='ll -t created'
+alias ls='exa --color=always --icons'
+alias l='ls -a1'
+alias ll='ls -aalhg'
+alias lg='ll --grid'
+alias llm='ll -t modified -s modified'
+alias lla='ll -t accessed -s accessed'
+alias llc='ll -t created -s created'
 alias ld='ls -ld .*'
-alias tree='ls --tree --long -L 3'
+alias tree='ls -TlL 3'
 
 ### CAT as BAT ###
 # $sudo apt install bat
