@@ -116,7 +116,7 @@ alias cat-b='batcat -P --color always'
 
 ### CP as RSYNC ###
 alias cp='rsync --info=progress2 --stats -auz'
-#alias scp='rsync --info=progress2 -auz -e ssh'
+alias scp-r='rsync --info=progress2 -auz -e "ssh -T -o Compression=no -x"'
 
 ### DOCKER ###
 alias docker='DOCKER_BUILDKIT=1 docker'
