@@ -70,6 +70,10 @@ ON_IPURPLE='\033[0;105m'  # Purple
 ON_ICYAN='\033[0;106m'    # Cyan
 ON_IWHITE='\033[0;107m'   # White
 
+### PY & ANSIBLE ###
+export PY_COLOR=1
+export ANSIBLE_FORCE_COLOR=1
+
 ### ZSH ###
 setopt NO_NOMATCH
 
@@ -115,8 +119,8 @@ alias cat='batcat -p -P --color always'
 alias cat-b='batcat -P --color always'
 
 ### CP as RSYNC ###
-alias cp='rsync --info=progress2 --stats -auz'
-alias scp-r='rsync --info=progress2 -auz -e "ssh -T -o Compression=no -x"'
+alias cp='rsync --info=progress2 --stats -auvz'
+alias scp-r='rsync --info=progress2 -auvz -e "ssh -T -o Compression=no -x"'
 
 ### DOCKER ###
 alias docker='DOCKER_BUILDKIT=1 docker'
@@ -200,7 +204,8 @@ alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS}'
 alias pigz='pigz -k -p$(( $(nproc) / 2 ))'
 
 alias t='tail -f'
-alias dus='du -hs * | sort -h'
+alias du-l='du -hs * 2>/dev/null | sort -h'
+alias du-g='du -hs /boot /dev /etc /home /opt /root /snap /srv /sys /tmp /usr /var 2>/dev/null | sort -h'
 alias ip='ip -c'
 
 alias chmod_ux="chmod u+x"

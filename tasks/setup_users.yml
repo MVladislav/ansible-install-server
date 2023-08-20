@@ -25,8 +25,24 @@
     # update_password: on_create
   loop: "{{ clients | flatten(levels=1) }}"
   when:
+    - clients is defined
     - item.updateOrCreate is defined
     - item.updateOrCreate | bool
+  tags:
+    - install_server
+    - user_setup
+
+# --- DEFAULT FOLDER ---
+- name: "SERVER | folder | create default folder per client"
+  become: true
+  become_user: "{{ item.name }}"
+  ansible.builtin.file:
+    path: "~/.local/bin"
+    state: directory
+    mode: "0700"
+  loop: "{{ clients | flatten(levels=1) }}"
+  when:
+    - clients is defined
   tags:
     - install_server
     - user_setup

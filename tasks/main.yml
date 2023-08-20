@@ -11,21 +11,6 @@
 - name: "SERVER | user | setup users"
   ansible.builtin.include_tasks: setup_users.yml
 
-# --- DEFAULT FOLDER ---
-- name: "SERVER | folder | create default folder per client"
-  become: true
-  become_user: "{{ item.name }}"
-  ansible.builtin.file:
-    path: "~/.local/bin"
-    state: directory
-    mode: "0774"
-  loop: "{{ clients | flatten(levels=1) }}"
-  when:
-    - clients is defined
-  tags:
-    - install_server
-    - create_default_folder
-
 # ------------------------------------------------------------------------------
 # --- TUNNING OS ---
 - name: "SERVER | os | run os tunning's"
@@ -117,35 +102,22 @@
     - outer_item.dev | bool
 
 # ------------------------------------------------------------------------------
-# RUBY PACKAGES
-- name: "SERVER | ruby | set GEM_HOME for all users"
-  become: true
-  ansible.builtin.copy:
-    src: ruby-path.sh
-    dest: "{{ install_server_preferred_shell.profile_d }}"
-    mode: 0644
+# GO PACKAGES
+# - will be installed per client, need to set clients
+- name: "SERVER | go | install go packages (per user)"
+  ansible.builtin.include_tasks: install_go_pkg.yml
+  loop: "{{ clients | flatten(levels=1) }}"
+  loop_control:
+    loop_var: outer_item
   when:
-    - install_server_config.snap_ruby is defined
-    - install_server_config.snap_ruby | bool
-  tags:
-    - install_server
-    - ruby
+    - install_server_config.snap_go is defined
+    - install_server_config.snap_go | bool
+    - clients is defined
+    - outer_item.dev is defined
+    - outer_item.dev | bool
 
 # ------------------------------------------------------------------------------
 # NPM PACKAGES
-- name: "SERVER | npm | set npm-PATH for all users"
-  become: true
-  ansible.builtin.copy:
-    src: npm-path.sh
-    dest: "{{ install_server_preferred_shell.profile_d }}"
-    mode: 0644
-  when:
-    - install_server_config.snap_node is defined
-    - install_server_config.snap_node | bool
-  tags:
-    - install_server
-    - npm
-
 # - will be installed per client, need to set clients
 - name: "SERVER | npm | install npm packages (per user)"
   ansible.builtin.include_tasks: install_npm_pkg.yml

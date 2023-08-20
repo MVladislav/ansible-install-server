@@ -79,6 +79,7 @@ install_server_config:
   npm_typescript: false
   # GO --------------------------------
   go_kompose: false
+  go_act: false
   # OTHER --------------------------------
   mongodb: false
   java: false

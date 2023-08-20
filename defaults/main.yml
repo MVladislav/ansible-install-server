@@ -80,6 +80,7 @@ install_server_config:
   npm_typescript: false
   # GO --------------------------------
   go_kompose: false
+  go_act: false
   # OTHER --------------------------------
   mongodb: false
   java: false
@@ -548,6 +549,8 @@ install_server_python:
 install_server_go_sources:
   - source: github.com/kubernetes/kompose
     install: "{{ install_server_config.go_kompose | default('no') | bool }}"
+  - source: github.com/nektos/act
+    install: "{{ install_server_config.go_act | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # NPM
