@@ -3,34 +3,46 @@
   hosts: all
   tasks:
     - name: "Include ansible-install-server"
-      include_role:
+      ansible.builtin.include_role:
         name: "ansible-install-server"
   vars:
     # --- in inventory ---
     clients:
       - name: ubuntu
-        dev: yes
-        updateOrCreate: no
+        dev: true
+        updateOrCreate: false
     install_server_service_name: default-server
     install_server_git_user: ubuntu
     install_server_git_email: ubuntu
+    # some version manually needs to checked and updated
+    install_server_links_to_check_update:
+      mongodb_pgp: https://pgp.mongodb.com/server-7.0.asc
+      mongodb_distribution: jammy/mongodb-org/7.0
+      # https://snapcraft.io/node
+      snap_node_version: 20
+      java_version: 21
     # --- in playbook ---
     install_server_config:
       env_tun_setup: true
       # APT (1) -------------------------------
       apt_base: true
+      apt_auth_priv: true
+      apt_cert: true
       apt_archive: true
       apt_dev: true
       apt_build: true
       apt_libs: true
       # APT (2) -------------------------------
       apt_snap: true
-      apt_vpn: true
+      apt_vpn_resolvconf: true
+      apt_vpn_wireguard: true
+      apt_vpn_openvpn: true
+      apt_vpn_openconnect: true
       apt_php: true
       # apt_rasp_pi_pkg: false
       apt_qemu_guest_agent: true
       # DPKG ----------------------------------
-      # dpkg_...: false
+      # dpkg_...: true
       # SNAP ----------------------------------
       # snap_juju: false
       # snap_maas: false
@@ -41,18 +53,20 @@
       snap_btop: true
       snap_glow: true
       snap_go: true
-      # snap_node: false
+      snap_node: true
       snap_ruby: true
+      snap_openjdk: true
+      snap_openjfx: true
       # OTHER --------------------------------
-      git: true
-      zsh: true
-      tmux: true
+      apt_git_conf: true
+      apt_zsh_conf: true
+      git_tmux_conf: true
       # PYTHON --------------------------------
-      python: true
-      python_pip: true
-      python_pip_update: true
-      python_venv: true
-      python_dev: true
+      python_pip_update: true # if pip should update all installed pkg's
+      apt_python: true
+      apt_python_pip: true
+      apt_python_venv: true
+      apt_python_dev: true
       pip_s_tui: true
       pip_virtualenv: true
       pip_autopep8: true
@@ -67,6 +81,7 @@
       go_kompose: true
       go_act: true
       # OTHER --------------------------------
-      # mongodb: false
-      java: true
-      java_ant: true
+      mongodb: true
+      apt_java_jre_headless: true
+      apt_java_jdk: true
+      apt_java_ant: true

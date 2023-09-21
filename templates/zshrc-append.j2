@@ -286,20 +286,32 @@ function vm_shortcut_appimage() {
     name="$1"
     appimage="$2"
     image_png="$3"
-    sudo mkdir -p "/opt/$name"
-    sudo mv $appimage "/opt/$name/${name}.AppImage"
-    sudo mv $image_png "/opt/$name/${name}.png"
-    sudo chmod u+x "/opt/$name/${name}.AppImage"
 
+    # create folder and move files
+    sudo mkdir -p "/opt/${name}"
+    sudo mv $appimage "/opt/${name}/${name}.AppImage"
+    sudo mv $image_png "/opt/${name}/${name}.png"
+
+    # set correct owner
+    sudo chown root:root "/opt/${name}" -R
+
+    # set correct permission
+    sudo chmod 755 "/opt/${name}"
+    sudo chmod 755 "/opt/${name}/${name}.AppImage"
+    sudo chmod 644 "/opt/${name}/${name}.png"
+
+    # create Desktop Entry
     echo "[Desktop Entry]" | sudo tee "/usr/share/applications/${name}.desktop"
-    echo "Name=$name" | sudo tee -a "/usr/share/applications/${name}.desktop"
-    echo "Exec=/opt/$name/${name}.AppImage" | sudo tee -a "/usr/share/applications/${name}.desktop"
-    echo "Icon=/opt/$name/${name}.png" | sudo tee -a "/usr/share/applications/${name}.desktop"
-    echo "comment=$name" | sudo tee -a "/usr/share/applications/${name}.desktop"
+    echo "Name=${name}" | sudo tee -a "/usr/share/applications/${name}.desktop"
+    echo "Exec=/opt/${name}/${name}.AppImage" | sudo tee -a "/usr/share/applications/${name}.desktop"
+    echo "Icon=/opt/${name}/${name}.png" | sudo tee -a "/usr/share/applications/${name}.desktop"
+    echo "comment=${name}" | sudo tee -a "/usr/share/applications/${name}.desktop"
     echo "Type=Application" | sudo tee -a "/usr/share/applications/${name}.desktop"
     echo "Terminal=false" | sudo tee -a "/usr/share/applications/${name}.desktop"
     echo "Encoding=UTF-8" | sudo tee -a "/usr/share/applications/${name}.desktop"
     echo "Categories=Utility;" | sudo tee -a "/usr/share/applications/${name}.desktop"
+
+    sudo update-desktop-database
   fi
 }
 

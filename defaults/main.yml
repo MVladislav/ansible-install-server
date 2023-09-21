@@ -15,18 +15,19 @@ clients:
 # ------------------------------------------------------------------------------
 install_server_service_name: default-server
 
-# will be changed in 'pre.yml' and on install 'zsh'
+# will be changed auto in 'pre.yml' and on install 'zsh'
 install_server_preferred_shell:
   shell: /bin/sh
   aliases_path: ~/.shrc
   profile_d: /etc/profile.d
 
+# some version manually needs to checked and updated
 install_server_links_to_check_update:
-  mongodb_pgp: https://www.mongodb.org/static/pgp/server-6.0.asc
-  mongodb_distribution: focal/mongodb-org/6.0
-  # https://github.com/nodesource/distributions/blob/master/README.md
-  npm_url: https://deb.nodesource.com/setup_lts.x
-  npm_file: setup_lts.x.sh
+  mongodb_pgp: https://pgp.mongodb.com/server-7.0.asc
+  mongodb_distribution: jammy/mongodb-org/7.0
+  # https://snapcraft.io/node
+  snap_node_version: 20
+  java_version: 17
 
 # ------------------------------------------------------------------------------
 # WHAT TO INSTALL
@@ -34,13 +35,18 @@ install_server_config:
   env_tun_setup: false
   # APT (1) -------------------------------
   apt_base: false
+  apt_auth_priv: false
+  apt_cert: false
   apt_archive: false
   apt_dev: false
   apt_build: false
   apt_libs: false
   # APT (2) -------------------------------
   apt_snap: false
-  apt_vpn: false
+  apt_vpn_resolvconf: false
+  apt_vpn_wireguard: false
+  apt_vpn_openvpn: false
+  apt_vpn_openconnect: false
   apt_php: false
   apt_rasp_pi_pkg: false
   apt_qemu_guest_agent: false
@@ -58,16 +64,18 @@ install_server_config:
   snap_go: false
   snap_node: false
   snap_ruby: false
+  snap_openjdk: false
+  snap_openjfx: false
   # OTHER --------------------------------
-  git: false
-  zsh: false
-  tmux: false
+  apt_git_conf: false
+  apt_zsh_conf: false
+  git_tmux_conf: false
   # PYTHON --------------------------------
-  python: false
-  python_pip: false
-  python_pip_update: false
-  python_venv: false
-  python_dev: false
+  python_pip_update: false # if pip should update all installed pkg's
+  apt_python: false
+  apt_python_pip: false
+  apt_python_venv: false
+  apt_python_dev: false
   pip_s_tui: false
   pip_virtualenv: false
   pip_autopep8: false
@@ -83,25 +91,24 @@ install_server_config:
   go_act: false
   # OTHER --------------------------------
   mongodb: false
-  java: false
-  java_ant: false
+  apt_java_jre_headless: false
+  apt_java_jdk: false
+  apt_java_ant: false
 
 # ------------------------------------------------------------------------------
 # APT
 # install_server_config.apt_...
 install_server_apt:
   # --------------------------------
-  - name: dirmngr
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: curl
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: rsync
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: git
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  - name: git-flow
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: vim
+    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  - name: nano
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: exa
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
@@ -109,19 +116,22 @@ install_server_apt:
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: duf
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  # --------------------------------
+  - name: dirmngr
+    install: "{{ install_server_config.apt_auth_priv | default('no') | bool }}"
+  - name: gnupg
+    install: "{{ install_server_config.apt_auth_priv | default('no') | bool }}"
   - name: libpam-u2f
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+    install: "{{ install_server_config.apt_auth_priv | default('no') | bool }}"
   - name: libfido2-dev
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+    install: "{{ install_server_config.apt_auth_priv | default('no') | bool }}"
   # --------------------------------
   - name: openssl
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+    install: "{{ install_server_config.apt_cert | default('no') | bool }}"
   - name: ca-certificates
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+    install: "{{ install_server_config.apt_cert | default('no') | bool }}"
   - name: apt-transport-https
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  - name: gnupg
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
+    install: "{{ install_server_config.apt_cert | default('no') | bool }}"
   # --------------------------------
   - name: rar
     install: "{{ install_server_config.apt_archive | default('no') | bool }}"
@@ -170,14 +180,6 @@ install_server_apt:
   - name: stress-ng
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   # ----------------------------------------------------------------------------
-  # - name: exfat-fuse
-  #   install: "{{ install_server_config.apt_exfat | default('no') | bool }}"
-  # - name: exfat-utils
-  #   install: "{{ install_server_config.apt_exfat | default('no') | bool }}"
-  # ----------------------------------------------------------------------------
-  # TODO:: check, not found on lunar
-  #- name: freeglut3
-  #  install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: freeglut3-dev
     install: "{{ install_server_config.apt_build | default('no') | bool }}"
   - name: cmake
@@ -193,8 +195,6 @@ install_server_apt:
   - name: mesa-utils
     install: "{{ install_server_config.apt_build | default('no') | bool }}"
   # ----------------------------------------------------------------------------
-  # - name: lib32z1
-  #   install: false
   - name: libstdc++6
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   # ----------------------------------------------------------------------------
@@ -240,23 +240,15 @@ install_server_apt:
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   - name: resolvconf
-    install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
+    install: "{{ install_server_config.apt_vpn_resolvconf | default('no') | bool }}"
   - name: wireguard
-    install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
+    install: "{{ install_server_config.apt_vpn_wireguard | default('no') | bool }}"
   - name: openvpn
-    install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
+    install: "{{ install_server_config.apt_vpn_openvpn | default('no') | bool }}"
   - name: openvpn-systemd-resolved
-    install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
-  # - name: network-manager-openvpn
-  #   install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
+    install: "{{ install_server_config.apt_vpn_openvpn | default('no') | bool }}"
   - name: openconnect
-    install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
-  # - name: network-manager-openconnect
-  #   install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
-  # - name: l2tp
-  #   install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
-  # - name: network-manager-l2tp
-  #   install: "{{ install_server_config.apt_vpn | default('no') | bool }}"
+    install: "{{ install_server_config.apt_vpn_openconnect | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   - name: snapd
     install: "{{ install_server_config.apt_snap | default('no') | bool }}"
@@ -328,11 +320,17 @@ install_server_snap:
     install: "{{ install_server_config.snap_go | default('no') | bool }}"
   - name: node
     classic: true
-    channel: 19/stable
+    channel: "{{ install_server_links_to_check_update.snap_node_version }}/stable"
     install: "{{ install_server_config.snap_node | default('no') | bool }}"
   - name: ruby
     classic: true
     install: "{{ install_server_config.snap_ruby | default('no') | bool }}"
+  - name: openjdk
+    classic: false
+    install: "{{ install_server_config.snap_openjdk | default('no') | bool }}"
+  - name: openjfx
+    classic: false
+    install: "{{ install_server_config.snap_openjfx | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # GIT
@@ -342,7 +340,7 @@ install_server_git_email: "{{ ansible_user }}"
 install_server_git:
   apt:
     - git
-    - git-flow
+    # - git-flow
   git:
     config:
       - key: user.email
@@ -505,24 +503,24 @@ install_server_os_tun:
 install_server_python:
   apt:
     - name: python3
-      install: "{{ install_server_config.python | default('no') | bool }}"
+      install: "{{ install_server_config.apt_python | default('no') | bool }}"
     - name: python3-setuptools
-      install: "{{ install_server_config.python | default('no') | bool }}"
+      install: "{{ install_server_config.apt_python | default('no') | bool }}"
     - name: python3-debian
-      install: "{{ install_server_config.python | default('no') | bool }}"
-    - name: python3-pip
-      install: "{{ install_server_config.python_pip | default('no') | bool }}"
-    - name: python3-venv
-      install: "{{ install_server_config.python_venv | default('no') | bool }}"
-    - name: python3-dev
-      install: "{{ install_server_config.python_dev | default('no') | bool }}"
+      install: "{{ install_server_config.apt_python | default('no') | bool }}"
     - name: sshpass
-      install: "{{ install_server_config.pip_ansible | default('no') | bool }}"
+      install: "{{ install_server_config.apt_python | default('no') | bool }}"
+    - name: python3-pip
+      install: "{{ install_server_config.apt_python_pip | default('no') | bool }}"
+    - name: python3-venv
+      install: "{{ install_server_config.apt_python_venv | default('no') | bool }}"
+    - name: python3-dev
+      install: "{{ install_server_config.apt_python_dev | default('no') | bool }}"
     # NOTE: missing libs when updating python
     - name: libcairo2-dev
-      install: "{{ install_server_config.python_pip | default('no') | bool }}"
+      install: "{{ install_server_config.apt_python_pip | default('no') | bool }}"
     - name: libgirepository1.0-dev
-      install: "{{ install_server_config.python_pip | default('no') | bool }}"
+      install: "{{ install_server_config.apt_python_pip | default('no') | bool }}"
   pip:
     - name: s-tui
       install: "{{ install_server_config.pip_s_tui | default('no') | bool }}"
@@ -583,13 +581,14 @@ install_server_mongodb:
 # ------------------------------------------------------------------------------
 # JAVA
 # install_server_config.java
-install_server_java_version: 11
 install_server_java:
   apt:
-    - name: "openjdk-{{ install_server_java_version }}-jre-headless"
-      install: "{{ install_server_config.java | default('no') | bool }}"
+    - name: "openjdk-{{ install_server_links_to_check_update.java_version }}-jre-headless"
+      install: "{{ install_server_config.apt_java_jre_headless | default('no') | bool }}"
+    - name: "openjdk-{{ install_server_links_to_check_update.java_version }}-jdk"
+      install: "{{ install_server_config.apt_java_jdk | default('no') | bool }}"
     - name: ant
-      install: "{{ install_server_config.java_ant | default('no') | bool }}"
+      install: "{{ install_server_config.apt_java_ant | default('no') | bool }}"
   os_env:
     - variable: JAVA_HOME
-      path: "/usr/lib/jvm/java-{{ install_server_java_version }}-openjdk-amd64"
+      path: "/usr/lib/jvm/java-{{ install_server_links_to_check_update.java_version }}-openjdk-amd64"

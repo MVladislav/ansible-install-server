@@ -22,7 +22,7 @@
 
 # ------------------------------------------------------------------------------
 # DEFAULT PACKAGES
-- name: "SERVER | apt | install default packages"
+- name: "SERVER | apt | install apt packages"
   ansible.builtin.include_tasks: install_apt.yml
 
 # ------------------------------------------------------------------------------
@@ -44,8 +44,8 @@
   loop_control:
     loop_var: outer_item
   when:
-    - install_server_config.git is defined
-    - install_server_config.git | bool
+    - install_server_config.apt_git_conf is defined
+    - install_server_config.apt_git_conf | bool
     - clients is defined
     - outer_item.dev is defined
     - outer_item.dev | bool
@@ -59,8 +59,8 @@
   loop_control:
     loop_var: outer_item
   when:
-    - install_server_config.zsh is defined
-    - install_server_config.zsh | bool
+    - install_server_config.apt_zsh_conf is defined
+    - install_server_config.apt_zsh_conf | bool
     - clients is defined
     - outer_item.dev is defined
     - outer_item.dev | bool
@@ -74,8 +74,8 @@
   loop_control:
     loop_var: outer_item
   when:
-    - install_server_config.tmux is defined
-    - install_server_config.tmux | bool
+    - install_server_config.git_tmux_conf is defined
+    - install_server_config.git_tmux_conf | bool
     - clients is defined
     - outer_item.dev is defined
     - outer_item.dev | bool
@@ -85,8 +85,8 @@
 - name: "SERVER | python | install python"
   ansible.builtin.include_tasks: install_python.yml
   when:
-    - install_server_config.python is defined
-    - install_server_config.python | bool
+    - install_server_config.apt_python is defined
+    - install_server_config.apt_python | bool
 
 # - will be installed per client, need to set clients
 - name: "SERVER | python | install python packages (per user)"
@@ -95,8 +95,8 @@
   loop_control:
     loop_var: outer_item
   when:
-    - install_server_config.python is defined
-    - install_server_config.python | bool
+    - install_server_config.apt_python is defined
+    - install_server_config.apt_python | bool
     - clients is defined
     - outer_item.dev is defined
     - outer_item.dev | bool
@@ -144,5 +144,5 @@
 - name: "SERVER | java | install java packages"
   ansible.builtin.include_tasks: install_java.yml
   when:
-    - install_server_config.java is defined
-    - install_server_config.java | bool
+    - install_server_config.apt_java is defined
+    - install_server_config.apt_java | bool
