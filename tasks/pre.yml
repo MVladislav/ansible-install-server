@@ -27,6 +27,7 @@
     install_server_preferred_shell:
       shell: "{{ item.shell }}"
       aliases_path: "{{ item.aliases_path }}"
+      profile_d: "{{ item.profile_d }}"
   loop:
     - shell: /bin/sh
       aliases_path: ~/.bashrc
@@ -46,44 +47,6 @@
     - shell
 
 # ------------------------------------------------------------------------------
-# GO CONFIG (user)
-- name: "SERVER | go | set GEM_HOME for all users"
-  become: true
-  ansible.builtin.copy:
-    src: go-path.sh
-    dest: "{{ install_server_preferred_shell.profile_d }}"
-    mode: 0644
-  when:
-    - install_server_config.snap_go is defined
-    - install_server_config.snap_go | bool
-  tags:
-    - install_server
-    - go
-
-# RUBY CONFIG (user)
-- name: "SERVER | ruby | set GEM_HOME for all users"
-  become: true
-  ansible.builtin.copy:
-    src: ruby-path.sh
-    dest: "{{ install_server_preferred_shell.profile_d }}"
-    mode: 0644
-  when:
-    - install_server_config.snap_ruby is defined
-    - install_server_config.snap_ruby | bool
-  tags:
-    - install_server
-    - ruby
-
-# NPM CONFIG (user)
-- name: "SERVER | npm | set npm-PATH for all users"
-  become: true
-  ansible.builtin.copy:
-    src: npm-path.sh
-    dest: "{{ install_server_preferred_shell.profile_d }}"
-    mode: 0644
-  when:
-    - install_server_config.snap_node is defined
-    - install_server_config.snap_node | bool
-  tags:
-    - install_server
-    - npm
+# SUFFIX
+- name: "SERVER | pre | run suffix in pre"
+  ansible.builtin.include_tasks: suffix.yml

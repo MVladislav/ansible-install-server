@@ -1,0 +1,42 @@
+# ------------------------------------------------------------------------------
+# GO CONFIG (user)
+- name: "SERVER | suffix | go | set GEM_HOME for all users"
+  become: true
+  ansible.builtin.copy:
+    src: go-path.sh
+    dest: "{{ install_server_preferred_shell.profile_d }}"
+    mode: 0644
+  when:
+    - install_server_config.snap_go is defined
+    - install_server_config.snap_go | bool
+  tags:
+    - install_server
+    - go
+
+# RUBY CONFIG (user)
+- name: "SERVER | suffix | ruby | set GEM_HOME for all users"
+  become: true
+  ansible.builtin.copy:
+    src: ruby-path.sh
+    dest: "{{ install_server_preferred_shell.profile_d }}"
+    mode: 0644
+  when:
+    - install_server_config.snap_ruby is defined
+    - install_server_config.snap_ruby | bool
+  tags:
+    - install_server
+    - ruby
+
+# NPM CONFIG (user)
+- name: "SERVER | suffix | npm | set npm-PATH for all users"
+  become: true
+  ansible.builtin.copy:
+    src: npm-path.sh
+    dest: "{{ install_server_preferred_shell.profile_d }}"
+    mode: 0644
+  when:
+    - install_server_config.snap_node is defined
+    - install_server_config.snap_node | bool
+  tags:
+    - install_server
+    - npm

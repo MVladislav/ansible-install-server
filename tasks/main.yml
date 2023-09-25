@@ -3,7 +3,7 @@
 
 # ------------------------------------------------------------------------------
 # PRE
-- name: "SERVER | PRE | run pre tasks to collect needed info's"
+- name: "SERVER | pre | run pre tasks to collect needed info's"
   ansible.builtin.include_tasks: pre.yml
 
 # ------------------------------------------------------------------------------
@@ -64,6 +64,11 @@
     - clients is defined
     - outer_item.dev is defined
     - outer_item.dev | bool
+
+# ------------------------------------------------------------------------------
+# SUFFIX
+- name: "SERVER | suffix | run suffix tasks to set specific conf's"
+  ansible.builtin.include_tasks: suffix.yml
 
 # ------------------------------------------------------------------------------
 # INSTALL TMUX

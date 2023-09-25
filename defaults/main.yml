@@ -475,7 +475,6 @@ install_server_tmux:
     - bison
     - xclip
   aliases: true
-  aliases_path: "{{ install_server_preferred_shell.aliases_path }}"
   append_config_style:
     - set -g prefix C-y
     - unbind C-y
