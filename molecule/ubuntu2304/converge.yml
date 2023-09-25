@@ -62,7 +62,7 @@
       apt_zsh_conf: true
       git_tmux_conf: true
       # PYTHON --------------------------------
-      python_pip_update: true # if pip should update all installed pkg's
+      # python_pip_update: false # if pip should update all installed pkg's
       apt_python: true
       apt_python_pip: true
       apt_python_venv: true
