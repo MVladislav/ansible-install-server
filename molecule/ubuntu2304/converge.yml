@@ -55,8 +55,8 @@
       snap_go: true
       snap_node: true
       snap_ruby: true
-      snap_openjdk: true
-      snap_openjfx: true
+      # snap_openjdk: false
+      # snap_openjfx: false
       # OTHER --------------------------------
       apt_git_conf: true
       apt_zsh_conf: true
