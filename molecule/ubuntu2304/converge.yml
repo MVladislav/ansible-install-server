@@ -53,7 +53,7 @@
       snap_btop: true
       snap_glow: true
       snap_go: true
-      snap_node: true
+      # TODO: snap_node: true # https://github.com/MVladislav/ansible-install-server/actions/runs/6302551120
       snap_ruby: true
       # snap_openjdk: false
       # snap_openjfx: false
