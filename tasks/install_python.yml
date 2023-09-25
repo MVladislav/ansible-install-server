@@ -55,7 +55,7 @@
   become: true
   ansible.builtin.pip:
     name: "{{ item }}"
-    extra_args: "--upgrade {{ install_server_fact_py_extra_args | default('') }}"
+    extra_args: "--upgrade --upgrade-strategy only-if-needed {{ install_server_fact_py_extra_args | default('') }}"
   with_items: "{{ pip_outdated.stdout_lines }}"
   register: python_pip_upgrade
   # NOTE: ignore error, when there is nothing to upgrade
