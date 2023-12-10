@@ -127,7 +127,8 @@ alias docker='DOCKER_BUILDKIT=1 docker'
 alias docker-compose='DOCKER_BUILDKIT=1 docker compose'
 alias docker-swarm-compose='DOCKER_BUILDKIT=1 docker compose config | sed '\''1{/^name:/d}'\'' | sed '\''s/published: "\(.*\)"/published: \1/'\'' | DOCKER_BUILDKIT=1 CONFIG_VERSION=1 docker stack deploy --resolve-image=never --with-registry-auth --compose-file -'
 
-alias vm_quick_docker_ubuntu="mkdir -p ${HOME}/docker/$(date +'%Y-%m-%d') && docker run -it --network host -v ${HOME}/docker/$(date +'%Y-%m-%d'):/tmp/docker ubuntu:22.10"
+alias vm_quick_docker_ubuntu="mkdir -p ${HOME}/docker/$(date +'%Y-%m-%d') && docker run -it --rm --network host --user root -v ${HOME}/docker/$(date +'%Y-%m-%d'):/tmp/docker --name=ubuntu-server ubuntu:23.10"
+alias vm_quick_docker_iperf="docker run -d -it --restart=unless-stopped --name=iperf3-server -p 5201:5201 networkstatic/iperf3 -s"
 
 ### KUBERNETES ###
 alias k='kubectl'
