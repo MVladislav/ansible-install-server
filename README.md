@@ -5,10 +5,13 @@
 
 - [Install Server](#install-server)
   - [Role Variables](#role-variables)
+  - [Dependencies](#dependencies)
   - [Example Playbook](#example-playbook)
   - [License](#license)
 
 ---
+
+You can checkout [MVladislav - ansible-env-setup - playbooks](https://github.com/MVladislav/ansible-env-setup/tree/main/playbooks) for how i use it in general.
 
 Tested with:
 
@@ -17,7 +20,7 @@ Tested with:
 
 ## Role Variables
 
-some of bellow installation option includes more packages which will installed:
+some of below installation option includes more packages which will installed:
 
 - **apt_base** includes:
   - curl
@@ -186,6 +189,10 @@ install_server_config:
   apt_java_jdk: false
   apt_java_ant: false
 ```
+
+## Dependencies
+
+Developed and testes with Ansible 2.14.4
 
 ## Example Playbook
 
