@@ -115,8 +115,8 @@ alias tree='ls -TlL 3'
 
 ### CAT as BAT ###
 # $sudo apt install bat
-alias cat='batcat -p -P --color always'
-alias cat-b='batcat -P --color always'
+alias catt='batcat -p -P --color always'
+alias catt-b='batcat -P --color always'
 
 ### CP as RSYNC ###
 alias cp-r='rsync --info=progress2 --stats -auz'
@@ -137,40 +137,6 @@ alias h='helm'
 
 ### TERRAFORM ###
 alias tf='terraform'
-
-### VMs ###
-function vm_quick_ubuntu() {
-  TMP_CLOUD_INIT=~/vm_quick_ubuntu_cloud_init.yaml
-  touch "$TMP_CLOUD_INIT"
-  echo '#cloud-config' >"$TMP_CLOUD_INIT"
-  echo 'packages_update: true' >>"$TMP_CLOUD_INIT"
-  echo 'packages_upgrade: true' >>"$TMP_CLOUD_INIT"
-  echo 'packages:' >>"$TMP_CLOUD_INIT"
-  echo '  - cowsay' >>"$TMP_CLOUD_INIT"
-  echo '  - neofetch' >>"$TMP_CLOUD_INIT"
-  echo 'ssh_authorized_keys:' >>"$TMP_CLOUD_INIT"
-  echo '  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJOBsi+JPb9GLFKA83kRpaphBrvb2uM9r0U0S+SPx1Mo ansible-admin' >>"$TMP_CLOUD_INIT"
-  #echo 'users:' >>"$TMP_CLOUD_INIT"
-  #echo '  - name: ubuntu' >>"$TMP_CLOUD_INIT"
-  #echo '    sudo: ALL=(ALL) NOPASSWD:ALL' >>"$TMP_CLOUD_INIT"
-  #echo '    shell: /bin/bash' >>"$TMP_CLOUD_INIT"
-  #echo '    passwd: $6$ngoYt.rUbybjQko6$QWROXbhLqcnwcJ4qACIZIao0t/HO0dfQIrnH2uJlvIf5J.j1QKHdlVb1NyRs2RoG.41MlwX4bxGzsuM0bee9A/' >>$TMP_CLOUD_INIT
-  #echo 'runcmd:' >>"$TMP_CLOUD_INIT"
-  #echo '  - apt update' >>"$TMP_CLOUD_INIT"
-  #echo '  - apt install -y qemu-guest-agent' >>"$TMP_CLOUD_INIT"
-  #echo '  - systemctl start qemu-guest-agent' >>"$TMP_CLOUD_INIT"
-
-  VM_NAME_VERSION=$(echo "$1" | sed 's|\.||g' | tr ':' '-')
-  multipass launch "$1" -n "ubuntu-$VM_NAME_VERSION" -c 2 -d 16G -m 4G --cloud-init "$TMP_CLOUD_INIT"
-  rm "$TMP_CLOUD_INIT"
-  multipass exec "ubuntu-$VM_NAME_VERSION" -- sh -c "${2:-neofetch}"
-}
-function vm_quick_ubuntu_rm() {
-  multipass stop "ubuntu-$(echo "$1" | sed 's|\.||g' | tr ':' '-')"
-  multipass delete "ubuntu-$(echo "$1" | sed 's|\.||g' | tr ':' '-')"
-  multipass purge
-  multipass list
-}
 
 ### PYTHON TOOLS ###
 alias vm_url_decode='python3 -c "import sys, urllib.parse as ul; print(ul.unquote_plus(sys.argv[1]))"'
@@ -193,10 +159,11 @@ alias vm_ta='tmux attach -t'
 alias vm_tk='tmux kill-session -t'
 
 ### updater ###
+alias vm_up_apt='sudo apt update && sudo apt upgrade'
+alias vm_up_snap='sudo snap refresh'
+alias vm_up_flatpak='flatpak update'
 alias vm_up_py_pip='python3 -m pip list -o | cut -f1 -d" " | tr " " "\n" | awk "{if(NR>=3)print}" | cut -d" " -f1 | xargs -n1 python3 -m pip install --no-cache-dir -U --break-system-packages'
 alias vm_up_py_pip_root='sudo python3 -m pip list -o | cut -f1 -d" " | tr " " "\n" | awk "{if(NR>=3)print}" | cut -d" " -f1 | sudo xargs -n1 python3 -m pip install --no-cache-dir -U --break-system-packages'
-alias vm_up_flatpak='flatpak update'
-alias vm_up_snap='snap refresh'
 
 ### OTHER ###
 alias grep='grep --color'
@@ -268,13 +235,51 @@ function vm_ii() {
   date
   echo -e "\\n${BRED}Machine stats:$NC"
   uptime | awk '{$1=$1};1'
-  echo -e "\\n${BRED}Machine BIOS:$NC"
-  vm_my_bios
+  # echo -e "\\n${BRED}Machine BIOS:$NC"
+  # vm_my_bios
   echo -e "\\n${BRED}Public facing IP Address:$NC"
   vm_my_ip
   vm_my_country
   vm_my_ua
   echo
+}
+
+######################################################################
+##
+## quick ubuntu: create multipass ubuntu vm
+##
+######################################################################
+function vm_quick_ubuntu() {
+  TMP_CLOUD_INIT=~/vm_quick_ubuntu_cloud_init.yaml
+  touch "$TMP_CLOUD_INIT"
+  echo '#cloud-config' >"$TMP_CLOUD_INIT"
+  echo 'packages_update: true' >>"$TMP_CLOUD_INIT"
+  echo 'packages_upgrade: true' >>"$TMP_CLOUD_INIT"
+  echo 'packages:' >>"$TMP_CLOUD_INIT"
+  echo '  - cowsay' >>"$TMP_CLOUD_INIT"
+  echo '  - neofetch' >>"$TMP_CLOUD_INIT"
+  echo 'ssh_authorized_keys:' >>"$TMP_CLOUD_INIT"
+  echo '  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJOBsi+JPb9GLFKA83kRpaphBrvb2uM9r0U0S+SPx1Mo ansible-admin' >>"$TMP_CLOUD_INIT"
+  #echo 'users:' >>"$TMP_CLOUD_INIT"
+  #echo '  - name: ubuntu' >>"$TMP_CLOUD_INIT"
+  #echo '    sudo: ALL=(ALL) NOPASSWD:ALL' >>"$TMP_CLOUD_INIT"
+  #echo '    shell: /bin/bash' >>"$TMP_CLOUD_INIT"
+  #echo '    passwd: $6$ngoYt.rUbybjQko6$QWROXbhLqcnwcJ4qACIZIao0t/HO0dfQIrnH2uJlvIf5J.j1QKHdlVb1NyRs2RoG.41MlwX4bxGzsuM0bee9A/' >>$TMP_CLOUD_INIT
+  #echo 'runcmd:' >>"$TMP_CLOUD_INIT"
+  #echo '  - apt update' >>"$TMP_CLOUD_INIT"
+  #echo '  - apt install -y qemu-guest-agent' >>"$TMP_CLOUD_INIT"
+  #echo '  - systemctl start qemu-guest-agent' >>"$TMP_CLOUD_INIT"
+
+  VM_NAME_VERSION=$(echo "$1" | sed 's|\.||g' | tr ':' '-')
+  multipass launch "$1" -n "ubuntu-$VM_NAME_VERSION" -c 2 -d 16G -m 4G --cloud-init "$TMP_CLOUD_INIT"
+  rm "$TMP_CLOUD_INIT"
+  multipass exec "ubuntu-$VM_NAME_VERSION" -- sh -c "${2:-neofetch}"
+}
+function vm_quick_ubuntu_rm() {
+  multipass stop "ubuntu-$(echo "$1" | sed 's|\.||g' | tr ':' '-')"
+  multipass delete "ubuntu-$(echo "$1" | sed 's|\.||g' | tr ':' '-')"
+  multipass purge
+  multipass list
 }
 
 ######################################################################
