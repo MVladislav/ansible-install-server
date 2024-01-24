@@ -7,8 +7,6 @@ ci:
   skip:
     # This steps run in the ci workflow. Keep in sync
     - ansible-lint
-    - mypy
-    - pylint
 
 repos:
   - repo: https://github.com/codespell-project/codespell
@@ -28,7 +26,6 @@ repos:
     hooks:
       # Safety
       - id: detect-private-key
-        exclude: tests/
 
       # git checks
       - id: check-merge-conflict
@@ -69,8 +66,6 @@ repos:
     rev: v1.4.0
     hooks:
       - id: detect-secrets
-        args:
-          - --exclude-files=tests/*
 
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.18.0
