@@ -16,10 +16,8 @@
     install_server_git_email: ubuntu
     # some version manually needs to checked and updated
     install_server_links_to_check_update:
-      mongodb_pgp: https://pgp.mongodb.com/server-7.0.asc
-      mongodb_distribution: jammy/mongodb-org/7.0
       # https://snapcraft.io/node
-      snap_node_version: 20
+      snap_node_version: 21
       java_version: 21
     # --- in playbook ---
     install_server_config:
@@ -38,6 +36,9 @@
       apt_vpn_wireguard: true
       apt_vpn_openvpn: true
       apt_vpn_openconnect: true
+      apt_java_jre_headless: true
+      apt_java_jdk: true
+      apt_java_ant: true
       apt_php: true
       # apt_rasp_pi_pkg: false
       apt_qemu_guest_agent: true
@@ -80,8 +81,3 @@
       # GO --------------------------------
       go_kompose: true
       go_act: true
-      # OTHER --------------------------------
-      mongodb: true
-      apt_java_jre_headless: true
-      apt_java_jdk: true
-      apt_java_ant: true

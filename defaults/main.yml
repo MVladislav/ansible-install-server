@@ -23,10 +23,8 @@ install_server_preferred_shell:
 
 # some version manually needs to checked and updated
 install_server_links_to_check_update:
-  mongodb_pgp: https://pgp.mongodb.com/server-7.0.asc
-  mongodb_distribution: jammy/mongodb-org/7.0
   # https://snapcraft.io/node
-  snap_node_version: 20
+  snap_node_version: 21
   java_version: 17
 
 # ------------------------------------------------------------------------------
@@ -42,14 +40,18 @@ install_server_config:
   apt_build: false
   apt_libs: false
   # APT (2) -------------------------------
+  apt_php: false
+  apt_java_jre_headless: false
+  apt_java_jdk: false
+  apt_java_ant: false
+  # APT (3) -------------------------------
   apt_snap: false
+  apt_qemu_guest_agent: false
+  apt_rasp_pi_pkg: false
   apt_vpn_resolvconf: false
   apt_vpn_wireguard: false
   apt_vpn_openvpn: false
   apt_vpn_openconnect: false
-  apt_php: false
-  apt_rasp_pi_pkg: false
-  apt_qemu_guest_agent: false
   # DPKG ----------------------------------
   # dpkg_...: false
   # SNAP ----------------------------------
@@ -89,11 +91,12 @@ install_server_config:
   # GO --------------------------------
   go_kompose: false
   go_act: false
-  # OTHER --------------------------------
-  mongodb: false
-  apt_java_jre_headless: false
-  apt_java_jdk: false
-  apt_java_ant: false
+
+# ------------------------------------------------------------------------------
+# OS TUNNING'S
+# install_server_config.env_tun_setup
+install_server_os_tun:
+  install: "{{ install_server_config.env_tun_setup | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # APT
@@ -239,19 +242,12 @@ install_server_apt:
   - name: libboost-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   # ----------------------------------------------------------------------------
-  - name: resolvconf
-    install: "{{ install_server_config.apt_vpn_resolvconf | default('no') | bool }}"
-  - name: wireguard
-    install: "{{ install_server_config.apt_vpn_wireguard | default('no') | bool }}"
-  - name: openvpn
-    install: "{{ install_server_config.apt_vpn_openvpn | default('no') | bool }}"
-  - name: openvpn-systemd-resolved
-    install: "{{ install_server_config.apt_vpn_openvpn | default('no') | bool }}"
-  - name: openconnect
-    install: "{{ install_server_config.apt_vpn_openconnect | default('no') | bool }}"
-  # ----------------------------------------------------------------------------
-  - name: snapd
-    install: "{{ install_server_config.apt_snap | default('no') | bool }}"
+  - name: "openjdk-{{ install_server_links_to_check_update.java_version }}-jre-headless"
+    install: "{{ install_server_config.apt_java_jre_headless | default('no') | bool }}"
+  - name: "openjdk-{{ install_server_links_to_check_update.java_version }}-jdk"
+    install: "{{ install_server_config.apt_java_jdk | default('no') | bool }}"
+  - name: ant
+    install: "{{ install_server_config.apt_java_ant | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   - name: php
     install: "{{ install_server_config.apt_php | default('no') | bool }}"
@@ -274,11 +270,25 @@ install_server_apt:
   - name: php-zip
     install: "{{ install_server_config.apt_php | default('no') | bool }}"
   # ----------------------------------------------------------------------------
-  - name: linux-modules-extra-raspi
-    install: "{{ install_server_config.apt_rasp_pi_pkg | default('no') | bool }}"
+  - name: snapd
+    install: "{{ install_server_config.apt_snap | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   - name: qemu-guest-agent
     install: "{{ install_server_config.apt_qemu_guest_agent | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  - name: linux-modules-extra-raspi
+    install: "{{ install_server_config.apt_rasp_pi_pkg | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  - name: resolvconf
+    install: "{{ install_server_config.apt_vpn_resolvconf | default('no') | bool }}"
+  - name: wireguard
+    install: "{{ install_server_config.apt_vpn_wireguard | default('no') | bool }}"
+  - name: openvpn
+    install: "{{ install_server_config.apt_vpn_openvpn | default('no') | bool }}"
+  - name: openvpn-systemd-resolved
+    install: "{{ install_server_config.apt_vpn_openvpn | default('no') | bool }}"
+  - name: openconnect
+    install: "{{ install_server_config.apt_vpn_openconnect | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # DPKG packages
@@ -491,12 +501,6 @@ install_server_tmux:
   append_config_tpm: []
 
 # ------------------------------------------------------------------------------
-# OS TUNNING'S
-# install_server_config.env_tun_setup
-install_server_os_tun:
-  install: "{{ install_server_config.env_tun_setup | default('no') | bool }}"
-
-# ------------------------------------------------------------------------------
 # PYTHON
 # install_server_config.python
 install_server_python:
@@ -563,31 +567,9 @@ install_server_npm_pkg:
 # - pm2
 
 # ------------------------------------------------------------------------------
-# MONGODB
-# install_server_config.mongodb
-install_server_mongodb:
-  packages:
-    - mongodb-org
-  service: mongod
-  enabled: true
-  repo_name: mongodb
-  repo: https://repo.mongodb.org/apt/ubuntu
-  version: multiverse
-  fingerprint: null
-  pgp: "{{ install_server_links_to_check_update.mongodb_pgp }}"
-  distribution: "{{ install_server_links_to_check_update.mongodb_distribution }}"
-
-# ------------------------------------------------------------------------------
 # JAVA
 # install_server_config.java
 install_server_java:
-  apt:
-    - name: "openjdk-{{ install_server_links_to_check_update.java_version }}-jre-headless"
-      install: "{{ install_server_config.apt_java_jre_headless | default('no') | bool }}"
-    - name: "openjdk-{{ install_server_links_to_check_update.java_version }}-jdk"
-      install: "{{ install_server_config.apt_java_jdk | default('no') | bool }}"
-    - name: ant
-      install: "{{ install_server_config.apt_java_ant | default('no') | bool }}"
   os_env:
     - variable: JAVA_HOME
       path: "/usr/lib/jvm/java-{{ install_server_links_to_check_update.java_version }}-openjdk-amd64"

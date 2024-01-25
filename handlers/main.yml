@@ -1,14 +1,2 @@
 ---
 # handlers file for ./roles/installer
-
-# ------------------------------------------------------------------------------
-- name: "SERVER | mongodb | restart mongodb"
-  become: true
-  ansible.builtin.service:
-    name: "{{ install_server_mongodb.service }}"
-    state: restarted
-    enabled: "{{ install_server_mongodb.enabled }}"
-  listen: restart mongodb
-  tags:
-    - install_server
-    - mongodb

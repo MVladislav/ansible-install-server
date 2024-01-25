@@ -14,7 +14,7 @@
 # ------------------------------------------------------------------------------
 # --- TUNING OS ---
 - name: "SERVER | os | run os tuning's"
-  ansible.builtin.include_tasks: tun_os.yml
+  ansible.builtin.include_tasks: setup_tun_os.yml
   when:
     - install_server_os_tun is defined
     - install_server_os_tun.install is defined
@@ -137,17 +137,8 @@
     - outer_item.dev | bool
 
 # ------------------------------------------------------------------------------
-# MONGODB PACKAGES
-- name: "SERVER | mongodb | install mongodb"
-  ansible.builtin.include_tasks: install_mongodb.yml
-  when:
-    - install_server_config.mongodb is defined
-    - install_server_config.mongodb | bool
-
-# ------------------------------------------------------------------------------
 # JAVA PACKAGES
-- name: "SERVER | java | install java packages"
-  ansible.builtin.include_tasks: install_java.yml
-  when:
-    - install_server_config.apt_java is defined
-    - install_server_config.apt_java | bool
+- name: "SERVER | java | setup java configs"
+  ansible.builtin.include_tasks: setup_java.yml
+  when: >-
+    (install_server_config.apt_java_jre_headless is defined and install_server_config.apt_java_jre_headless | bool) or (install_server_config.apt_java_jdk is defined and install_server_config.apt_java_jdk | bool)

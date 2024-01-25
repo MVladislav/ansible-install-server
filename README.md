@@ -4,7 +4,7 @@
 [![Ansible Molecule Test](https://github.com/MVladislav/ansible-install-server/actions/workflows/ci.yml/badge.svg)](https://github.com/MVladislav/ansible-install-server/actions/workflows/ci.yml)
 
 - [Install Server](#install-server)
-  - [Role Variables](#role-variables)
+  - [App list for possible install](#app-list-for-possible-install)
   - [Dependencies](#dependencies)
   - [Example Playbook](#example-playbook)
   - [License](#license)
@@ -17,92 +17,6 @@ Tested with:
 
 - Ubuntu 22.04
 - Ubuntu 23.04
-
-## Role Variables
-
-some of below installation option includes more packages which will installed:
-
-- **apt_base** includes:
-  - curl
-  - rsync
-  - git
-  - vim
-  - nano
-  - exa
-  - bat
-  - duf
-- **apt_auth_priv** includes:
-  - dirmngr
-  - gnupg
-  - libpam-u2f
-  - libfido2-dev
-- **apt_cert** includes:
-  - openssl
-  - ca-certificates
-  - apt-transport-https
-- **apt_archive** includes:
-  - rar
-  - unrar
-  - zip
-  - p7zip-full
-  - xz-utils
-  - pigz
-- **apt_dev** includes:
-  - jq
-  - iftop
-  - htop
-  - iotop
-  - nvtop
-  - powertop
-  - sysstat
-  - sysbench
-  - smem
-  - iozone3
-  - haveged
-  - ethtool
-  - net-tools
-  - iperf3
-  - stress
-  - stress-ng
-- **apt_build** includes:
-  - freeglut3-dev
-  - cmake
-  - g++
-  - build-essential
-  - autoconf
-  - pkg-config
-  - mesa-utils
-- **apt_libs** includes:
-  - libstdc++6
-  - libgl1-mesa-dev
-  - libegl1-mesa-dev
-  - libgles2-mesa
-  - libgles2-mesa-dev
-  - libnet1-dev
-  - libnet1
-  - libpcap0.8-dev
-  - libpcap0.8
-  - libpcap-dev
-  - libssl-dev
-  - zlib1g-dev
-  - libxml2-dev
-  - libxslt1-dev
-  - libffi-dev
-  - libpq-dev
-  - libgirepository1.0-dev
-  - libgpgme-dev
-  - libboost-dev
-- **apt_php** includes:
-  - php
-  - php-gmp
-  - php-curl
-  - php-intl
-  - php-mbstring
-  - php-xmlrpc
-  - php-mysql
-  - php-gd
-  - php-xml
-  - php-zip
 
 ```yml
 clients:
@@ -119,8 +33,6 @@ install_server_git_email: "{{ ansible_user }}"
 
 # some version manually needs to checked and updated
 install_server_links_to_check_update:
-  mongodb_pgp: https://pgp.mongodb.com/server-7.0.asc
-  mongodb_distribution: jammy/mongodb-org/7.0
   # https://snapcraft.io/node
   snap_node_version: 20
   java_version: 17
@@ -135,15 +47,19 @@ install_server_config:
   apt_dev: false
   apt_build: false
   apt_libs: false
+  apt_java_jre_headless: false
+  apt_java_jdk: false
+  apt_java_ant: false
+  apt_php: false
   # APT (2) -------------------------------
   apt_snap: false
+  apt_qemu_guest_agent: false
+  apt_rasp_pi_pkg: false
+  # APT (3) -------------------------------
   apt_vpn_resolvconf: false
   apt_vpn_wireguard: false
   apt_vpn_openvpn: false
   apt_vpn_openconnect: false
-  apt_php: false
-  apt_rasp_pi_pkg: false
-  apt_qemu_guest_agent: false
   # DPKG ----------------------------------
   # dpkg_...: false
   # SNAP ----------------------------------
@@ -183,12 +99,126 @@ install_server_config:
   # GO --------------------------------
   go_kompose: false
   go_act: false
-  # OTHER --------------------------------
-  mongodb: false
-  apt_java_jre_headless: false
-  apt_java_jdk: false
-  apt_java_ant: false
 ```
+
+## App list for possible install
+
+> some of below service installations includes more packages which combined by topic
+
+| App                    | snap | flathub | apt | pip | go  | source/conf | topic       |
+| :--------------------- | :--: | :-----: | :-: | :-: | :-: | :---------: | :---------- |
+| curl                   |      |         |  x  |     |     |             | base\*      |
+| rsync                  |      |         |  x  |     |     |             | base\*      |
+| git                    |      |         |  x  |     |     |             | base\*      |
+| vim                    |      |         |  x  |     |     |             | base\*      |
+| nano                   |      |         |  x  |     |     |             | base\*      |
+| exa                    |      |         |  x  |     |     |             | base\*      |
+| bat                    |      |         |  x  |     |     |             | base\*      |
+| duf                    |      |         |  x  |     |     |             | base\*      |
+| dirmngr                |      |         |  x  |     |     |             | auth_priv\* |
+| gnupg                  |      |         |  x  |     |     |             | auth_priv\* |
+| libpam-u2f             |      |         |  x  |     |     |             | auth_priv\* |
+| libfido2-dev           |      |         |  x  |     |     |             | auth_priv\* |
+| openssl                |      |         |  x  |     |     |             | cert\*      |
+| ca-certificates        |      |         |  x  |     |     |             | cert\*      |
+| apt-transport-https    |      |         |  x  |     |     |             | cert\*      |
+| rar                    |      |         |  x  |     |     |             | archive\*   |
+| unrar                  |      |         |  x  |     |     |             | archive\*   |
+| zip                    |      |         |  x  |     |     |             | archive\*   |
+| p7zip-full             |      |         |  x  |     |     |             | archive\*   |
+| xz-utils               |      |         |  x  |     |     |             | archive\*   |
+| pigz                   |      |         |  x  |     |     |             | archive\*   |
+| jq                     |      |         |  x  |     |     |             | dev\*       |
+| iftop                  |      |         |  x  |     |     |             | dev\*       |
+| htop                   |      |         |  x  |     |     |             | dev\*       |
+| iotop                  |      |         |  x  |     |     |             | dev\*       |
+| nvtop                  |      |         |  x  |     |     |             | dev\*       |
+| powertop               |      |         |  x  |     |     |             | dev\*       |
+| sysstat                |      |         |  x  |     |     |             | dev\*       |
+| sysbench               |      |         |  x  |     |     |             | dev\*       |
+| smem                   |      |         |  x  |     |     |             | dev\*       |
+| iozone3                |      |         |  x  |     |     |             | dev\*       |
+| haveged                |      |         |  x  |     |     |             | dev\*       |
+| ethtool                |      |         |  x  |     |     |             | dev\*       |
+| net-tools              |      |         |  x  |     |     |             | dev\*       |
+| iperf3                 |      |         |  x  |     |     |             | dev\*       |
+| stress                 |      |         |  x  |     |     |             | dev\*       |
+| stress-ng              |      |         |  x  |     |     |             | dev\*       |
+| freeglut3-dev          |      |         |  x  |     |     |             | build\*     |
+| cmake                  |      |         |  x  |     |     |             | build\*     |
+| g++                    |      |         |  x  |     |     |             | build\*     |
+| build-essential        |      |         |  x  |     |     |             | build\*     |
+| autoconf               |      |         |  x  |     |     |             | build\*     |
+| pkg-config             |      |         |  x  |     |     |             | build\*     |
+| mesa-utils             |      |         |  x  |     |     |             | build\*     |
+| libgl1-mesa-dev        |      |         |  x  |     |     |             | libs\*      |
+| libegl1-mesa-dev       |      |         |  x  |     |     |             | libs\*      |
+| libgles2-mesa          |      |         |  x  |     |     |             | libs\*      |
+| libgles2-mesa-dev      |      |         |  x  |     |     |             | libs\*      |
+| libnet1-dev            |      |         |  x  |     |     |             | libs\*      |
+| libnet1                |      |         |  x  |     |     |             | libs\*      |
+| libpcap0.8-dev         |      |         |  x  |     |     |             | libs\*      |
+| libpcap0.8             |      |         |  x  |     |     |             | libs\*      |
+| libpcap-dev            |      |         |  x  |     |     |             | libs\*      |
+| libssl-dev             |      |         |  x  |     |     |             | libs\*      |
+| zlib1g-dev             |      |         |  x  |     |     |             | libs\*      |
+| libxml2-dev            |      |         |  x  |     |     |             | libs\*      |
+| libxslt1-dev           |      |         |  x  |     |     |             | libs\*      |
+| libffi-dev             |      |         |  x  |     |     |             | libs\*      |
+| libpq-dev              |      |         |  x  |     |     |             | libs\*      |
+| libgirepository1.0-dev |      |         |  x  |     |     |             | libs\*      |
+| libgpgme-dev           |      |         |  x  |     |     |             | libs\*      |
+| libboost-dev           |      |         |  x  |     |     |             | libs\*      |
+| php                    |      |         |  x  |     |     |             | php\*       |
+| php-gmp                |      |         |  x  |     |     |             | php\*       |
+| php-curl               |      |         |  x  |     |     |             | php\*       |
+| php-intl               |      |         |  x  |     |     |             | php\*       |
+| php-mbstring           |      |         |  x  |     |     |             | php\*       |
+| php-xmlrpc             |      |         |  x  |     |     |             | php\*       |
+| php-mysql              |      |         |  x  |     |     |             | php\*       |
+| php-gd                 |      |         |  x  |     |     |             | php\*       |
+| php-xml                |      |         |  x  |     |     |             | php\*       |
+| php-zip                |      |         |  x  |     |     |             | php\*       |
+| jre_headless           |      |         |  x  |     |     |      x      | java        |
+| jdk                    |      |         |  x  |     |     |      x      | java        |
+| ant                    |      |         |  x  |     |     |             | java        |
+| snap                   |      |         |  x  |     |     |             | system      |
+| qemu_guest_agent       |      |         |  x  |     |     |             | system      |
+| rasp_pi_pkg            |      |         |  x  |     |     |             | system      |
+| resolvconf             |      |         |  x  |     |     |             | vpn         |
+| wireguard              |      |         |  x  |     |     |             | vpn         |
+| openvpn\*              |      |         |  x  |     |     |             | vpn         |
+| openconnect            |      |         |  x  |     |     |             | vpn         |
+| juju                   |  x   |         |     |     |     |             |             |
+| maas                   |  x   |         |     |     |     |             |             |
+| microk8s               |  x   |         |     |     |     |             |             |
+| kubectl                |  x   |         |     |     |     |             |             |
+| helm                   |  x   |         |     |     |     |             |             |
+| multipass              |  x   |         |     |     |     |             |             |
+| btop                   |  x   |         |     |     |     |             |             |
+| glow                   |  x   |         |     |     |     |             |             |
+| go                     |  x   |         |     |     |     |             |             |
+| node                   |  x   |         |     |     |     |             |             |
+| ruby                   |  x   |         |     |     |     |             |             |
+| openjdk                |  x   |         |     |     |     |             |             |
+| openjfx                |  x   |         |     |     |     |             |             |
+| git                    |      |         |  x  |     |     |      x      |             |
+| zsh                    |      |         |  x  |     |     |      x      |             |
+| tmux                   |      |         |     |     |     |      x      |             |
+| python\*               |      |         |  x  |     |     |             |             |
+| python pip\*           |      |         |  x  |     |     |             |             |
+| python venv\*          |      |         |  x  |     |     |             |             |
+| python dev\*           |      |         |  x  |     |     |             |             |
+| s_tui                  |      |         |     |  x  |     |             |             |
+| virtualenv             |      |         |     |  x  |     |             |             |
+| autopep8               |      |         |     |  x  |     |             |             |
+| black                  |      |         |     |  x  |     |             |             |
+| mypy                   |      |         |     |  x  |     |             |             |
+| pre_commit             |      |         |     |  x  |     |             |             |
+| openconnect_sso        |      |         |     |  x  |     |             |             |
+| ansible\*              |      |         |     |  x  |     |             |             |
+| kompose                |      |         |     |     |  x  |             |             |
+| act                    |      |         |     |     |  x  |             |             |
 
 ## Dependencies
 
