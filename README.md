@@ -60,6 +60,10 @@ install_server_config:
   apt_vpn_wireguard: false
   apt_vpn_openvpn: false
   apt_vpn_openconnect: false
+  apt_latex: false
+  apt_pandoc: false
+  apt_john_the_ripper: false
+  apt_nmap: false
   # DPKG ----------------------------------
   # dpkg_...: false
   # SNAP ----------------------------------
@@ -76,6 +80,8 @@ install_server_config:
   snap_ruby: false
   snap_openjdk: false
   snap_openjfx: false
+  snap_john_the_ripper: false
+  snap_nmap: false
   # OTHER --------------------------------
   apt_git_conf: false
   apt_zsh_conf: false
