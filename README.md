@@ -189,6 +189,10 @@ install_server_config:
 | wireguard              |      |         |  x  |     |     |             | vpn         |
 | openvpn\*              |      |         |  x  |     |     |             | vpn         |
 | openconnect            |      |         |  x  |     |     |             | vpn         |
+| latex\*                |      |         |  x  |     |     |             | office      |
+| pandoc\*               |      |         |  x  |     |     |             | office      |
+| john_the_ripper        |  x   |  TODO   |  x  |     |     |             | pen         |
+| nmap                   |  x   |  TODO   |  x  |     |     |             | pen         |
 | juju                   |  x   |         |     |     |     |             |             |
 | maas                   |  x   |         |     |     |     |             |             |
 | microk8s               |  x   |         |     |     |     |             |             |

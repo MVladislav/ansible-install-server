@@ -52,6 +52,10 @@ install_server_config:
   apt_vpn_wireguard: false
   apt_vpn_openvpn: false
   apt_vpn_openconnect: false
+  apt_latex: false
+  apt_pandoc: false
+  apt_john_the_ripper: false
+  apt_nmap: false
   # DPKG ----------------------------------
   # dpkg_...: false
   # SNAP ----------------------------------
@@ -68,6 +72,11 @@ install_server_config:
   snap_ruby: false
   snap_openjdk: false
   snap_openjfx: false
+  snap_john_the_ripper: false
+  snap_nmap: false
+  # # FLATHUB ----------------------------------
+  # flatpak_john_the_ripper: false
+  # flatpak_nmap: false
   # OTHER --------------------------------
   apt_git_conf: false
   apt_zsh_conf: false
@@ -289,6 +298,40 @@ install_server_apt:
     install: "{{ install_server_config.apt_vpn_openvpn | default('no') | bool }}"
   - name: openconnect
     install: "{{ install_server_config.apt_vpn_openconnect | default('no') | bool }}"
+  # --------------------------------
+  - name: texlive-full
+    install: "{{ install_server_config.apt_latex | default('no') | bool }}"
+  - name: texlive-lang-german
+    install: "{{ install_server_config.apt_latex | default('no') | bool }}"
+  - name: texlive
+    install: "{{ install_server_config.apt_latex | default('no') | bool }}"
+  - name: texlive-latex-extra
+    install: "{{ install_server_config.apt_latex | default('no') | bool }}"
+  - name: latexmk
+    install: "{{ install_server_config.apt_latex | default('no') | bool }}"
+  - name: biber
+    install: "{{ install_server_config.apt_latex | default('no') | bool }}"
+  # --------------------------------
+  # https://github.com/Wandmalfarbe/pandoc-latex-template
+  - name: pandoc
+    install: "{{ install_server_config.apt_pandoc | default('no') | bool }}"
+  - name: texlive-latex-base
+    install: "{{ install_server_config.apt_pandoc | default('no') | bool }}"
+  - name: texlive-fonts-recommended
+    install: "{{ install_server_config.apt_pandoc | default('no') | bool }}"
+  - name: texlive-extra-utils
+    install: "{{ install_server_config.apt_pandoc | default('no') | bool }}"
+  - name: texlive-latex-extra
+    install: "{{ install_server_config.apt_pandoc | default('no') | bool }}"
+  - name: texlive-fonts-extra
+    install: "{{ install_server_config.apt_pandoc | default('no') | bool }}"
+  - name: texlive-xetex
+    install: "{{ install_server_config.apt_pandoc | default('no') | bool }}"
+  # --------------------------------
+  - name: john
+    install: "{{ install_server_config.apt_apt_john_the_ripper | default('no') | bool }}"
+  - name: nmap
+    install: "{{ install_server_config.apt_nmap | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # DPKG packages
@@ -341,6 +384,29 @@ install_server_snap:
   - name: openjfx
     classic: false
     install: "{{ install_server_config.snap_openjfx | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  - name: john-the-ripper
+    install: "{{ install_server_config.snap_john_the_ripper | default('no') | bool }}"
+  - name: nmap
+    install: "{{ install_server_config.snap_nmap | default('no') | bool }}"
+
+# # ------------------------------------------------------------------------------
+# # FLATPAK
+# install_server_flatpak_remotes:
+#   - name: flathub
+#     url: https://dl.flathub.org/repo/flathub.flatpakrepo
+#     method: system
+#     install: true
+#   - name: flathub-beta
+#     url: https://flathub.org/beta-repo/flathub-beta.flatpakrepo
+#     method: system
+#     install: true
+# # install_server_config.flatpak_...
+# install_server_flatpak:
+#   - name: com.openwall.John
+#     install: "{{ install_server_config.flatpak_john_the_ripper | default('no') | bool }}"
+#   - name: org.nmap.Zenmap
+#     install: "{{ install_server_config.flatpak_nmap | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # GIT
