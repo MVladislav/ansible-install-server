@@ -44,8 +44,8 @@
   loop_control:
     loop_var: outer_item
   when:
-    - install_server_config.apt_git_conf is defined
-    - install_server_config.apt_git_conf | bool
+    - install_server_config.inst_git_conf is defined
+    - install_server_config.inst_git_conf | bool
     - clients is defined
     - outer_item.dev is defined
     - outer_item.dev | bool
@@ -59,8 +59,8 @@
   loop_control:
     loop_var: outer_item
   when:
-    - install_server_config.apt_zsh_conf is defined
-    - install_server_config.apt_zsh_conf | bool
+    - install_server_config.inst_zsh_conf is defined
+    - install_server_config.inst_zsh_conf | bool
     - clients is defined
     - outer_item.dev is defined
     - outer_item.dev | bool
@@ -79,8 +79,23 @@
   loop_control:
     loop_var: outer_item
   when:
-    - install_server_config.git_tmux_conf is defined
-    - install_server_config.git_tmux_conf | bool
+    - install_server_config.inst_tmux_conf is defined
+    - install_server_config.inst_tmux_conf | bool
+    - clients is defined
+    - outer_item.dev is defined
+    - outer_item.dev | bool
+
+# ------------------------------------------------------------------------------
+# INSTALL NVIM
+# - will be installed per client, need to set clients
+- name: "SERVER | nvim | install nvim (per user)"
+  ansible.builtin.include_tasks: install_nvim.yml
+  loop: "{{ clients | flatten(levels=1) }}"
+  loop_control:
+    loop_var: outer_item
+  when:
+    - install_server_config.inst_nvim_conf is defined
+    - install_server_config.inst_nvim_conf | bool
     - clients is defined
     - outer_item.dev is defined
     - outer_item.dev | bool

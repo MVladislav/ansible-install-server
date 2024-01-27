@@ -1,0 +1,61 @@
+---
+# tasks file for ./roles/install_server
+
+# ------------------------------------------------------------------------------
+- name: "SERVER | nvim | step 1 | install nvim [apt]"
+  become: true
+  ansible.builtin.apt:
+    pkg: "{{ install_server_nvim.apt.name }}"
+    state: present
+    force_apt_get: true # apt-get instead of aptitude
+  when:
+    - install_server_nvim.apt.install is defined
+    - install_server_nvim.apt.install | bool
+  tags:
+    - install_server
+    - nvim
+
+- name: "SERVER | nvim | step 1 | install nvim [snap]"
+  become: true
+  community.general.snap:
+    name: "{{ install_server_nvim.snap.name }}"
+    classic: "{{ install_server_nvim.snap.classic | default(false) | bool }}"
+    channel: "{{ install_server_nvim.snap.channel | default('stable') }}"
+  when:
+    - install_server_nvim.snap.install is defined
+    - install_server_nvim.snap.install | bool
+  tags:
+    - install_server
+    - nvim
+
+# ------------------------------------------------------------------------------
+- name: "SERVER | nvim | step 2 | create folders"
+  become: true
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ outer_item.name }}"
+    group: "{{ outer_item.name }}"
+    mode: "1770"
+  loop: "{{ install_server_nvim.folders | flatten(levels=1) }}"
+  tags:
+    - install_server
+    - nvim
+
+# ------------------------------------------------------------------------------
+- name: "SERVER | nvim | step 3 | setup conf files"
+  become: true
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.template:
+    src: "{{ item.0.path_src }}/{{ item.1 }}.j2"
+    dest: "{{ item.0.path_dest }}/{{ item.1 }}"
+    owner: "{{ outer_item.name }}"
+    group: "{{ outer_item.name }}"
+    mode: "0644"
+  with_subelements:
+    - "{{ install_server_nvim.configs }}"
+    - files
+  tags:
+    - install_server
+    - nvim

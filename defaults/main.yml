@@ -41,9 +41,12 @@ install_server_config:
   apt_libs: false
   # APT (2) -------------------------------
   apt_php: false
+  apt_lua: false
   apt_java_jre_headless: false
   apt_java_jdk: false
   apt_java_ant: false
+  apt_java_maven: false
+  apt_java_gradle: false
   # APT (3) -------------------------------
   apt_snap: false
   apt_qemu_guest_agent: false
@@ -69,18 +72,22 @@ install_server_config:
   snap_glow: false
   snap_go: false
   snap_node: false
-  snap_ruby: false
   snap_openjdk: false
   snap_openjfx: false
+  snap_ruby: false
+  # need to run "rustup default stable"
+  snap_rust: false
   snap_john_the_ripper: false
   snap_nmap: false
   # # FLATHUB ----------------------------------
   # flatpak_john_the_ripper: false
   # flatpak_nmap: false
   # OTHER --------------------------------
-  apt_git_conf: false
-  apt_zsh_conf: false
-  git_tmux_conf: false
+  inst_git_conf: false
+  inst_zsh_conf: false
+  inst_tmux_conf: false
+  inst_nvim_conf: false
+  inst_nvim_conf_pkg: "snap" # snap | git
   # PYTHON --------------------------------
   python_pip_update: false # if pip should update all installed pkg's
   apt_python: false
@@ -251,13 +258,6 @@ install_server_apt:
   - name: libboost-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   # ----------------------------------------------------------------------------
-  - name: "openjdk-{{ install_server_links_to_check_update.java_version }}-jre-headless"
-    install: "{{ install_server_config.apt_java_jre_headless | default('no') | bool }}"
-  - name: "openjdk-{{ install_server_links_to_check_update.java_version }}-jdk"
-    install: "{{ install_server_config.apt_java_jdk | default('no') | bool }}"
-  - name: ant
-    install: "{{ install_server_config.apt_java_ant | default('no') | bool }}"
-  # ----------------------------------------------------------------------------
   - name: php
     install: "{{ install_server_config.apt_php | default('no') | bool }}"
   - name: php-gmp
@@ -278,6 +278,21 @@ install_server_apt:
     install: "{{ install_server_config.apt_php | default('no') | bool }}"
   - name: php-zip
     install: "{{ install_server_config.apt_php | default('no') | bool }}"
+  # ----------------------------------------------------------------------------
+  - name: lua5.4
+    install: "{{ install_server_config.apt_lua | default('no') | bool }}"
+  - name: liblua5.4-dev
+    install: "{{ install_server_config.apt_lua | default('no') | bool }}"
+  - name: "openjdk-{{ install_server_links_to_check_update.java_version }}-jre-headless"
+    install: "{{ install_server_config.apt_java_jre_headless | default('no') | bool }}"
+  - name: "openjdk-{{ install_server_links_to_check_update.java_version }}-jdk"
+    install: "{{ install_server_config.apt_java_jdk | default('no') | bool }}"
+  - name: ant
+    install: "{{ install_server_config.apt_java_ant | default('no') | bool }}"
+  - name: maven
+    install: "{{ install_server_config.apt_java_maven | default('no') | bool }}"
+  - name: gradle
+    install: "{{ install_server_config.apt_java_gradle | default('no') | bool }}"
   # ----------------------------------------------------------------------------
   - name: snapd
     install: "{{ install_server_config.apt_snap | default('no') | bool }}"
@@ -378,6 +393,9 @@ install_server_snap:
   - name: ruby
     classic: true
     install: "{{ install_server_config.snap_ruby | default('no') | bool }}"
+  - name: rustup
+    classic: true
+    install: "{{ install_server_config.snap_rust | default('no') | bool }}"
   - name: openjdk
     classic: false
     install: "{{ install_server_config.snap_openjdk | default('no') | bool }}"
@@ -410,7 +428,7 @@ install_server_snap:
 
 # ------------------------------------------------------------------------------
 # GIT
-# install_server_config.git
+# install_server_config.inst_git_conf
 install_server_git_user: "{{ ansible_user }}"
 install_server_git_email: "{{ ansible_user }}"
 install_server_git:
@@ -441,7 +459,7 @@ install_server_git:
 
 # ------------------------------------------------------------------------------
 # ZSH
-# install_server_config.zsh
+# install_server_config.inst_zsh_conf
 install_server_zsh_user_home: "~"
 install_server_zsh_custom_folder: "{{ install_server_zsh_user_home }}/.oh-my-zsh/custom"
 install_server_zsh:
@@ -524,7 +542,7 @@ install_server_zsh:
 
 # ------------------------------------------------------------------------------
 # TMUX
-# install_server_config.tmux
+# install_server_config.inst_tmux_conf
 # https://github.com/gpakosz/.tmux#configuration
 # https://gist.github.com/henrik/1967800
 install_server_tmux:
@@ -565,6 +583,50 @@ install_server_tmux:
     - tmux_conf_battery_status_discharging="🔋" # U+1F50B
     - tmux_conf_battery_bar_symbol_full="♥"
   append_config_tpm: []
+
+# ------------------------------------------------------------------------------
+# NVIM
+# install_server_config.inst_nvim_conf
+# TheVimeagen - Neovim Config: https://www.youtube.com/watch?v=ZWWxwwUsPNw
+install_server_nvim_group: vm
+install_server_nvim:
+  update: true
+  apt:
+    install: "{{ install_server_config.inst_nvim_conf_pkg | default('snap') == 'apt' | bool }}"
+    name: nvim
+  snap:
+    install: "{{ install_server_config.inst_nvim_conf_pkg | default('snap') == 'snap' | bool }}"
+    name: nvim
+    classic: true
+  folders:
+    - "~/.config/nvim/lua/{{ install_server_nvim_group }}/lazy"
+  configs:
+    - path_dest: ~/.config/nvim
+      path_src: nvim
+      files:
+        - init.lua
+    - path_dest: "~/.config/nvim/lua/{{ install_server_nvim_group }}"
+      path_src: nvim/lua
+      files:
+        - init.lua
+        - remap.lua
+        - set.lua
+        - lazy_init.lua
+    - path_dest: "~/.config/nvim/lua/{{ install_server_nvim_group }}/lazy"
+      path_src: nvim/lazy
+      files:
+        - init.lua
+        - lsp.lua
+        - snippets.lua
+        - fugitive.lua
+        - telescope.lua
+        - harpoon.lua
+        - cloak.lua
+        - colors.lua
+        - treesitter.lua
+        - zenmode.lua
+        - undotree.lua
+        - trouble.lua
 
 # ------------------------------------------------------------------------------
 # PYTHON

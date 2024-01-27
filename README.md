@@ -47,10 +47,13 @@ install_server_config:
   apt_dev: false
   apt_build: false
   apt_libs: false
+  apt_php: false
+  apt_lua: false
   apt_java_jre_headless: false
   apt_java_jdk: false
   apt_java_ant: false
-  apt_php: false
+  apt_java_maven: false
+  apt_java_gradle: false
   # APT (2) -------------------------------
   apt_snap: false
   apt_qemu_guest_agent: false
@@ -77,15 +80,19 @@ install_server_config:
   snap_glow: false
   snap_go: false
   snap_node: false
-  snap_ruby: false
   snap_openjdk: false
   snap_openjfx: false
+  snap_ruby: false
+  # need to run "rustup default stable"
+  snap_rust: false
   snap_john_the_ripper: false
   snap_nmap: false
   # OTHER --------------------------------
-  apt_git_conf: false
-  apt_zsh_conf: false
-  git_tmux_conf: false
+  inst_git_conf: false
+  inst_zsh_conf: false
+  inst_tmux_conf: false
+  inst_nvim_conf: false
+  inst_nvim_conf_pkg: "snap" # snap | git
   # PYTHON --------------------------------
   python_pip_update: false # if pip should update all installed pkg's
   apt_python: false
@@ -185,9 +192,12 @@ install_server_config:
 | php-gd                 |      |         |  x  |     |     |             | php\*       |
 | php-xml                |      |         |  x  |     |     |             | php\*       |
 | php-zip                |      |         |  x  |     |     |             | php\*       |
-| jre_headless           |      |         |  x  |     |     |      x      | java        |
-| jdk                    |      |         |  x  |     |     |      x      | java        |
-| ant                    |      |         |  x  |     |     |             | java        |
+| lua                    |      |         |  x  |     |     |             | dev         |
+| jre_headless           |      |         |  x  |     |     |      x      | dev         |
+| jdk                    |      |         |  x  |     |     |      x      | dev         |
+| ant                    |      |         |  x  |     |     |             | dev         |
+| maven                  |      |         |  x  |     |     |             | dev         |
+| gradle                 |      |         |  x  |     |     |             | dev         |
 | snap                   |      |         |  x  |     |     |             | system      |
 | qemu_guest_agent       |      |         |  x  |     |     |             | system      |
 | rasp_pi_pkg            |      |         |  x  |     |     |             | system      |
@@ -199,36 +209,38 @@ install_server_config:
 | pandoc\*               |      |         |  x  |     |     |             | office      |
 | john_the_ripper        |  x   |  TODO   |  x  |     |     |             | pen         |
 | nmap                   |  x   |  TODO   |  x  |     |     |             | pen         |
-| juju                   |  x   |         |     |     |     |             |             |
-| maas                   |  x   |         |     |     |     |             |             |
-| microk8s               |  x   |         |     |     |     |             |             |
-| kubectl                |  x   |         |     |     |     |             |             |
-| helm                   |  x   |         |     |     |     |             |             |
-| multipass              |  x   |         |     |     |     |             |             |
-| btop                   |  x   |         |     |     |     |             |             |
-| glow                   |  x   |         |     |     |     |             |             |
-| go                     |  x   |         |     |     |     |             |             |
-| node                   |  x   |         |     |     |     |             |             |
-| ruby                   |  x   |         |     |     |     |             |             |
-| openjdk                |  x   |         |     |     |     |             |             |
-| openjfx                |  x   |         |     |     |     |             |             |
-| git                    |      |         |  x  |     |     |      x      |             |
-| zsh                    |      |         |  x  |     |     |      x      |             |
-| tmux                   |      |         |     |     |     |      x      |             |
-| python\*               |      |         |  x  |     |     |             |             |
-| python pip\*           |      |         |  x  |     |     |             |             |
-| python venv\*          |      |         |  x  |     |     |             |             |
-| python dev\*           |      |         |  x  |     |     |             |             |
-| s_tui                  |      |         |     |  x  |     |             |             |
-| virtualenv             |      |         |     |  x  |     |             |             |
-| autopep8               |      |         |     |  x  |     |             |             |
-| black                  |      |         |     |  x  |     |             |             |
-| mypy                   |      |         |     |  x  |     |             |             |
-| pre_commit             |      |         |     |  x  |     |             |             |
-| openconnect_sso        |      |         |     |  x  |     |             |             |
-| ansible\*              |      |         |     |  x  |     |             |             |
-| kompose                |      |         |     |     |  x  |             |             |
-| act                    |      |         |     |     |  x  |             |             |
+| juju                   |  x   |         |     |     |     |             | sys         |
+| maas                   |  x   |         |     |     |     |             | sys         |
+| microk8s               |  x   |         |     |     |     |             | sys         |
+| kubectl                |  x   |         |     |     |     |             | sys         |
+| helm                   |  x   |         |     |     |     |             | sys         |
+| multipass              |  x   |         |     |     |     |             | sys         |
+| btop                   |  x   |         |     |     |     |             | sys         |
+| glow                   |  x   |         |     |     |     |             | sys         |
+| go                     |  x   |         |     |     |     |             | dev         |
+| node                   |  x   |         |     |     |     |             | dev         |
+| openjdk                |  x   |         |     |     |     |             | dev         |
+| openjfx                |  x   |         |     |     |     |             | dev         |
+| ruby                   |  x   |         |     |     |     |             | dev         |
+| rust                   |  x   |         |     |     |     |             | dev         |
+| git                    |      |         |  x  |     |     |      x      | sys         |
+| zsh                    |      |         |  x  |     |     |      x      | sys         |
+| tmux                   |      |         |     |     |     |      x      | sys         |
+| nvim                   |  x   |         |  x  |     |     |      x      | sys         |
+| python\*               |      |         |  x  |     |     |             | dev         |
+| python pip\*           |      |         |  x  |     |     |             | dev         |
+| python venv\*          |      |         |  x  |     |     |             | dev         |
+| python dev\*           |      |         |  x  |     |     |             | dev         |
+| s_tui                  |      |         |     |  x  |     |             | sys         |
+| virtualenv             |      |         |     |  x  |     |             | dev         |
+| autopep8               |      |         |     |  x  |     |             | dev         |
+| black                  |      |         |     |  x  |     |             | dev         |
+| mypy                   |      |         |     |  x  |     |             | dev         |
+| pre_commit             |      |         |     |  x  |     |             | dev         |
+| openconnect_sso        |      |         |     |  x  |     |             | sys         |
+| ansible\*              |      |         |     |  x  |     |             | sys         |
+| kompose                |      |         |     |     |  x  |             | dev         |
+| act                    |      |         |     |     |  x  |             | dev         |
 
 ## Dependencies
 

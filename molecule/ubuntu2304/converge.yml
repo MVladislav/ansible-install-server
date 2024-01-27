@@ -31,17 +31,25 @@
       apt_build: true
       apt_libs: true
       # APT (2) -------------------------------
+      apt_php: true
+      apt_lua: true
+      apt_java_jre_headless: true
+      apt_java_jdk: true
+      apt_java_ant: true
+      apt_java_maven: true
+      apt_java_gradle: true
+      # APT (3) -------------------------------
       apt_snap: true
+      apt_qemu_guest_agent: true
+      # apt_rasp_pi_pkg: false
       apt_vpn_resolvconf: true
       apt_vpn_wireguard: true
       apt_vpn_openvpn: true
       apt_vpn_openconnect: true
-      apt_java_jre_headless: true
-      apt_java_jdk: true
-      apt_java_ant: true
-      apt_php: true
-      # apt_rasp_pi_pkg: false
-      apt_qemu_guest_agent: true
+      # apt_latex: false
+      # apt_pandoc: false
+      apt_john_the_ripper: true
+      apt_nmap: true
       # DPKG ----------------------------------
       # dpkg_...: true
       # SNAP ----------------------------------
@@ -54,14 +62,23 @@
       snap_btop: true
       snap_glow: true
       snap_go: true
-      # TODO: snap_node: true # https://github.com/MVladislav/ansible-install-server/actions/runs/6302551120
-      snap_ruby: true
+      # snap_node: false
       # snap_openjdk: false
       # snap_openjfx: false
+      snap_ruby: false
+      # need to run "rustup default stable"
+      snap_rust: false
+      snap_john_the_ripper: false
+      snap_nmap: false
+      # # FLATHUB ----------------------------------
+      # flatpak_john_the_ripper: false
+      # flatpak_nmap: false
       # OTHER --------------------------------
-      apt_git_conf: true
-      apt_zsh_conf: true
-      git_tmux_conf: true
+      inst_git_conf: true
+      inst_zsh_conf: true
+      inst_tmux_conf: true
+      inst_nvim_conf: true
+      inst_nvim_conf_pkg: "snap" # snap | git
       # PYTHON --------------------------------
       # python_pip_update: false # if pip should update all installed pkg's
       apt_python: true
