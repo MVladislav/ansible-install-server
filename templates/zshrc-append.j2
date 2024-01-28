@@ -122,6 +122,24 @@ alias catt-b='batcat -P --color always'
 alias cp-r='rsync --info=progress2 --stats -auz'
 alias scp-r='rsync --info=progress2 -auz -e "ssh -T -o Compression=no -x"'
 
+### FIND ###
+alias find-no='sudo find / -nouser -o -nogroup -ls 2>/dev/null'
+function find-l() {
+  # -not -regex '/home/.*' \
+  sudo find / \
+    -not -regex '/mnt/.*' \
+    -not -regex '/media/.*' \
+    -not -regex '.*/\.cache/.*' \
+    -not -regex '/proc/.*' \
+    -not -regex '/sys/.*' \
+    -not -regex '/var/log/.*' \
+    -newermt "-${1:-5} minute" -ls 2>/dev/null
+}
+function find-la() {
+  sudo find / \
+    -newermt "-${1:-5} minute" -ls 2>/dev/null
+}
+
 ### DOCKER ###
 alias docker='DOCKER_BUILDKIT=1 docker'
 alias docker-compose='DOCKER_BUILDKIT=1 docker compose'
