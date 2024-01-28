@@ -190,8 +190,8 @@ install_server_apt:
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: ethtool
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
-  - name: net-tools
-    install: "{{ install_server_config.apt_dev | default('no') | bool }}"
+  # - name: net-tools
+  #   install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: iperf3
     install: "{{ install_server_config.apt_dev | default('no') | bool }}"
   - name: stress

@@ -37,7 +37,7 @@
     state: directory
     owner: "{{ outer_item.name }}"
     group: "{{ outer_item.name }}"
-    mode: "1770"
+    mode: "0770"
   loop: "{{ install_server_nvim.folders | flatten(levels=1) }}"
   tags:
     - install_server
@@ -52,7 +52,7 @@
     dest: "{{ item.0.path_dest }}/{{ item.1 }}"
     owner: "{{ outer_item.name }}"
     group: "{{ outer_item.name }}"
-    mode: "0644"
+    mode: "0640"
   with_subelements:
     - "{{ install_server_nvim.configs }}"
     - files
