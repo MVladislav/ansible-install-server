@@ -84,6 +84,7 @@ install_server_config:
   # flatpak_nmap: false
   # OTHER --------------------------------
   inst_git_conf: false
+  inst_fonts: false
   inst_zsh_conf: false
   inst_tmux_conf: false
   inst_nvim_conf: false
@@ -458,6 +459,16 @@ install_server_git:
           filename: "pre-commit"
 
 # ------------------------------------------------------------------------------
+# FONTS
+# install_server_config.inst_fonts
+# https://github.com/ryanoasis/nerd-fonts/releases
+install_server_fonts:
+  fonts_dst: ~/.local/share/fonts
+  fonts_src:
+    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.0/NerdFontsSymbolsOnly.tar.xz
+    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.0/FiraCode.tar.xz
+
+# ------------------------------------------------------------------------------
 # ZSH
 # install_server_config.inst_zsh_conf
 install_server_zsh_user_home: "~"
@@ -468,9 +479,6 @@ install_server_zsh:
   zshrc_folder: "{{ install_server_zsh_user_home }}/.zshrc"
   apt:
     - zsh
-    - powerline
-    - fonts-powerline
-    - fonts-font-awesome
   git:
     ohmyzsh:
       url: https://github.com/robbyrussell/oh-my-zsh.git
@@ -545,20 +553,13 @@ install_server_zsh:
 # install_server_config.inst_tmux_conf
 # https://github.com/gpakosz/.tmux#configuration
 # https://gist.github.com/henrik/1967800
+install_server_tmux_file: ~/.tmux.conf
+install_server_tmux_path: ~/.tmux
+install_server_tmux_path_plugins: ~/.tmux/plugins
 install_server_tmux:
-  update: true
-  git: https://github.com/tmux/tmux.git
-  plugins:
-    git: https://github.com/tmux-plugins/tpm.git
-    path: ~/.tmux/plugins/tpm
-    version: master
-  style:
-    git: https://github.com/gpakosz/.tmux.git
-    path: ~/.tmux_style_git
-    version: master
   apt_dependencies:
     - build-essential
-    - git-core
+    - git
     - wget
     - tar
     - libevent-dev
@@ -567,22 +568,49 @@ install_server_tmux:
     - automake
     - pkg-config
     - bison
+    - yacc
     - xclip
-  aliases: true
-  append_config_style:
-    - set -g prefix C-y
-    - unbind C-y
-    - bind C-y send prefix
-    - setw -g mouse on
-    - tmux_conf_copy_to_os_clipboard=true
-    - tmux_conf_theme_left_separator_main="\uE0B0" # /!\ you don't need to install Powerline
-    - tmux_conf_theme_left_separator_sub="\uE0B1" #   you only need fonts patched with
-    - tmux_conf_theme_right_separator_main="\uE0B2" #   Powerline symbols or the standalone
-    - tmux_conf_theme_right_separator_sub="\uE0B3" #   PowerlineSymbols.otf font, see README.md
-    - tmux_conf_battery_status_charging="🔌" # U+1F50C
-    - tmux_conf_battery_status_discharging="🔋" # U+1F50B
-    - tmux_conf_battery_bar_symbol_full="♥"
-  append_config_tpm: []
+    - fzf
+  update: true
+  git: https://github.com/tmux/tmux.git
+  plugins:
+    - git: https://github.com/tmux-plugins/tpm.git
+      path: "{{ install_server_tmux_path_plugins }}/tpm"
+      version: master
+      conf: "set -g @plugin 'tmux-plugins/tpm'"
+      run: "run '{{ install_server_tmux_path_plugins }}/tpm/tpm'"
+    - git: https://github.com/tmux-plugins/tmux-sensible.git
+      path: "{{ install_server_tmux_path_plugins }}/tmux-sensible"
+      version: master
+      conf: "set -g @plugin 'tmux-plugins/tmux-sensible'"
+    - git: https://github.com/tmux-plugins/tmux-battery.git
+      path: "{{ install_server_tmux_path_plugins }}/tmux-battery"
+      version: master
+      conf: "set -g @plugin 'tmux-plugins/tmux-battery'"
+    - git: https://github.com/tmux-plugins/tmux-yank.git
+      path: "{{ install_server_tmux_path_plugins }}/tmux-yank"
+      version: master
+      conf: "set -g @plugin 'tmux-plugins/tmux-yank'"
+    # - conf: "set -g @plugin 'tmux-plugins/tmux-cpu'"
+    # - conf: "set -g @plugin 'tmux-plugins/tmux-copycat'"
+    # - conf: "set -g @plugin 'tmux-plugins/tmux-resurrect'"
+    # - conf: "set -g @plugin 'tmux-plugins/tmux-continuum'"
+    # - conf: "set -g @plugin 'xamut/tmux-weather'"
+    - git: https://github.com/catppuccin/tmux.git
+      path: "{{ install_server_tmux_path_plugins }}/catppuccin"
+      version: master
+      conf: "set -g @plugin 'catppuccin/tmux'"
+  append_source_files:
+    - "{{ install_server_tmux_path }}/setup.conf"
+    - "{{ install_server_tmux_path }}/remap.conf"
+  append_style_files:
+    - "{{ install_server_tmux_path }}/style.conf"
+  add_conf_files:
+    - setup.conf
+    - remap.conf
+    - style.conf
+  add_script_files:
+    - tmux-sessionizer
 
 # ------------------------------------------------------------------------------
 # NVIM

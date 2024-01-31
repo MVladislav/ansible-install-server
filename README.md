@@ -89,6 +89,7 @@ install_server_config:
   snap_nmap: false
   # OTHER --------------------------------
   inst_git_conf: false
+  inst_fonts: false
   inst_zsh_conf: false
   inst_tmux_conf: false
   inst_nvim_conf: false

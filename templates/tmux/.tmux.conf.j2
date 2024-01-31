@@ -1,0 +1,15 @@
+{% for source in install_server_tmux.append_source_files -%}
+  source-file {{ source }}
+{% endfor %}
+
+{% for plugin in install_server_tmux.plugins -%}
+  {{ plugin.conf }}
+{% endfor %}
+
+{% for style in install_server_tmux.append_style_files -%}
+  source-file {{ style }}
+{% endfor %}
+
+{% for plugin in install_server_tmux.plugins -%}
+  {{ plugin.run }}
+{% endfor %}

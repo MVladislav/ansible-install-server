@@ -51,6 +51,21 @@
     - outer_item.dev | bool
 
 # ------------------------------------------------------------------------------
+# INSTALL FONTS
+# - will be installed per client, need to set clients
+- name: "SERVER | font | install fonts (per user)"
+  ansible.builtin.include_tasks: install_fonts.yml
+  loop: "{{ clients | flatten(levels=1) }}"
+  loop_control:
+    loop_var: outer_item
+  when:
+    - install_server_config.inst_fonts is defined
+    - install_server_config.inst_fonts | bool
+    - clients is defined
+    - outer_item.dev is defined
+    - outer_item.dev | bool
+
+# ------------------------------------------------------------------------------
 # INSTALL ZSH
 # - will be installed per client, need to set clients
 - name: "SERVER | zsh | install zsh (per user)"

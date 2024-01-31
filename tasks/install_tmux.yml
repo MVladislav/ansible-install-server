@@ -26,7 +26,7 @@
     - tmux
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | tmux | step 2.1 | install tmux  | run autogen.sh"
+- name: "SERVER | tmux | step 2.1 | install tmux | run autogen.sh"
   become: true
   ansible.builtin.shell: ./autogen.sh
   args:
@@ -37,7 +37,7 @@
     - install_server
     - tmux
 
-- name: "SERVER | tmux | step 2.2 | install tmux  | run configure"
+- name: "SERVER | tmux | step 2.2 | install tmux | run configure"
   become: true
   ansible.builtin.shell: ./configure
   args:
@@ -48,7 +48,7 @@
     - install_server
     - tmux
 
-- name: "SERVER | tmux | step 2.3 | install tmux  | make and install"
+- name: "SERVER | tmux | step 2.3 | install tmux | make and install"
   become: true
   ansible.builtin.shell: set -o pipefail && make && make install
   args:
@@ -65,99 +65,48 @@
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.git:
-    repo: "{{ install_server_tmux.plugins.git }}"
-    dest: "{{ install_server_tmux.plugins.path }}"
+    repo: "{{ item.plugins.git }}"
+    dest: "{{ item.plugins.path }}"
     force: true
-    update: false
-    version: "{{ install_server_tmux.plugins.version }}"
+    update: "{{ install_server_tmux.update | bool }}"
+    version: "{{ item.plugins.version }}"
+  loop: "{{ install_server_tmux.plugins | flatten(levels=1) }}"
   tags:
     - install_server
     - tmux
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | tmux | step 4.1 | setup tmux style | git clone"
+- name: "SERVER | tmux | step 5.1 | setup tmux | add base conf file"
   become: true
   become_user: "{{ outer_item.name }}"
-  ansible.builtin.git:
-    repo: "{{ install_server_tmux.style.git }}"
-    dest: "{{ install_server_tmux.style.path }}"
-    force: true
-    update: false
-    version: "{{ install_server_tmux.style.version }}"
+  ansible.builtin.template:
+    src: tmux/.tmux.conf.j2
+    dest: "{{ install_server_tmux_file }}"
+    mode: "0660"
   tags:
     - install_server
     - tmux
 
-- name: "SERVER | tmux | step 4.2 | setup tmux style | symbolic .tmux.conf"
+- name: "SERVER | tmux | step 5.2 | setup tmux | add additional conf file"
   become: true
   become_user: "{{ outer_item.name }}"
-  ansible.builtin.file:
-    src: "{{ install_server_tmux.style.path }}/.tmux.conf"
-    dest: ~/.tmux.conf
-    state: link
+  ansible.builtin.template:
+    src: "tmux/{{ item }}.j2"
+    dest: "{{ install_server_tmux_path }}/{{ item }}"
+    mode: "0660"
+  loop: "{{ install_server_tmux.add_conf_files | flatten(levels=1) }}"
   tags:
     - install_server
     - tmux
 
-- name: "SERVER | tmux | step 4.3 | setup tmux style | symbolic .tmux.conf.local"
+- name: "SERVER | tmux | step 5.3 | setup tmux | add additional script helper"
   become: true
   become_user: "{{ outer_item.name }}"
-  ansible.builtin.file:
-    src: "{{ install_server_tmux.style.path }}/.tmux.conf.local"
-    dest: ~/.tmux.conf.local
-    state: link
-  tags:
-    - install_server
-    - tmux
-
-# ------------------------------------------------------------------------------
-- name: "SERVER | tmux | step 5.1 | setup tmux style | append command to .tmux.conf.local"
-  become: true
-  become_user: "{{ outer_item.name }}"
-  ansible.builtin.lineinfile:
-    dest: "{{ install_server_tmux.style.path }}/.tmux.conf.local"
-    state: present
-    line: "{{ item }}"
-  loop: "{{ install_server_tmux.append_config_style | flatten(levels=1) }}"
-  tags:
-    - install_server
-    - tmux
-
-- name: "SERVER | tmux | step 5.2 | setup tmux tpm | append command to .tmux.conf.local"
-  ansible.builtin.lineinfile:
-    dest: "{{ install_server_tmux.style.path }}/.tmux.conf.local"
-    state: present
-    insertafter: "# -- tpm ------"
-    line: "{{ item }}"
-  loop: "{{ install_server_tmux.append_config_tpm | flatten(levels=1) }}"
-  tags:
-    - install_server
-    - tmux
-
-# ------------------------------------------------------------------------------
-- name: "SERVER | tmux | step 6.1.1 | create fonts folder"
-  become: true
-  become_user: "{{ outer_item.name }}"
-  ansible.builtin.file:
-    path: ~/.local/share/fonts/
-    state: directory
-    mode: "0754"
-  tags:
-    - install_server
-    - tmux
-
-# https://github.com/powerline/fonts
-- name: "SERVER | tmux | step 6.1.2 | install fonts"
-  become: true
-  become_user: "{{ outer_item.name }}"
-  ansible.builtin.get_url:
-    url: "{{ item }}"
-    dest: ~/.local/share/fonts/
-    mode: "0664"
-  loop:
-    - https://raw.githubusercontent.com/powerline/fonts/master/ProFont/ProFont%20For%20Powerline.ttf
-    - https://raw.githubusercontent.com/powerline/fonts/master/UbuntuMono/Ubuntu%20Mono%20derivative%20Powerline.ttf
-    - https://raw.githubusercontent.com/powerline/fonts/master/SourceCodePro/Source%20Code%20Pro%20for%20Powerline.otf
+  ansible.builtin.template:
+    src: "tmux/scripts/{{ item }}.j2"
+    dest: ".local/bin/{{ item }}"
+    mode: "0760"
+  loop: "{{ install_server_tmux.add_script_files | flatten(levels=1) }}"
   tags:
     - install_server
     - tmux

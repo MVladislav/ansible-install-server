@@ -1,0 +1,28 @@
+---
+# tasks file for ./roles/install_server
+
+# ------------------------------------------------------------------------------
+- name: "SERVER | fonts | create fonts folder"
+  become: true
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.file:
+    path: "{{ install_server_fonts.fonts_dst }}"
+    state: directory
+    mode: "0754"
+  tags:
+    - install_server
+    - fonts
+
+# https://github.com/powerline/fonts
+- name: "SERVER | fonts | install fonts"
+  become: true
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.unarchive:
+    src: "{{ item }}"
+    dest: "{{ install_server_fonts.fonts_dst }}"
+    remote_src: yes
+    mode: "0660"
+  loop: "{{ install_server_fonts.fonts_src | flatten(levels=1) }}"
+  tags:
+    - install_server
+    - fonts
