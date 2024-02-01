@@ -467,6 +467,10 @@ install_server_fonts:
   fonts_src:
     - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.0/NerdFontsSymbolsOnly.tar.xz
     - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.0/FiraCode.tar.xz
+    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.0/Hack.tar.xz
+    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.0/UbuntuMono.tar.xz
+    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.0/FiraMono.tar.xz
+    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.0/RobotoMono.tar.xz
 
 # ------------------------------------------------------------------------------
 # ZSH
