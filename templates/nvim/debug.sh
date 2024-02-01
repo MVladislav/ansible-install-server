@@ -7,6 +7,7 @@ DST_BASE=~/.config/nvim
 DST_GRP="lua/${NVIM_GROUP}"
 DST_LAZY="${DST_GRP}/lazy"
 
+rm -rf "$DST_BASE"
 mkdir -p "${DST_BASE}/${DST_LAZY}"
 
 echo "copy base files"
