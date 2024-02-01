@@ -1,3 +1,12 @@
+set -g status-bg default
+set -g status-style bg=default
+set -g pane-active-border-style 'fg=default,bg=default'
+set -g pane-border-style 'fg=default,bg=default'
+#set -g window-status-current-style fg=default,bg=default
+
+#set -g @catppuccin_window_default_background default
+#set -g @catppuccin_window_current_background default
+
 set -g @catppuccin_window_left_separator ""
 set -g @catppuccin_window_right_separator " "
 set -g @catppuccin_window_middle_separator " █"
@@ -9,7 +18,7 @@ set -g @catppuccin_window_default_text "#W"
 set -g @catppuccin_window_current_fill "number"
 set -g @catppuccin_window_current_text "#W#{?window_zoomed_flag,(),}"
 
-set -g @catppuccin_status_modules_right "user host battery date_time"
+set -g @catppuccin_status_modules_right "user host battery cpu date_time"
 set -g @catppuccin_status_modules_left "session"
 set -g @catppuccin_status_left_separator  " "
 set -g @catppuccin_status_right_separator ""

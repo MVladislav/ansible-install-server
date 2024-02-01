@@ -583,23 +583,22 @@ install_server_tmux:
       path: "{{ install_server_tmux_path_plugins }}/tmux-sensible"
       version: master
       conf: "set -g @plugin 'tmux-plugins/tmux-sensible'"
-    - git: https://github.com/tmux-plugins/tmux-battery.git
-      path: "{{ install_server_tmux_path_plugins }}/tmux-battery"
-      version: master
-      conf: "set -g @plugin 'tmux-plugins/tmux-battery'"
     - git: https://github.com/tmux-plugins/tmux-yank.git
       path: "{{ install_server_tmux_path_plugins }}/tmux-yank"
       version: master
       conf: "set -g @plugin 'tmux-plugins/tmux-yank'"
-    # - conf: "set -g @plugin 'tmux-plugins/tmux-cpu'"
-    # - conf: "set -g @plugin 'tmux-plugins/tmux-copycat'"
-    # - conf: "set -g @plugin 'tmux-plugins/tmux-resurrect'"
-    # - conf: "set -g @plugin 'tmux-plugins/tmux-continuum'"
-    # - conf: "set -g @plugin 'xamut/tmux-weather'"
     - git: https://github.com/catppuccin/tmux.git
       path: "{{ install_server_tmux_path_plugins }}/catppuccin"
       version: master
       conf: "set -g @plugin 'catppuccin/tmux'"
+    - git: https://github.com/tmux-plugins/tmux-battery.git
+      path: "{{ install_server_tmux_path_plugins }}/tmux-battery"
+      version: master
+      conf: "set -g @plugin 'tmux-plugins/tmux-battery'"
+    - git: https://github.com/tmux-plugins/tmux-cpu.git
+      path: "{{ install_server_tmux_path_plugins }}/tmux-cpu"
+      version: master
+      conf: "set -g @plugin 'tmux-plugins/tmux-cpu'"
   append_source_files:
     - "{{ install_server_tmux_path }}/setup.conf"
     - "{{ install_server_tmux_path }}/remap.conf"
