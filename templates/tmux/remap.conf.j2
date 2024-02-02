@@ -1,3 +1,9 @@
+unbind C-b
+set -g prefix C-y
+bind C-y send-prefix
+#set -g prefix C-Space
+#bind C-Space send-prefix
+
 # -- general -------------------------------------------------------------------
 
 bind-key -r f run-shell "tmux neww tmux-sessionizer"
