@@ -647,18 +647,18 @@ install_server_nvim:
     - path_dest: "~/.config/nvim/lua/{{ install_server_nvim_group }}/lazy"
       path_src: nvim/lazy
       files:
+        - cloak.lua
+        - colors.lua
+        - git.lua
+        - harpoon.lua
         - init.lua
         - lsp.lua
         - snippets.lua
-        - fugitive.lua
         - telescope.lua
-        - harpoon.lua
-        - cloak.lua
-        - colors.lua
         - treesitter.lua
-        - zenmode.lua
-        - undotree.lua
         - trouble.lua
+        - undotree.lua
+        - zenmode.lua
 
 # ------------------------------------------------------------------------------
 # PYTHON

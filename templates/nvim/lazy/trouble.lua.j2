@@ -15,9 +15,6 @@ return {
       vim.keymap.set("n", "<leader>tp", function()
         require("trouble").previous({ skip_groups = true, jump = true });
       end)
-
-      -- vim.keymap.set("n", "<leader>xq", "<cmd>TroubleToggle quickfix<cr>"),
-      -- {silent = true, noremap = true}
     end
   }
 }
