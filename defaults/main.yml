@@ -612,6 +612,7 @@ install_server_tmux:
     - setup.conf
     - remap.conf
     - style.conf
+    # - tmux-functions.j2
   add_script_files:
     - tmux-sessionizer
 
