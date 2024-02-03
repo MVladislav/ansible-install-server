@@ -23,7 +23,14 @@ return {
         cmp_lsp.default_capabilities()
       )
 
-      require("fidget").setup({})
+      require("fidget").setup({
+        notification = {
+          window = {
+            winblend = 0,
+          },
+        }
+      })
+
       require("mason").setup()
       require("mason-lspconfig").setup({
         ensured_installed = {
@@ -40,6 +47,7 @@ return {
           'ltex',
           'ruff_lsp',
           'yamlls',
+          'pyright',
         },
         handlers = {
           function(server_name) -- default handler (optional)
@@ -85,7 +93,6 @@ return {
       })
 
       vim.diagnostic.config({
-        --virtual_text = true,
         update_in_insert = true,
         float = {
           focusable = false,

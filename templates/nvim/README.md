@@ -39,9 +39,6 @@
 | n    | `<C-n>`            | `function: harpoon:list():select(3)`                                  | harpoon   |             |
 | n    | `<C-s>`            | `function: harpoon:list():select(4)`                                  | harpoon   |             |
 |      |                    |                                                                       |           |             |
-| n    | `<leader>fml1`     | `<cmd>CellularAutomaton make_it_rain<CR>`                             | fun       |             |
-| n    | `<leader>fml2`     | `<cmd>CellularAutomaton game_of_life<CR>`                             | fun       |             |
-|      |                    |                                                                       |           |             |
 | n    | `gd`               | `function: vim.lsp.buf.definition()`                                  | lsp       |             |
 | n    | `K`                | `function: vim.lsp.buf.hover()`                                       | lsp       |             |
 | n    | `<leader>vws`      | `function: vim.lsp.buf.workspace_symbol()`                            | lsp       |             |
@@ -74,4 +71,7 @@
 |      |                    |                                                                       |           |             |
 | n    | `<leader>zz`       | `function: toggle()`                                                  | zenmode   |             |
 | n    | `<leader>zZ`       | `function: toggle()`                                                  | zenmode   |             |
+|      |                    |                                                                       |           |             |
+| n    | `<leader>fml1`     | `<cmd>CellularAutomaton make_it_rain<CR>`                             | fun       |             |
+| n    | `<leader>fml2`     | `<cmd>CellularAutomaton game_of_life<CR>`                             | fun       |             |
 |      |                    |                                                                       |           |             |
