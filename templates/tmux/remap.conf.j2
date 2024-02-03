@@ -1,8 +1,7 @@
 unbind C-b
+unbind C-y
 set -g prefix C-y
 bind C-y send-prefix
-#set -g prefix C-Space
-#bind C-Space send-prefix
 
 # -- general -------------------------------------------------------------------
 
@@ -24,10 +23,14 @@ bind C-f command-prompt -p find-session 'switch-client -t %%'
 # session navigation
 bind BTab switch-client -l  # move to last session
 
+# Unbind + Rebind window splits
+unbind %
+unbind '"'
 # split current window horizontally
-bind - split-window -v
+bind - split-window -v -c "#{pane_current_path}"
 # split current window vertically
-bind _ split-window -h
+bind _ split-window -h -c "#{pane_current_path}"
+bind c new-window -c "#{pane_current_path}"
 
 # pane navigation
 bind -r h select-pane -L  # move left
@@ -38,7 +41,8 @@ bind > swap-pane -D       # swap current pane with the next one
 bind < swap-pane -U       # swap current pane with the previous one
 
 # maximize current pane
-bind + resize-pane -Z
+unbind z
+bind -r + resize-pane -Z
 
 # pane resizing
 bind -r H resize-pane -L 2

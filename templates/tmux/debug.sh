@@ -5,6 +5,7 @@ REPLACE_PATH_P="{{ install_server_tmux_path_plugins }}"
 
 DST_BASE=~/.tmux
 DST_PLUG="${DST_BASE}/plugins"
+rm -rf "$DST_BASE"
 mkdir -p "$DST_PLUG"
 
 echo "install tpm"
@@ -31,7 +32,6 @@ source-file {{ install_server_tmux_path }}/style.conf
 
 run '{{ install_server_tmux_path_plugins }}/tpm/tpm'
 EOF
-#cp ".tmux.conf.j2" "${HOME}/.tmux.conf"
 
 # Use find to locate all .lua files in the destination and replace Jinja2 variable
 echo "replace jinja2 variables"
