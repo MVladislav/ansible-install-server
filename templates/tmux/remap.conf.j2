@@ -1,19 +1,18 @@
+# -- general -------------------------------------------------------------------
 unbind C-b
 unbind C-y
 set -g prefix C-y
 bind C-y send-prefix
 
-# -- general -------------------------------------------------------------------
-
+# -- scripts -------------------------------------------------------------------
+bind-key -r i run-shell "tmux neww tmux-cht"
 bind-key -r f run-shell "tmux neww tmux-sessionizer"
 
 # -- display -------------------------------------------------------------------
-
 # clear both screen and history
 bind -n C-l send-keys C-l \; run 'sleep 0.2' \; clear-history
 
 # -- navigation ----------------------------------------------------------------
-
 # create session
 bind C-c new-session
 
@@ -58,7 +57,6 @@ bind -r C-l next-window     # select next window
 bind Tab last-window        # move to last active window
 
 # -- copy mode -----------------------------------------------------------------
-
 bind Enter copy-mode # enter copy mode
 
 bind -T copy-mode-vi v send -X begin-selection
@@ -69,7 +67,6 @@ bind -T copy-mode-vi H send -X start-of-line
 bind -T copy-mode-vi L send -X end-of-line
 
 # -- buffers -------------------------------------------------------------------
-
 bind b list-buffers     # list paste buffers
 bind p paste-buffer -p  # paste from the top paste buffer
 bind P choose-buffer    # choose which buffer to paste from

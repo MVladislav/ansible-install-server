@@ -12,8 +12,10 @@ setw -q -g utf8 on
 
 set -g history-limit 10000 # boost history
 
-# -- display -------------------------------------------------------------------
+# -- restore -------------------------------------------------------------------
+set -g @continuum-restore 'on'
 
+# -- display -------------------------------------------------------------------
 set -g base-index 1      # start windows numbering at 1
 set -g pane-base-index 1 # make pane numbering consistent with windows
 set-window-option -g pane-base-index 1
@@ -33,7 +35,6 @@ set -g monitor-activity on
 set -g visual-activity off
 
 # -- user customizations -------------------------------------------------------
-
 set -g mouse on
 
 set -g detach-on-destroy off # don't exit from tmux when closing a session

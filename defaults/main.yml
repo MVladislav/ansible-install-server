@@ -555,8 +555,6 @@ install_server_zsh:
 # ------------------------------------------------------------------------------
 # TMUX
 # install_server_config.inst_tmux_conf
-# https://github.com/gpakosz/.tmux#configuration
-# https://gist.github.com/henrik/1967800
 install_server_tmux_file: ~/.tmux.conf
 install_server_tmux_path: ~/.tmux
 install_server_tmux_path_plugins: ~/.tmux/plugins
@@ -587,6 +585,14 @@ install_server_tmux:
       path: "{{ install_server_tmux_path_plugins }}/tmux-sensible"
       version: master
       conf: "set -g @plugin 'tmux-plugins/tmux-sensible'"
+    # - git: https://github.com/tmux-plugins/tmux-resurrect.git
+    #   path: "{{ install_server_tmux_path_plugins }}/tmux-resurrect"
+    #   version: master
+    #   conf: "set -g @plugin 'tmux-plugins/tmux-resurrect'"
+    # - git: https://github.com/tmux-plugins/tmux-continuum.git
+    #   path: "{{ install_server_tmux_path_plugins }}/tmux-continuum"
+    #   version: master
+    #   conf: "set -g @plugin 'tmux-plugins/tmux-continuum'"
     - git: https://github.com/tmux-plugins/tmux-yank.git
       path: "{{ install_server_tmux_path_plugins }}/tmux-yank"
       version: master
@@ -612,7 +618,6 @@ install_server_tmux:
     - setup.conf
     - remap.conf
     - style.conf
-    # - tmux-functions.j2
   add_script_files:
     - tmux-sessionizer
 

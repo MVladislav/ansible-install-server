@@ -5,6 +5,7 @@ REPLACE_PATH_P="{{ install_server_tmux_path_plugins }}"
 
 DST_BASE=~/.tmux
 DST_PLUG="${DST_BASE}/plugins"
+DST_SCRIPTS=~/.local/bin
 rm -rf "$DST_BASE"
 mkdir -p "$DST_PLUG"
 
@@ -16,6 +17,12 @@ for file in ./*.conf.j2; do
   cp "$file" "${DST_BASE}/$(basename "$file" .j2)"
 done
 
+echo "copy script files"
+for script in ./scripts/*.j2; do
+  cp "$script" "${DST_SCRIPTS}/$(basename "$script" .j2)"
+  chmod 760 "${DST_SCRIPTS}/$(basename "$script" .j2)"
+done
+
 echo "copy .tmux.conf"
 /bin/cat <<'EOF' >"${HOME}/.tmux.conf"
 source-file {{ install_server_tmux_path }}/setup.conf
@@ -23,6 +30,8 @@ source-file {{ install_server_tmux_path }}/remap.conf
 
 set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/tmux-sensible'
+# set -g @plugin 'tmux-plugins/tmux-resurrect'
+# set -g @plugin 'tmux-plugins/tmux-continuum'
 set -g @plugin 'tmux-plugins/tmux-yank'
 set -g @plugin 'catppuccin/tmux'
 set -g @plugin 'tmux-plugins/tmux-battery'
