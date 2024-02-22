@@ -4,6 +4,7 @@
 [![Ansible Molecule Test](https://github.com/MVladislav/ansible-install-server/actions/workflows/ci.yml/badge.svg)](https://github.com/MVladislav/ansible-install-server/actions/workflows/ci.yml)
 
 - [Install Server](#install-server)
+  - [Role Variables](#role-variables)
   - [App list for possible install](#app-list-for-possible-install)
   - [Dependencies](#dependencies)
   - [Example Playbook](#example-playbook)
@@ -15,8 +16,9 @@ You can checkout [MVladislav - ansible-env-setup - playbooks](https://github.com
 
 Tested with:
 
-- Ubuntu 22.04
 - Ubuntu 23.04
+
+## Role Variables
 
 ```yml
 clients:
@@ -248,8 +250,6 @@ install_server_config:
 Developed and testes with Ansible 2.14.4
 
 ## Example Playbook
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
 ```yml
 - hosts: servers
