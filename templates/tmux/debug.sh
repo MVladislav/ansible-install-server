@@ -9,6 +9,9 @@ DST_SCRIPTS=~/.local/bin
 rm -rf "$DST_BASE"
 mkdir -p "$DST_PLUG"
 
+echo "install dep"
+sudo apt install fzf
+
 echo "install tpm"
 git clone https://github.com/tmux-plugins/tpm "${DST_PLUG}/tpm"
 
