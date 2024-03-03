@@ -23,6 +23,7 @@ install_server_preferred_shell:
 
 # some version manually needs to checked and updated
 install_server_links_to_check_update:
+  lua_version: 5.4
   # https://snapcraft.io/node
   snap_node_version: 21
   java_version: 17
@@ -280,9 +281,11 @@ install_server_apt:
   - name: php-zip
     install: "{{ install_server_config.apt_php | default('no') | bool }}"
   # ----------------------------------------------------------------------------
-  - name: lua5.4
+  - name: "lua{{ install_server_links_to_check_update.lua_version }}"
     install: "{{ install_server_config.apt_lua | default('no') | bool }}"
-  - name: liblua5.4-dev
+  - name: "liblua{{ install_server_links_to_check_update.lua_version }}-dev"
+    install: "{{ install_server_config.apt_lua | default('no') | bool }}"
+  - name: luarocks
     install: "{{ install_server_config.apt_lua | default('no') | bool }}"
   - name: "openjdk-{{ install_server_links_to_check_update.java_version }}-jre-headless"
     install: "{{ install_server_config.apt_java_jre_headless | default('no') | bool }}"
@@ -450,6 +453,12 @@ install_server_git:
       - key: pull.ff
         value: only
         scope: global
+      # - key: diff.tool
+      #   value: vim
+      #   scope: global
+      # - key: difftool.prompt
+      #   value: "false"
+      #   scope: global
     hook:
       base_path: ~/.git-hooks
       files:
@@ -510,47 +519,43 @@ install_server_zsh:
   theme: spaceship
   ## https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins
   plugins: >
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-    ubuntu
-    sudo
-    history
-    man
+    adb
+    ansible
+    bundler
     colored-man-pages
     command-not-found
-    vim-interaction
-    ufw
     cp
-    lxd
-    tmux
-    git
-    git-flow
-    gitignore
-    vscode
-    terraform
-    ansible
     docker
     docker-compose
-    kubectl
+    git
+    gitignore
+    golang
     helm
-    oc
-    python
-    pip
+    history
+    kubectl
+    lxd
+    man
+    nmap
     node
     npm
-    golang
-    rust
+    oc
+    pip
+    python
     ruby
-    bundler
-    adb
-    nmap
-    web-search
+    rust
+    sudo
+    terraform
+    tmux
+    ubuntu
+    ufw
+    vim-interaction
+    vscode
+    zsh-autosuggestions
+    zsh-syntax-highlighting
   append_file:
     - template: zshrc-append.j2
       path: ~/.zshrc-append
       append_as: source ~/.zshrc-append
-    # - append_as: source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh 2>/dev/null
-    # - append_as: source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null
 
 # ------------------------------------------------------------------------------
 # TMUX
