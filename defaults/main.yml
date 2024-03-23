@@ -563,6 +563,7 @@ install_server_zsh:
 install_server_tmux_file: ~/.tmux.conf
 install_server_tmux_path: ~/.tmux
 install_server_tmux_path_plugins: ~/.tmux/plugins
+install_server_tmux_path_script: ~/.local/bin
 install_server_tmux:
   apt_dependencies:
     - build-essential
@@ -604,7 +605,7 @@ install_server_tmux:
       conf: "set -g @plugin 'tmux-plugins/tmux-yank'"
     - git: https://github.com/catppuccin/tmux.git
       path: "{{ install_server_tmux_path_plugins }}/catppuccin"
-      version: master
+      version: main
       conf: "set -g @plugin 'catppuccin/tmux'"
     - git: https://github.com/tmux-plugins/tmux-battery.git
       path: "{{ install_server_tmux_path_plugins }}/tmux-battery"

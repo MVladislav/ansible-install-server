@@ -11,5 +11,7 @@
 {% endfor %}
 
 {% for plugin in install_server_tmux.plugins -%}
-  {{ plugin.run }}
+  {% if plugin.run is defined -%}
+    {{ plugin.run }}
+  {% endif %}
 {% endfor %}

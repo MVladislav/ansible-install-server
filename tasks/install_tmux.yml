@@ -65,11 +65,11 @@
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.git:
-    repo: "{{ item.plugins.git }}"
-    dest: "{{ item.plugins.path }}"
+    repo: "{{ item.git }}"
+    dest: "{{ item.path }}"
     force: true
     update: "{{ install_server_tmux.update | bool }}"
-    version: "{{ item.plugins.version }}"
+    version: "{{ item.version }}"
   loop: "{{ install_server_tmux.plugins | flatten(levels=1) }}"
   tags:
     - install_server
@@ -104,7 +104,7 @@
   become_user: "{{ outer_item.name }}"
   ansible.builtin.template:
     src: "tmux/scripts/{{ item }}.j2"
-    dest: ".local/bin/{{ item }}"
+    dest: "{{ install_server_tmux_path_script }}/{{ item }}"
     mode: "0760"
   loop: "{{ install_server_tmux.add_script_files | flatten(levels=1) }}"
   tags:
