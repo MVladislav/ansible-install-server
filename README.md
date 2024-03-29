@@ -43,12 +43,16 @@ install_server_config:
   env_tun_setup: false
   # APT (1) -------------------------------
   apt_base: false
+  apt_exa: false
+  apt_eza: false
+  apt_bat: false
   apt_auth_priv: false
   apt_cert: false
   apt_archive: false
   apt_dev: false
   apt_build: false
   apt_libs: false
+  # APT (2) -------------------------------
   apt_php: false
   apt_lua: false
   apt_java_jre_headless: false
@@ -56,11 +60,10 @@ install_server_config:
   apt_java_ant: false
   apt_java_maven: false
   apt_java_gradle: false
-  # APT (2) -------------------------------
+  # APT (3) -------------------------------
   apt_snap: false
   apt_qemu_guest_agent: false
   apt_rasp_pi_pkg: false
-  # APT (3) -------------------------------
   apt_vpn_resolvconf: false
   apt_vpn_wireguard: false
   apt_vpn_openvpn: false
@@ -89,6 +92,9 @@ install_server_config:
   snap_rust: false
   snap_john_the_ripper: false
   snap_nmap: false
+  # # FLATHUB ----------------------------------
+  # flatpak_john_the_ripper: false
+  # flatpak_nmap: false
   # OTHER --------------------------------
   inst_git_conf: false
   inst_fonts: false
@@ -129,6 +135,7 @@ install_server_config:
 | vim                    |      |         |  x  |     |     |             | base\*      |
 | nano                   |      |         |  x  |     |     |             | base\*      |
 | exa                    |      |         |  x  |     |     |             | base\*      |
+| eza                    |      |         |  x  |     |     |             | base\*      |
 | bat                    |      |         |  x  |     |     |             | base\*      |
 | duf                    |      |         |  x  |     |     |             | base\*      |
 | dirmngr                |      |         |  x  |     |     |             | auth_priv\* |

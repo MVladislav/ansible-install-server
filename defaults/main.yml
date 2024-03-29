@@ -34,6 +34,9 @@ install_server_config:
   env_tun_setup: false
   # APT (1) -------------------------------
   apt_base: false
+  apt_exa: false
+  apt_eza: false
+  apt_bat: false
   apt_auth_priv: false
   apt_cert: false
   apt_archive: false
@@ -131,12 +134,15 @@ install_server_apt:
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: nano
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  - name: exa
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  - name: bat
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: duf
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
+  # --------------------------------
+  - name: exa
+    install: "{{ install_server_config.apt_exa | default('no') | bool }}"
+  - name: eza
+    install: "{{ install_server_config.apt_eza | default('no') | bool }}"
+  - name: bat
+    install: "{{ install_server_config.apt_bat | default('no') | bool }}"
   # --------------------------------
   - name: dirmngr
     install: "{{ install_server_config.apt_auth_priv | default('no') | bool }}"

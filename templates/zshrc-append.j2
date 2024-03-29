@@ -101,9 +101,17 @@ if [ -d {{ install_server_preferred_shell.profile_d }} ]; then
   fi
 fi
 
+{% set zshrc_apt_exa = install_server_config.get('apt_exa', False) -%}
+{% set zshrc_apt_eza = install_server_config.get('apt_eza', False) -%}
+{% if zshrc_apt_exa or zshrc_apt_eza %}
+{% if zshrc_apt_exa %}
+### LS as EZA ###
+alias ls='eza --color=always'
+{% endif %}
+{% if zshrc_apt_eza %}
 ### LS as EXA ###
-# $sudo apt install exa
 alias ls='exa --color=always'
+{% endif %}
 alias l='ls -a1'
 alias ll='ls -aalhg'
 alias lg='ll --grid'
@@ -112,11 +120,14 @@ alias lla='ll -t accessed -s accessed'
 alias llc='ll -t created -s created'
 alias ld='ls -ld .*'
 alias tree='ls -TlL 4'
+{% endif %}
 
+{% set zshrc_apt_bat = install_server_config.get('apt_bat', False) -%}
+{% if zshrc_apt_bat %}
 ### CAT as BAT ###
-# $sudo apt install bat
 alias catt='batcat -p -P --color always'
 alias catt-b='batcat -P --color always'
+{% endif %}
 
 ### CP as RSYNC ###
 alias cp-r='rsync --info=progress2 --stats -auz'
