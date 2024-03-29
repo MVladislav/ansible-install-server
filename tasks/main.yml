@@ -172,3 +172,8 @@
   ansible.builtin.include_tasks: setup_java.yml
   when: >-
     (install_server_config.apt_java_jre_headless is defined and install_server_config.apt_java_jre_headless | bool) or (install_server_config.apt_java_jdk is defined and install_server_config.apt_java_jdk | bool)
+
+# ------------------------------------------------------------------------------
+# POST
+- name: "SERVER | post | run post tasks"
+  ansible.builtin.include_tasks: post.yml

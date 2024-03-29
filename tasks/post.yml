@@ -1,0 +1,60 @@
+---
+# tasks file for ./roles/install_server
+
+# Alternative check:
+#   systemctl show <service> | grep UnitFileState | cut -d = -f 2
+#   service_status_<service>.stdout == "enabled"
+
+# ------------------------------------------------------------------------------
+- name: "SERVER | POST | check for 'rsync' service"
+  ansible.builtin.shell: |
+    set -o pipefail &&
+    systemctl show rsync | grep LoadState | cut -d = -f 2
+  args:
+    executable: /bin/bash
+  register: service_status_rsync
+  changed_when: false
+  check_mode: false
+  tags:
+    - install_server
+    - post
+
+- name: "SERVER | POST | disable 'rsync' service"
+  ansible.builtin.systemd:
+    name: rsync.service
+    daemon_reload: false
+    enabled: false
+    masked: true
+    state: stopped
+  when:
+    - service_status_rsync.stdout == "loaded"
+  tags:
+    - install_server
+    - post
+
+# ------------------------------------------------------------------------------
+- name: "SERVER | POST | check for 'remmina' service"
+  ansible.builtin.shell: |
+    set -o pipefail &&
+    systemctl show snap.remmina.ssh-agent.service | grep LoadState | cut -d = -f 2
+  args:
+    executable: /bin/bash
+  register: service_status_remmina
+  changed_when: false
+  check_mode: false
+  tags:
+    - install_server
+    - post
+
+- name: "SERVER | POST | disable 'remmina' service"
+  ansible.builtin.systemd:
+    name: snap.remmina.ssh-agent.service
+    daemon_reload: false
+    enabled: false
+    masked: true
+    state: stopped
+  when:
+    - service_status_remmina.stdout == "loaded"
+  tags:
+    - install_server
+    - post
