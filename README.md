@@ -46,6 +46,7 @@ install_server_config:
   apt_exa: false
   apt_eza: false
   apt_bat: false
+  apt_ncdu: false
   apt_auth_priv: false
   apt_cert: false
   apt_archive: false
@@ -138,6 +139,7 @@ install_server_config:
 | eza                    |      |         |  x  |     |     |             | base\*      |
 | bat                    |      |         |  x  |     |     |             | base\*      |
 | duf                    |      |         |  x  |     |     |             | base\*      |
+| ncdu                   |      |         |  x  |     |     |             | base\*      |
 | dirmngr                |      |         |  x  |     |     |             | auth_priv\* |
 | gnupg                  |      |         |  x  |     |     |             | auth_priv\* |
 | libpam-u2f             |      |         |  x  |     |     |             | auth_priv\* |
