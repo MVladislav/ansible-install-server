@@ -28,6 +28,7 @@ kernel.yama.ptrace_scope=1
 # See https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html
 # for what other values do
 #kernel.sysrq=438
+kernel.sysrq=0
 
 # Background save may fail under low memory condition
 vm.overcommit_memory=0
@@ -35,8 +36,8 @@ vm.overcommit_memory=0
 #vm.overcommit_memory=2
 #vm.overcommit_ratio=100
 
-# swapp is not used, so we can turn it complete off
-vm.swappiness=0
+# swapp set to 1, but not quite disabling it. Will prevent OOM killer from killing processes when running out of physical memory.
+vm.swappiness=1
 
 # Enable Transparent Huge Pages (THP)
 #vm.nr_hugepages=128
@@ -61,6 +62,7 @@ net.ipv4.conf.default.send_redirects=0
 # Disable IP forwarding for IPv4 & IPv6
 # This prevents the system from forwarding packets between interfaces, which can help prevent man-in-the-middle attacks
 net.ipv4.ip_forward=0
+net.ipv4.conf.all.forwarding=0
 #  Enabling this option disables Stateless Address Autoconfiguration
 #  based on Router Advertisements for this host
 net.ipv6.conf.all.forwarding=0

@@ -644,10 +644,10 @@ install_server_nvim_group: vm
 install_server_nvim:
   update: true
   apt:
-    install: "{{ install_server_config.inst_nvim_conf_pkg | default('snap') == 'apt' | bool }}"
+    install: "{{ (install_server_config.inst_nvim_conf_pkg | default('snap') == 'apt') | bool }}"
     name: nvim
   snap:
-    install: "{{ install_server_config.inst_nvim_conf_pkg | default('snap') == 'snap' | bool }}"
+    install: "{{ (install_server_config.inst_nvim_conf_pkg | default('snap') == 'snap') | bool }}"
     name: nvim
     classic: true
   folders:

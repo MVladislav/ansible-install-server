@@ -110,3 +110,18 @@
   tags:
     - install_server
     - tmux
+
+# ------------------------------------------------------------------------------
+- name: "SERVER | tmux | step 6 | setup tmux | install plugins"
+  become: true
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.shell: >
+    set -o pipefail &&
+    {{ install_server_tmux_path_plugins }}/tpm/scripts/install_plugins.sh
+  args:
+    executable: /bin/bash
+  register: tmux_install_plugins
+  changed_when: tmux_install_plugins.rc != 0
+  tags:
+    - install_server
+    - tmux
