@@ -191,6 +191,11 @@ alias vm_tl='tmux ls'
 alias vm_ta='tmux attach -t'
 alias vm_tk='tmux kill-session -t'
 
+{% if install_server_config is defined and (install_server_config.inst_nvim_conf_pkg | default('snap') == 'snap') %}
+### VIM ###
+alias vim=nvim
+{% endif %}
+
 ### updater ###
 alias vm_up_apt='sudo apt update && sudo apt upgrade'
 alias vm_up_snap='sudo snap refresh'
