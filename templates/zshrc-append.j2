@@ -154,7 +154,7 @@ function find-la() {
 ### DOCKER ###
 alias docker='DOCKER_BUILDKIT=1 docker'
 alias docker-compose='docker compose'
-alias docker-swarm-compose='docker compose --compatibility config | sed '\''1{/^name:/d}'\'' | sed '\''s/published: "\(.*\)"/published: \1/'\'' | docker stack deploy --resolve-image=never --with-registry-auth --compose-file -'
+alias docker-swarm-compose='docker compose --compatibility config | sed '\''s|cpus: \([0-9]\+\(\.[0-9]\+\)*\)|cpus: "\1"|'\'' | sed '\''1{/^name:/d}'\'' | sed '\''s/published: "\(.*\)"/published: \1/'\'' | docker stack deploy --resolve-image=never --with-registry-auth --compose-file -'
 
 alias vm_quick_docker_ubuntu="mkdir -p ${HOME}/docker/$(date +'%Y-%m-%d') && docker run -it --rm --network host --user root -v ${HOME}/docker/$(date +'%Y-%m-%d'):/tmp/docker --name=ubuntu-server ubuntu:23.10"
 alias vm_quick_docker_iperf="docker run -d -it --restart=unless-stopped --name=iperf3-server -p 5201:5201 networkstatic/iperf3 -s"
