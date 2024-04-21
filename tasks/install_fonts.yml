@@ -8,12 +8,11 @@
   ansible.builtin.file:
     path: "{{ install_server_fonts.fonts_dst }}"
     state: directory
-    mode: "0754"
+    mode: "0750"
   tags:
     - install_server
     - fonts
 
-# https://github.com/powerline/fonts
 - name: "SERVER | fonts | install fonts"
   become: true
   become_user: "{{ outer_item.name }}"

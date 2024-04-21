@@ -23,7 +23,7 @@ Tested with:
 ```yml
 clients:
   - name: "{{ ansible_user }}"
-    dev: true # will used for install (git|zsh|tmux|python|npm) per user
+    dev: true # will used for install additional services per user as (git|zsh|tmux|nvim|python|go|npm)
     updateOrCreate: false # if the user should be updated with below values
     # shell: /bin/bash # optional, else will auto selected depends on installed shells
     # group: 'adm, cdrom, sudo' # optional
@@ -266,7 +266,7 @@ Developed and testes with Ansible 2.14.4
     - role: install_server
       clients:
         - name: "{{ ansible_user }}"
-          dev: true
+          dev: true # will used for install additional services per user as (git|zsh|tmux|nvim|python|go|npm)
           updateOrCreate: false
       install_server_service_name: "{{ service_name }}"
       install_server_git_user: "{{ ansible_user }}"

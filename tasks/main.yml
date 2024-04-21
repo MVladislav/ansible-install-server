@@ -62,8 +62,6 @@
     - install_server_config.inst_fonts is defined
     - install_server_config.inst_fonts | bool
     - clients is defined
-    - outer_item.dev is defined
-    - outer_item.dev | bool
 
 # ------------------------------------------------------------------------------
 # INSTALL ZSH
