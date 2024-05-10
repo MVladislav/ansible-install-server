@@ -343,17 +343,17 @@ install_server_apt:
   # https://github.com/Wandmalfarbe/pandoc-latex-template
   - name: pandoc
     install: "{{ install_server_config.apt_pandoc | default('no') | bool }}"
+  - name: texlive-xetex
+    install: "{{ install_server_config.apt_pandoc | default('no') | bool }}"
+  - name: texlive-extra-utils
+    install: "{{ install_server_config.apt_pandoc | default('no') | bool }}"
+  # - name: texlive-fonts-extra
+  #   install: "{{ install_server_config.apt_pandoc | default('no') | bool }}"
   - name: texlive-latex-base
     install: "{{ install_server_config.apt_pandoc | default('no') | bool }}"
   - name: texlive-fonts-recommended
     install: "{{ install_server_config.apt_pandoc | default('no') | bool }}"
-  - name: texlive-extra-utils
-    install: "{{ install_server_config.apt_pandoc | default('no') | bool }}"
   - name: texlive-latex-extra
-    install: "{{ install_server_config.apt_pandoc | default('no') | bool }}"
-  - name: texlive-fonts-extra
-    install: "{{ install_server_config.apt_pandoc | default('no') | bool }}"
-  - name: texlive-xetex
     install: "{{ install_server_config.apt_pandoc | default('no') | bool }}"
   # --------------------------------
   - name: john
@@ -483,12 +483,13 @@ install_server_git:
 install_server_fonts:
   fonts_dst: ~/.local/share/fonts
   fonts_src:
-    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.0/NerdFontsSymbolsOnly.tar.xz
-    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.0/FiraCode.tar.xz
-    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.0/Hack.tar.xz
-    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.0/UbuntuMono.tar.xz
-    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.0/FiraMono.tar.xz
-    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.0/RobotoMono.tar.xz
+    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/NerdFontsSymbolsOnly.tar.xz
+    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.tar.xz
+    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Hack.tar.xz
+    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/UbuntuMono.tar.xz
+    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraMono.tar.xz
+    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/RobotoMono.tar.xz
+    - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/ProggyClean.tar.xz
 
 # ------------------------------------------------------------------------------
 # ZSH

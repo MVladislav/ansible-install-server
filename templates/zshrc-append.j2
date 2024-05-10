@@ -106,11 +106,11 @@ fi
 {% if zshrc_apt_exa or zshrc_apt_eza %}
 {% if zshrc_apt_exa %}
 ### LS as EZA ###
-alias ls='eza --color=always'
+alias ls='eza --color=always --git'
 {% endif %}
 {% if zshrc_apt_eza %}
 ### LS as EXA ###
-alias ls='exa --color=always'
+alias ls='exa --color=always  --git'
 {% endif %}
 alias l='ls -a1'
 alias ll='ls -aalhg'
@@ -132,6 +132,7 @@ alias catt-b='batcat -P --color always'
 ### CP as RSYNC ###
 alias cp-r='rsync --info=progress2 --stats -auz'
 alias scp-r='rsync --info=progress2 -auz -e "ssh -T -o Compression=no -x"'
+alias scp-ra='rsync --info=progress2 -az -e "ssh -T -o Compression=no -x"'
 
 ### FIND ###
 alias find-no='sudo find / -nouser -o -nogroup -ls 2>/dev/null'
@@ -199,17 +200,74 @@ alias vim=nvim
 ### updater ###
 alias vm_up_apt='sudo apt update && sudo apt upgrade'
 alias vm_up_snap='sudo snap refresh'
-alias vm_up_flatpak='flatpak update'
+alias vm_up_flatpak='flatpak update && flatpak uninstall --unused'
 alias vm_up_py_pip='python3 -m pip list -o | cut -f1 -d" " | tr " " "\n" | awk "{if(NR>=3)print}" | cut -d" " -f1 | xargs -n1 python3 -m pip install --no-cache-dir -U --break-system-packages'
 alias vm_up_py_pip_root='sudo python3 -m pip list -o | cut -f1 -d" " | tr " " "\n" | awk "{if(NR>=3)print}" | cut -d" " -f1 | sudo xargs -n1 python3 -m pip install --no-cache-dir -U --break-system-packages'
+function vm_update_clean_all() {
+  echo "Update snap..."
+  sudo snap refresh
+  echo "Cleanup snap..."
+  LANG=en_US.UTF-8 sudo snap list --all | awk '/disabled/{print $1, $3}' |
+    while read -r SNAPNAME REVISION; do
+      sudo snap remove "$SNAPNAME" --revision="$REVISION"
+    done
+
+  echo "#########################################################################"
+  echo "#########################################################################"
+
+  echo "Update flatpak..."
+  sudo flatpak update
+  echo "Cleanup flatpak..."
+  sudo flatpak uninstall --unused
+  sudo rm -rfv /var/tmp/flatpak-cache-*
+
+  echo "#########################################################################"
+  echo "#########################################################################"
+
+  echo "Update apt..."
+  sudo apt update
+  sudo apt full-upgrade
+  echo "Cleanup apt..."
+  sudo apt autoclean -y
+  sudo apt autoremove -y
+  sudo apt clean
+
+  echo "#########################################################################"
+  echo "#########################################################################"
+
+  echo "You could also run more additional updates:"
+  echo "  - run ${BPURPLE}'vm_up_py_pip'${NC} for update python pip installs by user"
+  echo "  - run ${BRED}'vm_up_py_pip_root'${NC} for update python pip installs by root (could possible break things)"
+}
 
 ### OTHER ###
 alias grep='grep --color'
 alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS}'
 
-alias pigz='pigz -k -p$(($(nproc) / 2))'
+alias pigz='pigz -k -p$(nproc)'
 function tar-p() {
-  tar --use-compress-program="pigz " -cpf "$(basename $1).tar.gz" -C "$1" .
+  if [ "$#" -lt 1 ]; then
+    echo "Usage: tar-p <directory> [<password>]"
+    return 1
+  fi
+
+  PATH_TO_ENC="$1"
+  if [ $# -eq 1 ]; then
+    tar --use-compress-program="pigz " -cpf "$(basename "$PATH_TO_ENC").tar.gz" -C "$PATH_TO_ENC" .
+  elif [ $# -eq 2 ]; then
+    PASSWORD_FOR_ENC="$2"
+    tar --use-compress-program="pigz " -cpf - -C "$PATH_TO_ENC" . | gpg -c --cipher-algo AES256 --batch --passphrase "$PASSWORD_FOR_ENC" -o "$(basename "$PATH_TO_ENC").tar.gz.gpg.enc"
+  fi
+}
+
+function untar-p() {
+  if [ "$#" -lt 2 ]; then
+    echo "Usage: untar-p <encrypted_file> <password>"
+    return 1
+  fi
+
+  mkdir -p "$(dirname "$1")/${1%%.*}"
+  gpg -d --batch --passphrase "$2" "$1" | tar --use-compress-program="pigz " -xpf - -C "$(dirname "$1")/${1%%.*}"
 }
 
 alias vm_mem_free='free -h && sudo sysctl -w vm.drop_caches=3 && sudo sync && echo 3 | sudo tee /proc/sys/vm/drop_caches && free -h'
@@ -224,15 +282,14 @@ alias vm_ux_term="tr -d '\r' <"
 
 alias vm_random='openssl rand -base64'
 function vm_random2() {
-  tr -dc A-Za-z0-9 </dev/urandom | head -c $1
+  tr -dc A-Za-z0-9 </dev/urandom | head -c "$1"
   echo ''
 }
 alias vm_find_command='apropos'
 
 ### TOOLS ###
-# alias vm_my_ip='curl https://my-ip-is.appspot.com/plain'
-# alias vm_my_ip='curl ifconfig.co/'
 alias vm_my_ip='curl ifconfig.io/ip'
+alias vm_my_host='curl ifconfig.io/host'
 alias vm_my_country='curl ifconfig.io/country_code'
 alias vm_my_ua='curl ifconfig.io/ua'
 alias vm_my_all='curl ifconfig.io/all.json | jq'
@@ -277,6 +334,7 @@ function vm_ii() {
   # vm_my_bios
   echo -e "\\n${BRED}Public facing IP Address:$NC"
   vm_my_ip
+  vm_my_host
   vm_my_country
   vm_my_ua
   echo
