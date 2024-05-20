@@ -24,8 +24,11 @@ if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
   exit 0
 fi
 
-if ! tmux has-session -t="$selected_name" 2>/dev/null; then
-  tmux new-session -ds "$selected_name" -c "$selected"
-fi
+tmux new-window -n "$selected_name" -c "$selected"
+# tmux split-window -h -c "$selected"
 
-tmux switch-client -t "$selected_name"
+# if ! tmux has-session -t="$selected_name" 2>/dev/null; then
+#   tmux new-session -ds "$selected_name" -c "$selected"
+# fi
+
+# tmux switch-client -t "$selected_name"
