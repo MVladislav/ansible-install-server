@@ -34,20 +34,20 @@ return {
       require("mason").setup()
       require("mason-lspconfig").setup({
         ensured_installed = {
+          'ansiblels',
           'asm_lsp',
           'bashls',
-          'ansiblels',
-          'lua_ls',
-          'rust_analyzer',
           'codeqlls',
-          'dockerls',
           'docker_compose_language_service',
-          'htmx',
+          'dockerls',
           'helm_ls',
+          'htmx',
           'ltex',
-          'ruff_lsp',
-          'yamlls',
+          'lua_ls',
           'pyright',
+          'ruff_lsp',
+          'rust_analyzer',
+          'yamlls',
         },
         handlers = {
           function(server_name) -- default handler (optional)
@@ -62,7 +62,7 @@ return {
               settings = {
                 Lua = {
                   diagnostics = {
-                    globals = { "vim" }
+                    globals = { "bit", "vim", "it", "describe" }
                   }
                 }
               }

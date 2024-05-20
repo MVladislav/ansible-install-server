@@ -2,6 +2,20 @@
 # tasks file for ./roles/install_server
 
 # ------------------------------------------------------------------------------
+- name: "SERVER | nvim | step 0 | install dependencies [apt]"
+  become: true
+  ansible.builtin.apt:
+    pkg: "{{ item }}"
+    state: present
+    force_apt_get: true # apt-get instead of aptitude
+  loop: "{{ install_server_nvim.dependencies | flatten(levels=1) }}"
+  when:
+    - install_server_nvim.dependencies is defined
+  tags:
+    - install_server
+    - nvim
+
+# ------------------------------------------------------------------------------
 - name: "SERVER | nvim | step 1 | install nvim [apt]"
   become: true
   ansible.builtin.apt:

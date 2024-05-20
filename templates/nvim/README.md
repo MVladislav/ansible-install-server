@@ -1,9 +1,22 @@
 # nvim
 
+## Other
+
+| mode | command  | description |
+| :--- | :------- | :---------- |
+| n    | `:Lazy`  |             |
+| n    | `:Mason` |             |
+
+## Key Maps
+
 | mode | key                | command                                                               | topic     | description                    |
 | :--- | :----------------- | :-------------------------------------------------------------------- | :-------- | :----------------------------- |
 | n    | u                  | u                                                                     |           | revert/undo                    |
-|      |                    |                                                                       |           |                                |
+| n    | <C-6>              | <C-6>                                                                 |           | jump back prev open            |
+| n    | <C-w><C-h>         | <C-w><C-h>                                                            |           | move focus left windows        |
+| n    | <C-w><C-l>         | <C-w><C-l>                                                            |           | move focus right windows       |
+| n    | <C-w><C-j>         | <C-w><C-j>                                                            |           | move focus lower windows       |
+| n    | <C-w><C-k>         | <C-w><C-k>                                                            |           | move focus upper windows       |
 |      |                    |                                                                       |           |                                |
 |      |                    |                                                                       |           |                                |
 | n    | `<leader>pv`       | `vim.cmd.Ex`                                                          | basic     | exit file                      |
@@ -43,6 +56,11 @@
 | n    | `<C-n>`            | `function: harpoon:list():select(3)`                                  | harpoon   |                                |
 | n    | `<C-s>`            | `function: harpoon:list():select(4)`                                  | harpoon   |                                |
 |      |                    |                                                                       |           |                                |
+| i    | `<C-p>`            | cmp.mapping.select_prev_item(cmp_select)                              | lsp       |                                |
+| i    | `<C-n>`            | cmp.mapping.select_next_item(cmp_select)                              | lsp       |                                |
+| i    | `<C-x>`            | cmp.mapping.confirm({ select = true })                                | lsp       | confirm selection              |
+| i    | `<C-Space>`        | cmp.mapping.complete()                                                | lsp       | open completion box            |
+|      |                    |                                                                       |           |                                |
 | n    | `gd`               | `function: vim.lsp.buf.definition()`                                  | lsp       |                                |
 | n    | `K`                | `function: vim.lsp.buf.hover()`                                       | lsp       |                                |
 | n    | `<leader>vws`      | `function: vim.lsp.buf.workspace_symbol()`                            | lsp       |                                |
@@ -60,8 +78,8 @@
 | n    | `<leader>nt`       | `function: neogen.generate({ type = "type" })`                        | snippets  |                                |
 | n    | `<leader>nd`       | `function: neogen.generate({ type = "typedef" })`                     | snippets  |                                |
 |      |                    |                                                                       |           |                                |
-| n    | `<leader>pf`       | `builtin.find_files`                                                  | telescope |                                |
-| n    | `<C-p>`            | `builtin.git_files`                                                   | telescope |                                |
+| n    | `<leader>pf`       | `builtin.find_files`                                                  | telescope | find in files                  |
+| n    | `<C-p>`            | `builtin.git_files`                                                   | telescope | find in git files              |
 | n    | `<leader>pws`      | `function: builtin.grep_string({ search = word })`                    | telescope |                                |
 | n    | `<leader>pWs`      | `function: builtin.grep_string({ search = word })`                    | telescope |                                |
 | n    | `<leader>ps`       | `function: builtin.grep_string({ search = vim.fn.input("Grep > ") })` | telescope |                                |
@@ -78,4 +96,3 @@
 |      |                    |                                                                       |           |                                |
 | n    | `<leader>fml1`     | `<cmd>CellularAutomaton make_it_rain<CR>`                             | fun       |                                |
 | n    | `<leader>fml2`     | `<cmd>CellularAutomaton game_of_life<CR>`                             | fun       |                                |
-|      |                    |                                                                       |           |                                |
