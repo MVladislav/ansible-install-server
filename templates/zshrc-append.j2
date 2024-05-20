@@ -204,6 +204,17 @@ alias vm_up_flatpak='flatpak update && flatpak uninstall --unused'
 alias vm_up_py_pip='python3 -m pip list -o | cut -f1 -d" " | tr " " "\n" | awk "{if(NR>=3)print}" | cut -d" " -f1 | xargs -n1 python3 -m pip install --no-cache-dir -U --break-system-packages'
 alias vm_up_py_pip_root='sudo python3 -m pip list -o | cut -f1 -d" " | tr " " "\n" | awk "{if(NR>=3)print}" | cut -d" " -f1 | sudo xargs -n1 python3 -m pip install --no-cache-dir -U --break-system-packages'
 function vm_update_clean_all() {
+  echo "Update apt..."
+  sudo apt update
+  sudo apt full-upgrade
+  echo "Cleanup apt..."
+  sudo apt autoclean -y
+  sudo apt autoremove -y
+  sudo apt clean
+
+  echo "#########################################################################"
+  echo "#########################################################################"
+
   echo "Update snap..."
   sudo snap refresh
   echo "Cleanup snap..."
@@ -220,17 +231,6 @@ function vm_update_clean_all() {
   echo "Cleanup flatpak..."
   sudo flatpak uninstall --unused
   sudo rm -rfv /var/tmp/flatpak-cache-*
-
-  echo "#########################################################################"
-  echo "#########################################################################"
-
-  echo "Update apt..."
-  sudo apt update
-  sudo apt full-upgrade
-  echo "Cleanup apt..."
-  sudo apt autoclean -y
-  sudo apt autoremove -y
-  sudo apt clean
 
   echo "#########################################################################"
   echo "#########################################################################"
