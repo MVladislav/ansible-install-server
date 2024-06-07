@@ -85,6 +85,7 @@ install_server_config:
   snap_btop: false
   snap_glow: false
   snap_go: false
+  snap_httpie: false
   snap_node: false
   snap_openjdk: false
   snap_openjfx: false
@@ -230,6 +231,7 @@ install_server_config:
 | btop                   |  x   |         |     |     |     |             | sys         |
 | glow                   |  x   |         |     |     |     |             | sys         |
 | go                     |  x   |         |     |     |     |             | dev         |
+| httpie                 |  x   |         |     |     |     |             | dev         |
 | node                   |  x   |         |     |     |     |             | dev         |
 | openjdk                |  x   |         |     |     |     |             | dev         |
 | openjfx                |  x   |         |     |     |     |             | dev         |

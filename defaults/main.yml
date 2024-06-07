@@ -76,6 +76,7 @@ install_server_config:
   snap_btop: false
   snap_glow: false
   snap_go: false
+  snap_httpie: false
   snap_node: false
   snap_openjdk: false
   snap_openjfx: false
@@ -399,6 +400,9 @@ install_server_snap:
   - name: go
     classic: true
     install: "{{ install_server_config.snap_go | default('no') | bool }}"
+  - name: httpie
+    classic: false
+    install: "{{ install_server_config.snap_httpie | default('no') | bool }}"
   - name: node
     classic: true
     channel: "{{ install_server_links_to_check_update.snap_node_version }}/stable"
@@ -462,9 +466,9 @@ install_server_git:
       - key: pull.ff
         value: only
         scope: global
-      # - key: diff.tool
-      #   value: vim
-      #   scope: global
+      - key: diff.tool
+        value: nvimdiff
+        scope: global
       # - key: difftool.prompt
       #   value: "false"
       #   scope: global
