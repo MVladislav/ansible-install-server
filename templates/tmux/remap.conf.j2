@@ -1,7 +1,7 @@
 # -- general -------------------------------------------------------------------
 unbind C-b
 unbind C-y
-set -g prefix C-y
+set -g prefix C-y # Change prefix to Ctrl+y
 bind C-y send-prefix
 
 # -- scripts -------------------------------------------------------------------
@@ -13,43 +13,37 @@ bind-key -r f run-shell "tmux neww tmux-sessionizer"
 bind -n C-l send-keys C-l \; run 'sleep 0.2' \; clear-history
 
 # -- navigation ----------------------------------------------------------------
-# create session
-bind C-c new-session
+bind C-c new-session # Create a new session
+bind C-f command-prompt -p find-session 'switch-client -t %%' # Find and switch to a session
+bind BTab switch-client -l # Move to the last session
 
-# find session
-bind C-f command-prompt -p find-session 'switch-client -t %%'
-
-# session navigation
-bind BTab switch-client -l  # move to last session
-
+# -- window splits -------------------------------------------------------------
 # Unbind + Rebind window splits
 unbind %
 unbind '"'
-# split current window horizontally
-bind - split-window -v -c "#{pane_current_path}"
-# split current window vertically
-bind _ split-window -h -c "#{pane_current_path}"
-bind c new-window -c "#{pane_current_path}"
+bind - split-window -v -c "#{pane_current_path}" # Split window horizontally
+bind _ split-window -h -c "#{pane_current_path}" # Split window vertically
+bind c new-window -c "#{pane_current_path}" # Open a new window
 
-# pane navigation
-bind -r h select-pane -L  # move left
-bind -r j select-pane -D  # move down
-bind -r k select-pane -U  # move up
-bind -r l select-pane -R  # move right
-bind > swap-pane -D       # swap current pane with the next one
-bind < swap-pane -U       # swap current pane with the previous one
+# -- pane navigation and resizing ----------------------------------------------
+bind -r h select-pane -L # Move left
+bind -r j select-pane -D # Move down
+bind -r k select-pane -U # Move up
+bind -r l select-pane -R # Move right
+bind > swap-pane -D # Swap with the next pane
+bind < swap-pane -U # Swap with the previous pane
 
 # maximize current pane
 unbind z
-bind -r + resize-pane -Z
+bind -r + resize-pane -Z # Maximize current pane
 
 # pane resizing
-bind -r H resize-pane -L 2
-bind -r J resize-pane -D 2
-bind -r K resize-pane -U 2
-bind -r L resize-pane -R 2
+bind -r H resize-pane -L 2 # Resize left
+bind -r J resize-pane -D 2 # Resize down
+bind -r K resize-pane -U 2 # Resize up
+bind -r L resize-pane -R 2 # Resize right
 
-# window navigation
+# -- window navigation ---------------------------------------------------------
 unbind n
 unbind p
 bind -r C-h previous-window # select previous window

@@ -1,14 +1,14 @@
 # -- general -------------------------------------------------------------------
 set -g default-terminal "tmux-256color"
-set -ag terminal-overrides ",xterm-256color:RGB"
+set -ag terminal-overrides ",xterm-256color:Tc"
 
 setw -g xterm-keys on
 set -s escape-time 0    # faster command sequences
 set -sg repeat-time 600 # increase repeat timeout
-set -s focus-events on
+set -g focus-events on
 
-set -q -g status-utf8 on # expect UTF-8 (tmux < 2.2)
-setw -q -g utf8 on
+# set -q -g status-utf8 on # expect UTF-8 (tmux < 2.2)
+# setw -q -g utf8 on
 
 set -g history-limit 10000 # boost history
 
@@ -18,7 +18,6 @@ set -g @continuum-restore 'on'
 # -- display -------------------------------------------------------------------
 set -g base-index 1      # start windows numbering at 1
 set -g pane-base-index 1 # make pane numbering consistent with windows
-set-window-option -g pane-base-index 1
 
 setw -g automatic-rename on # rename window to reflect current program
 set -g renumber-windows on  # renumber windows when a window is closed
@@ -28,14 +27,14 @@ set -g set-titles on # set terminal title
 set -g display-panes-time 800 # slightly longer pane indicators display time
 set -g display-time 1000      # slightly longer status messages display time
 
-set -g status-interval 3 # redraw status line every 10 seconds
+set -g status-interval 3 # Redraw status line every 3 seconds
 
 # activity
 set -g monitor-activity on
 set -g visual-activity off
 
 # -- user customizations -------------------------------------------------------
-set -g mouse on
+set -g mouse on # Enable mouse support
 
 set -g detach-on-destroy off # don't exit from tmux when closing a session
 set -g set-clipboard on      # use system clipboard
