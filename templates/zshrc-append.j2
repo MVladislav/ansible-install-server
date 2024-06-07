@@ -81,6 +81,9 @@ setopt NO_NOMATCH
 export HISTTIMEFORMAT="%F %T "
 alias sudo-env='sudo -E env "PATH=$PATH"'
 
+### EDITOR ###
+export EDITOR='vim'
+
 ######################################################################
 ##
 ## set PATH so it includes user's private bin if it exists
@@ -157,13 +160,25 @@ alias docker='DOCKER_BUILDKIT=1 docker'
 alias docker-compose='docker compose'
 alias docker-swarm-compose='docker compose --compatibility config | sed '\''s|cpus: \([0-9]\+\(\.[0-9]\+\)*\)|cpus: "\1"|'\'' | sed '\''1{/^name:/d}'\'' | sed '\''s/published: "\(.*\)"/published: \1/'\'' | docker stack deploy --resolve-image=never --with-registry-auth --compose-file -'
 
-alias vm_quick_docker_ubuntu="mkdir -p ${HOME}/docker/$(date +'%Y-%m-%d') && docker run -it --rm --network host --user root -v ${HOME}/docker/$(date +'%Y-%m-%d'):/tmp/docker --name=ubuntu-server ubuntu:23.10"
-alias vm_quick_docker_iperf="docker run -d -it --restart=unless-stopped --name=iperf3-server -p 5201:5201 networkstatic/iperf3 -s"
+alias vm_quick_docker_ubuntu="mkdir -p ${HOME}/docker/$(date +'%Y-%m-%d') && docker run -it --rm --network host --user root -v ${HOME}/docker/$(date +'%Y-%m-%d'):/tmp/docker --name=ubuntu-server ubuntu:24.04"
+alias vm_quick_docker_iperf="docker run -d -it --rm --name=iperf3-server -p 5201:5201 networkstatic/iperf3 -s"
 
 ### KUBERNETES ###
+alias h='helm'
 alias k='kubectl'
 alias kn='k config set-context --current --namespace'
-alias h='helm'
+alias ka='kubectl apply -f'
+alias kg='kubectl get'
+alias kd='kubectl describe'
+alias kdel='kubectl delete'
+alias kl='kubectl logs'
+alias kgpo='kubectl get pod'
+alias kgd='kubectl get deployments'
+alias kc='kubectx'
+alias kns='kubens'
+alias kl='kubectl logs -f'
+alias ke='kubectl exec -it'
+alias kcns='kubectl config set-context --current --namespace'
 
 ### TERRAFORM ###
 alias tf='terraform'
@@ -201,7 +216,7 @@ alias vim=nvim
 alias vm_up_apt='sudo apt update && sudo apt upgrade'
 alias vm_up_snap='sudo snap refresh'
 alias vm_up_flatpak='flatpak update && flatpak uninstall --unused'
-alias vm_up_py_pip='python3 -m pip list -o | cut -f1 -d" " | tr " " "\n" | awk "{if(NR>=3)print}" | cut -d" " -f1 | xargs -n1 python3 -m pip install --no-cache-dir -U --break-system-packages'
+alias vm_up_py_pip='python3 -m pip list --user -o | cut -f1 -d" " | tr " " "\n" | awk "{if(NR>=3)print}" | cut -d" " -f1 | xargs -n1 python3 -m pip install --user --no-cache-dir -U --break-system-packages'
 alias vm_up_py_pip_root='sudo python3 -m pip list -o | cut -f1 -d" " | tr " " "\n" | awk "{if(NR>=3)print}" | cut -d" " -f1 | sudo xargs -n1 python3 -m pip install --no-cache-dir -U --break-system-packages'
 function vm_update_clean_all() {
   echo "Update apt..."
