@@ -35,19 +35,26 @@ return {
       require("mason-lspconfig").setup({
         ensured_installed = {
           'ansiblels',
-          'asm_lsp',
+          'asm_lsp',  -- Assembly
           'bashls',
-          'codeqlls',
+          'codeqlls', -- CodeQL
           'docker_compose_language_service',
           'dockerls',
-          'helm_ls',
+          'gopls',
+          -- 'helm_ls',
+          'html-lsp',
+          'htmlbeautifier',
           'htmx',
+          'java-test',
+          'jdtls',
           'ltex',
           'lua_ls',
-          'pyright',
-          'ruff_lsp',
+          'ruff_lsp', -- python
+          'ruff',     -- python
           'rust_analyzer',
+          'taplo',    -- taplo
           'yamlls',
+          'zig',
         },
         handlers = {
           function(server_name) -- default handler (optional)
@@ -66,6 +73,17 @@ return {
                   }
                 }
               }
+            }
+
+            lspconfig.ruff_lsp.setup {
+              init_options = {
+                settings = {
+                  -- Any extra CLI arguments for `ruff` go here.
+                  args = {
+                    "--config=./pyproject.toml",
+                  },
+                },
+              },
             }
           end,
         }
@@ -102,6 +120,18 @@ return {
           header = "",
           prefix = "",
         }
+      })
+
+      vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+        pattern = { "*.py" },
+        desc = "Auto-format Python files after saving",
+        callback = function()
+          local fileName = vim.api.nvim_buf_get_name(0)
+          vim.cmd(":silent !black --preview -q " .. fileName)
+          vim.cmd(":silent !isort --profile black --float-to-top -q " .. fileName)
+          vim.cmd(":silent !docformatter --in-place --black " .. fileName)
+        end,
+        group = autocmd_group,
       })
     end
   }
