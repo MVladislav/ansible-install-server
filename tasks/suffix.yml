@@ -7,8 +7,11 @@
   become: true
   ansible.builtin.copy:
     src: go-path.sh
-    dest: "{{ install_server_preferred_shell.profile_d }}"
+    dest: "{{ item }}"
     mode: "0644"
+  loop:
+    - /etc/profile.d
+    - "{{ install_server_preferred_shell.profile_d }}"
   when:
     - install_server_config.snap_go is defined
     - install_server_config.snap_go | bool
@@ -21,8 +24,11 @@
   become: true
   ansible.builtin.copy:
     src: ruby-path.sh
-    dest: "{{ install_server_preferred_shell.profile_d }}"
+    dest: "{{ item }}"
     mode: "0644"
+  loop:
+    - /etc/profile.d
+    - "{{ install_server_preferred_shell.profile_d }}"
   when:
     - install_server_config.snap_ruby is defined
     - install_server_config.snap_ruby | bool
@@ -35,8 +41,11 @@
   become: true
   ansible.builtin.copy:
     src: npm-path.sh
-    dest: "{{ install_server_preferred_shell.profile_d }}"
+    dest: "{{ item }}"
     mode: "0644"
+  loop:
+    - /etc/profile.d
+    - "{{ install_server_preferred_shell.profile_d }}"
   when:
     - install_server_config.snap_node is defined
     - install_server_config.snap_node | bool
