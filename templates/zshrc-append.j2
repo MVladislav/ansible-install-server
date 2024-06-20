@@ -90,13 +90,15 @@ export EDITOR='vim'
 ##
 ######################################################################
 if [ -d "$HOME/.local/bin" ]; then
-  PATH="$HOME/.local/bin:$PATH"
+  if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+    export PATH="$HOME/.local/bin:$PATH"
+  fi
 fi
 
 if [ -d {{ install_server_preferred_shell.profile_d }} ]; then
   if ls {{ install_server_preferred_shell.profile_d }}/*.sh 1>/dev/null 2>&1; then
     for i in {{ install_server_preferred_shell.profile_d }}/*.sh; do
-      if [ -r $i ]; then
+      if [ -r "$i" ]; then
         . $i
       fi
     done
@@ -113,7 +115,7 @@ alias ls='eza --color=always --git'
 {% endif %}
 {% if zshrc_apt_eza %}
 ### LS as EXA ###
-alias ls='exa --color=always  --git'
+alias ls='exa --color=always --git'
 {% endif %}
 alias l='ls -a1'
 alias ll='ls -aalhg'
