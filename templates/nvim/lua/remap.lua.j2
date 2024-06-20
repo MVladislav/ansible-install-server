@@ -35,6 +35,38 @@ vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
+vim.keymap.set('n', '<leader>h', ':nohlsearch<CR>')
+
 vim.keymap.set("n", "<leader><leader>", function()
   vim.cmd("so")
 end)
+
+local function vimgrep_current_word()
+    -- Get the current word under the cursor
+    local current_word = vim.fn.expand("<cword>")
+    -- Run vimgrep with the current word in all files in the current directory
+    vim.cmd("vimgrep /" .. current_word .. "/ `find . -type f`")
+    -- Open the quickfix list
+    vim.cmd("copen")
+
+    -- Prompt the user for the new word
+    local new_word = vim.fn.input("Replace with: ")
+    -- Run :cdo command to replace current_word with new_word
+    vim.cmd("cdo %s/" .. current_word .. "/" .. new_word .. "/gc")
+end
+vim.keymap.set("n", "<leader>rnl", vimgrep_current_word, { silent = true })
+
+local function vimgrep_current_word()
+    -- Get the current word under the cursor
+    local current_word = vim.fn.expand("<cword>")
+    -- Run vimgrep with the current word in all files in the current directory
+    vim.cmd("vimgrep /" .. current_word .. "/ %")
+    -- Open the quickfix list
+    vim.cmd("copen")
+
+    -- Prompt the user for the new word
+    local new_word = vim.fn.input("Replace with: ")
+    -- Run :cdo command to replace current_word with new_word
+    vim.cmd("cdo %s/" .. current_word .. "/" .. new_word .. "/gc")
+end
+vim.keymap.set("n", "<leader>rnf", vimgrep_current_word, { silent = true })

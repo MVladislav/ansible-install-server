@@ -3,7 +3,6 @@ return {
     'nvim-treesitter/nvim-treesitter',
     build = ":TSUpdate",
     config = function()
-      -- https://github.com/nvim-treesitter/nvim-treesitter
       require("nvim-treesitter.configs").setup({
         ensure_installed = {
           "bash",
@@ -15,8 +14,6 @@ return {
           "git_rebase",
           "gitattributes",
           "gitcommit",
-          "gitcommit",
-          "gitignore",
           "gitignore",
           "html",
           "java",
@@ -33,18 +30,11 @@ return {
           "vim",
           "vimdoc",
           "yaml",
+          "zig",
         },
-
-        -- Install parsers synchronously (only applied to `ensure_installed`)
         sync_install = false,
-
-        -- Automatically install missing parsers when entering buffer
-        -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
         auto_install = true,
-
-        indent = {
-          enable = true
-        },
+        indent = { enable = true },
 
         highlight = {
           enable = true,
@@ -52,8 +42,7 @@ return {
         },
       })
 
-      local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-      parser_config.zimbu = {
+      require("nvim-treesitter.parsers").get_parser_configs().zimbu = {
         install_info = {
           url = "https://github.com/vrischmann/tree-sitter-templ.git",
           files = { "src/parser.c", "src/scanner.c" },

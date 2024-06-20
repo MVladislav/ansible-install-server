@@ -23,13 +23,7 @@ return {
         cmp_lsp.default_capabilities()
       )
 
-      require("fidget").setup({
-        notification = {
-          window = {
-            winblend = 0,
-          },
-        }
-      })
+      require("fidget").setup({ notification = { window = { winblend = 0, }, } })
 
       require("mason").setup()
       require("mason-lspconfig").setup({
@@ -112,14 +106,7 @@ return {
 
       vim.diagnostic.config({
         update_in_insert = true,
-        float = {
-          focusable = false,
-          style = "minimal",
-          border = "rounded",
-          source = "always",
-          header = "",
-          prefix = "",
-        }
+        float = { focusable = false, style = "minimal", border = "rounded", source = "always", header = "", prefix = "", }
       })
 
       vim.api.nvim_create_autocmd({ "BufWritePost" }, {
@@ -133,6 +120,8 @@ return {
         end,
         group = autocmd_group,
       })
+
+      -- vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, {})
     end
   }
 }

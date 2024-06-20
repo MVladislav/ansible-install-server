@@ -78,11 +78,12 @@
 | n    | `<leader>nt`       | `function: neogen.generate({ type = "type" })`                        | snippets  |                                |
 | n    | `<leader>nd`       | `function: neogen.generate({ type = "typedef" })`                     | snippets  |                                |
 |      |                    |                                                                       |           |                                |
-| n    | `<leader>pf`       | `builtin.find_files`                                                  | telescope | find in files                  |
+| n    | `<leader>ff`       | `builtin.find_files`                                                  | telescope | find in files                  |
 | n    | `<C-p>`            | `builtin.git_files`                                                   | telescope | find in git files              |
-| n    | `<leader>pws`      | `function: builtin.grep_string({ search = word })`                    | telescope |                                |
-| n    | `<leader>pWs`      | `function: builtin.grep_string({ search = word })`                    | telescope |                                |
-| n    | `<leader>ps`       | `function: builtin.grep_string({ search = vim.fn.input("Grep > ") })` | telescope |                                |
+| n    | `<leader>fg`       | `builtin.live_grep`                                                   | telescope |                                |
+| n    | `<leader>fws`      | `function: builtin.grep_string({ search = word })`                    | telescope |                                |
+| n    | `<leader>fWs`      | `function: builtin.grep_string({ search = word })`                    | telescope |                                |
+| n    | `<leader>fs`       | `function: builtin.grep_string({ search = vim.fn.input("Grep > ") })` | telescope |                                |
 | n    | `<leader>vh`       | `builtin.help_tags`                                                   | telescope |                                |
 |      |                    |                                                                       |           |                                |
 | n    | `<leader>tt`       | `function: toggle()`                                                  | trouble   |                                |
