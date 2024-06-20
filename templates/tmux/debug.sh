@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+PATH=/usr/bin/:/usr/local/bin/:/bin:/usr/sbin/:/sbin
+set -euo pipefail
+IFS=$'\n\t'
+
 REPLACE_PATH="{{ install_server_tmux_path }}"
 REPLACE_PATH_P="{{ install_server_tmux_path_plugins }}"
 
@@ -14,9 +18,6 @@ DST_BASE="$DOTFILE_PATH/tmux"
 DST_PLUG="${DST_BASE}/plugins"
 DST_SCRIPTS="$DOTFILE_PATH/bin"
 
-# DST_BASE=~/.tmux
-# DST_PLUG="${DST_BASE}/plugins"
-# DST_SCRIPTS=~/.local/bin
 rm -rf "$DST_BASE"
 mkdir -p "$DST_PLUG"
 mkdir -p "$DST_SCRIPTS"
@@ -72,19 +73,22 @@ sed -i "s|${REPLACE_PATH_P}|${LN_ORIG_PLUG}|g" "$DST_TMUX"
 echo "Conf files copied, renamed, and Jinja2 variables replaced successfully."
 
 # CREATE LINKS -----------------------------------------------------------------
-echo "create symlink from '$DST_BASE' as '$LN_ORIG_BASE'"
+echo "Create symlink from '$DST_BASE' as '$LN_ORIG_BASE'"
 rm -f "${LN_ORIG_BASE}"
 ln -sf "${DST_BASE}" "${LN_ORIG_BASE}"
-echo "create symlink from '$DST_TMUX' as '$LN_ORIG_TMUX'"
+echo "Create symlink from '$DST_TMUX' as '$LN_ORIG_TMUX'"
 rm -f "${LN_ORIG_TMUX}"
 ln -sf "${DST_TMUX}" "${LN_ORIG_TMUX}"
 
-echo "create symlink from '$DST_SCRIPTS/*' into '$LN_ORIG_SCRIPT/'"
+echo "Create symlink from '$DST_SCRIPTS/*' into '$LN_ORIG_SCRIPT/'"
 for script in "$DST_SCRIPTS"/*; do
   ln -sf "$script" "${LN_ORIG_SCRIPT}/$(basename "$script")"
 done
 
+echo "All symlinks created."
+
 # ADD FONTS --------------------------------------------------------------------
+echo "Download some nerd fonts"
 FONTS_URLS=(
   "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/NerdFontsSymbolsOnly.tar.xz"
   "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.tar.xz"
