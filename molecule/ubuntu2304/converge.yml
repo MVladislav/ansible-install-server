@@ -79,9 +79,7 @@
       inst_zsh_conf: true
       inst_tmux_conf: true
       inst_nvim_conf: true
-      inst_nvim_conf_pkg: "snap" # snap | git
       # PYTHON --------------------------------
-      # python_pip_update: false # if pip should update all installed pkg's
       apt_python: true
       apt_python_pip: true
       apt_python_venv: true

@@ -16,7 +16,6 @@
     - git
 
 # ------------------------------------------------------------------------------
-# user.email
 - name: "SERVER | git | config git step 2.1"
   become: true
   become_user: "{{ outer_item.name }}"

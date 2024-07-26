@@ -2,16 +2,6 @@
 # tasks file for setup_users
 
 # ------------------------------------------------------------------------------
-# - name: delete user accounts
-#  become: true
-#  user:
-#  name: "{{ item.name }}"
-#  state: absent
-#  remove: yes
-#  force: yes
-#  loop: "{{ clients |flatten(levels=1) }}"
-
-# ------------------------------------------------------------------------------
 - name: "SERVER | user | update user accounts"
   become: true
   ansible.builtin.user:

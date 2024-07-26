@@ -103,15 +103,14 @@ install_server_config:
   inst_zsh_conf: false
   inst_tmux_conf: false
   inst_nvim_conf: false
-  inst_nvim_conf_pkg: "snap" # snap | git
   # PYTHON --------------------------------
-  python_pip_update: false # if pip should update all installed pkg's
   apt_python: false
   apt_python_pip: false
   apt_python_venv: false
   apt_python_dev: false
   pip_s_tui: false
   pip_virtualenv: false
+  pip_ruff: false
   pip_autopep8: false
   pip_black: false
   pip_mypy: false
@@ -240,13 +239,14 @@ install_server_config:
 | git                    |      |         |  x  |     |     |      x      | sys         |
 | zsh                    |      |         |  x  |     |     |      x      | sys         |
 | tmux                   |      |         |     |     |     |      x      | sys         |
-| nvim                   |  x   |         |  x  |     |     |      x      | sys         |
+| nvim                   |      |         |     |     |     |      x      | sys         |
 | python\*               |      |         |  x  |     |     |             | dev         |
 | python pip\*           |      |         |  x  |     |     |             | dev         |
 | python venv\*          |      |         |  x  |     |     |             | dev         |
 | python dev\*           |      |         |  x  |     |     |             | dev         |
 | s_tui                  |      |         |     |  x  |     |             | sys         |
 | virtualenv             |      |         |     |  x  |     |             | dev         |
+| ruff                   |      |         |     |  x  |     |             | dev         |
 | autopep8               |      |         |     |  x  |     |             | dev         |
 | black                  |      |         |     |  x  |     |             | dev         |
 | mypy                   |      |         |     |  x  |     |             | dev         |

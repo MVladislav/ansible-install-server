@@ -25,8 +25,8 @@ install_server_preferred_shell:
 install_server_links_to_check_update:
   lua_version: 5.4
   # https://snapcraft.io/node
-  snap_node_version: 21
-  java_version: 17
+  snap_node_version: 22
+  java_version: 21
 
 # ------------------------------------------------------------------------------
 # WHAT TO INSTALL
@@ -94,15 +94,14 @@ install_server_config:
   inst_zsh_conf: false
   inst_tmux_conf: false
   inst_nvim_conf: false
-  inst_nvim_conf_pkg: "snap" # snap | git
   # PYTHON --------------------------------
-  python_pip_update: false # if pip should update all installed pkg's
   apt_python: false
   apt_python_pip: false
   apt_python_venv: false
   apt_python_dev: false
   pip_s_tui: false
   pip_virtualenv: false
+  pip_ruff: false
   pip_autopep8: false
   pip_black: false
   pip_mypy: false
@@ -232,8 +231,6 @@ install_server_apt:
   - name: libgl1-mesa-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: libegl1-mesa-dev
-    install: "{{ install_server_config.apt_libs | default('no') | bool }}"
-  - name: libgles2-mesa
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
   - name: libgles2-mesa-dev
     install: "{{ install_server_config.apt_libs | default('no') | bool }}"
@@ -451,7 +448,6 @@ install_server_git_email: "{{ ansible_user }}"
 install_server_git:
   apt:
     - git
-    # - git-flow
   git:
     config:
       - key: user.email
@@ -485,7 +481,7 @@ install_server_git:
 # install_server_config.inst_fonts
 # https://github.com/ryanoasis/nerd-fonts/releases
 install_server_fonts:
-  fonts_dst: ~/.local/share/fonts
+  fonts_dst: ~/.local/share/fonts/nerd-fonts
   fonts_src:
     - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/NerdFontsSymbolsOnly.tar.xz
     - https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.tar.xz
@@ -534,36 +530,28 @@ install_server_zsh:
   ## https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins
   plugins: >
     adb
-    ansible
-    bundler
     colored-man-pages
     command-not-found
-    cp
     docker
-    docker-compose
     git
     gitignore
     golang
     helm
     history
+    httpie
     kubectl
     lxd
-    man
     nmap
-    node
     npm
     oc
     pip
-    python
-    ruby
+    pylint
     rust
     sudo
     terraform
     tmux
     ubuntu
     ufw
-    vim-interaction
-    vscode
     zsh-autosuggestions
     zsh-syntax-highlighting
   append_file:
@@ -580,21 +568,17 @@ install_server_tmux_path_plugins: ~/.tmux/plugins
 install_server_tmux_path_script: ~/.local/bin
 install_server_tmux:
   apt_dependencies:
-    - build-essential
     - git
-    - wget
-    - tar
-    - libevent-dev
-    - libncurses-dev
-    - autoconf
+    - fzf
     - automake
     - pkg-config
+    - build-essential
+    - libevent-dev
+    - libncurses5-dev
     - bison
-    - yacc
-    - xclip
-    - fzf
-  update: true
   git: https://github.com/tmux/tmux.git
+  git_version: master
+  update: true
   plugins:
     - git: https://github.com/tmux-plugins/tpm.git
       path: "{{ install_server_tmux_path_plugins }}/tpm"
@@ -647,17 +631,19 @@ install_server_tmux:
 # TheVimeagen - Neovim Config: https://www.youtube.com/watch?v=ZWWxwwUsPNw
 install_server_nvim_group: vm
 install_server_nvim:
-  update: true
-  apt:
-    install: "{{ (install_server_config.inst_nvim_conf_pkg | default('snap') == 'apt') | bool }}"
-    name: nvim
-  dependencies:
+  apt_dependencies:
+    - git
     - ripgrep
     - fd-find
-  snap:
-    install: "{{ (install_server_config.inst_nvim_conf_pkg | default('snap') == 'snap') | bool }}"
-    name: nvim
-    classic: true
+    - ninja-build
+    - gettext
+    - cmake
+    - unzip
+    - curl
+    - build-essential
+  git: https://github.com/neovim/neovim.git
+  git_version: master
+  update: true
   folders:
     - "~/.config/nvim/lua/{{ install_server_nvim_group }}/lazy"
   configs:
@@ -676,12 +662,16 @@ install_server_nvim:
       path_src: nvim/lazy
       files:
         - cloak.lua
+        - cmp.lua
         - colors.lua
+        - copilot.lua
         - git.lua
         - harpoon.lua
         - init.lua
         - lsp.lua
+        - lualine.lua
         - snippets.lua
+        - spectre.lua
         - telescope.lua
         - treesitter.lua
         - trouble.lua
@@ -717,6 +707,8 @@ install_server_python:
       install: "{{ install_server_config.pip_s_tui | default('no') | bool }}"
     - name: virtualenv
       install: "{{ install_server_config.pip_virtualenv | default('no') | bool }}"
+    - name: ruff
+      install: "{{ install_server_config.pip_ruff | default('no') | bool }}"
     - name: autopep8
       install: "{{ install_server_config.pip_autopep8 | default('no') | bool }}"
     - name: black

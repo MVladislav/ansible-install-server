@@ -2,7 +2,7 @@
 # tasks file for ./roles/install_server
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | tmux | step 1 | install dependencies"
+- name: "SERVER | tmux | step 1 | install dependencies [apt]"
   become: true
   ansible.builtin.apt:
     pkg: "{{ install_server_tmux.apt_dependencies }}"
@@ -13,21 +13,34 @@
     - tmux
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | tmux | step 2 | install tmux | git clone"
+- name: "SERVER | tmux | step 2.1 | install tmux | git clone"
   become: true
   ansible.builtin.git:
     repo: "{{ install_server_tmux.git }}"
-    dest: "/opt/tmux"
+    dest: /opt/tmux
     force: true
     update: "{{ install_server_tmux.update | bool }}"
-    version: master
+    version: "{{ install_server_tmux.git_version }}"
+  tags:
+    - install_server
+    - tmux
+
+- name: "SERVER | tmux | step 2.2 | install tmux | git clone | change owner"
+  become: true
+  ansible.builtin.file:
+    path: /opt/tmux
+    state: directory
+    owner: "{{ outer_item.name }}"
+    group: "{{ outer_item.name }}"
+    recurse: true
   tags:
     - install_server
     - tmux
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | tmux | step 2.1 | install tmux | run autogen.sh"
+- name: "SERVER | tmux | step 3.1 | install tmux | run autogen.sh"
   become: true
+  become_user: "{{ outer_item.name }}"
   ansible.builtin.shell: ./autogen.sh
   args:
     chdir: "/opt/tmux"
@@ -37,9 +50,10 @@
     - install_server
     - tmux
 
-- name: "SERVER | tmux | step 2.2 | install tmux | run configure"
+- name: "SERVER | tmux | step 3.2 | install tmux | run configure"
   become: true
-  ansible.builtin.shell: ./configure
+  become_user: "{{ outer_item.name }}"
+  ansible.builtin.shell: ./configure --prefix=$HOME/.local/
   args:
     chdir: "/opt/tmux"
     creates: "/opt/tmux/Makefile"
@@ -48,8 +62,9 @@
     - install_server
     - tmux
 
-- name: "SERVER | tmux | step 2.3 | install tmux | make and install"
+- name: "SERVER | tmux | step 3.3 | install tmux | make and install"
   become: true
+  become_user: "{{ outer_item.name }}"
   ansible.builtin.shell: set -o pipefail && make && make install
   args:
     chdir: "/opt/tmux"
@@ -61,7 +76,7 @@
     - tmux
 
 # ------------------------------------------------------------------------------
-- name: "SERVER | tmux | step 3.1 | setup tmux plugins | git clone"
+- name: "SERVER | tmux | step 4 | setup tmux plugins | git clone"
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.git:
@@ -116,7 +131,7 @@
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.shell: >
-    set -o pipefail &&
+    set -o pipefail && PATH="$HOME/.local/bin:$PATH"
     {{ install_server_tmux_path_plugins }}/tpm/scripts/install_plugins.sh
   args:
     executable: /bin/bash
