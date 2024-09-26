@@ -2,10 +2,11 @@
 
 ## Other
 
-| mode | command  | description |
-| :--- | :------- | :---------- |
-| n    | `:Lazy`  |             |
-| n    | `:Mason` |             |
+| mode | command            | description |
+| :--- | :----------------- | :---------- |
+| n    | `:Lazy`            |             |
+| n    | `:Mason`           |             |
+| n    | `:MarkdownPreview` |             |
 
 ## Key Maps
 

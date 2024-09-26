@@ -36,8 +36,8 @@ install_server_git_email: "{{ ansible_user }}"
 # some version manually needs to checked and updated
 install_server_links_to_check_update:
   # https://snapcraft.io/node
-  snap_node_version: 20
-  java_version: 17
+  snap_node_version: 22
+  java_version: 21
 
 install_server_config:
   env_tun_setup: false
@@ -84,9 +84,9 @@ install_server_config:
   snap_multipass: false
   snap_btop: false
   snap_glow: false
-  snap_go: false
+  snap_go: false # NOTE: pks installs depends on clients[...].dev
   snap_httpie: false
-  snap_node: false
+  snap_node: false # NOTE: pks installs depends on clients[...].dev
   snap_openjdk: false
   snap_openjfx: false
   snap_ruby: false
@@ -98,13 +98,13 @@ install_server_config:
   # flatpak_john_the_ripper: false
   # flatpak_nmap: false
   # OTHER --------------------------------
-  inst_git_conf: false
+  inst_git_conf: false # NOTE: depends on clients[...].dev
   inst_fonts: false
-  inst_zsh_conf: false
-  inst_tmux_conf: false
-  inst_nvim_conf: false
+  inst_zsh_conf: false # NOTE: depends on clients[...].dev
+  inst_tmux_conf: false # NOTE: depends on clients[...].dev
+  inst_nvim_conf: false # NOTE: depends on clients[...].dev
   # PYTHON --------------------------------
-  apt_python: false
+  apt_python: false # NOTE: pks installs depends on clients[...].dev
   apt_python_pip: false
   apt_python_venv: false
   apt_python_dev: false

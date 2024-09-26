@@ -89,11 +89,11 @@ install_server_config:
   # flatpak_john_the_ripper: false
   # flatpak_nmap: false
   # OTHER --------------------------------
-  inst_git_conf: false
+  inst_git_conf: false # NOTE: depends on clients[...].dev
   inst_fonts: false
-  inst_zsh_conf: false
-  inst_tmux_conf: false
-  inst_nvim_conf: false
+  inst_zsh_conf: false # NOTE: depends on clients[...].dev
+  inst_tmux_conf: false # NOTE: depends on clients[...].dev
+  inst_nvim_conf: false # NOTE: depends on clients[...].dev
   # PYTHON --------------------------------
   apt_python: false
   apt_python_pip: false
@@ -529,7 +529,6 @@ install_server_zsh:
   theme: spaceship
   ## https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins
   plugins: >
-    adb
     colored-man-pages
     command-not-found
     docker
@@ -538,13 +537,13 @@ install_server_zsh:
     golang
     helm
     history
-    httpie
     kubectl
     lxd
     nmap
     npm
     oc
     pip
+    httpie
     pylint
     rust
     sudo
@@ -670,6 +669,7 @@ install_server_nvim:
         - init.lua
         - lsp.lua
         - lualine.lua
+        - markdown.lua
         - snippets.lua
         - spectre.lua
         - telescope.lua
