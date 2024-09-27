@@ -8,7 +8,7 @@
 # ------------------------------------------------------------------------------
 - name: "SERVER | POST | set shell for users"
   become: true
-  become_user: "{{ item.name }}"
+  # become_user: "{{ item.name }}"
   ansible.builtin.user:
     name: "{{ item.name }}"
     shell: "{{ item.shell | default(install_server_preferred_shell.shell) }}"

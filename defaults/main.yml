@@ -728,9 +728,9 @@ install_server_python:
 # TODO: GO packages
 # install_server_config.go_...
 install_server_go_sources:
-  - source: github.com/kubernetes/kompose
+  - source: github.com/kubernetes/kompose@latest
     install: "{{ install_server_config.go_kompose | default('no') | bool }}"
-  - source: github.com/nektos/act
+  - source: github.com/nektos/act@latest
     install: "{{ install_server_config.go_act | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------

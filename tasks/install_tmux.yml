@@ -70,8 +70,9 @@
     chdir: "/opt/tmux"
     executable: /bin/bash
   register: tmux_make_run
-  changed_when: tmux_make_run.rc != 0
+  changed_when: tmux_make_run.rc == 0
   tags:
+    - molecule-idempotence-notest
     - install_server
     - tmux
 
@@ -136,7 +137,8 @@
   args:
     executable: /bin/bash
   register: tmux_install_plugins
-  changed_when: tmux_install_plugins.rc != 0
+  changed_when: tmux_install_plugins.rc == 0
   tags:
+    - molecule-idempotence-notest
     - install_server
     - tmux

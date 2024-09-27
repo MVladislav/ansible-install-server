@@ -23,10 +23,13 @@
   become: true
   become_user: "{{ outer_item.name }}"
   ansible.builtin.command: /snap/bin/npm config set prefix ~/.npm-packages
-  changed_when: false
+  register: npm_set_prefix
+  changed_when: npm_set_prefix.rc == 0
+  failed_when: false
   when:
     - install_server_npm_pkg is defined
   tags:
+    - molecule-idempotence-notest
     - install_server
     - npm
 

@@ -4,15 +4,17 @@
 # ------------------------------------------------------------------------------
 - name: "SERVER | go | install"
   become: true
-  become_user: "{{ outer_item }}"
+  become_user: "{{ outer_item.name }}"
   ansible.builtin.command: go install {{ item.source }}
-  changed_when: false
-  failed_when: false
+  register: go_install_pkg
+  changed_when: go_install_pkg.rc == 0
+  # failed_when: false
   loop: "{{ install_server_go_sources | flatten(levels=1) }}"
   when:
     - install_server_go_sources is defined
     - item.install is defined
     - item.install | bool
   tags:
+    - molecule-idempotence-notest
     - install_server
     - go

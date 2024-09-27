@@ -7,7 +7,6 @@
   ansible.builtin.apt:
     force_apt_get: true
     update_cache: true
-  changed_when: false
   tags:
     - install_server
     - pre

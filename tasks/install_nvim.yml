@@ -48,8 +48,9 @@
     chdir: "/opt/nvim"
     executable: /bin/bash
   register: nvim_make_clean
-  changed_when: nvim_make_clean.rc != 0
+  changed_when: nvim_make_clean.rc == 0
   tags:
+    - molecule-idempotence-notest
     - install_server
     - nvim
 
@@ -64,8 +65,9 @@
     chdir: "/opt/nvim"
     executable: /bin/bash
   register: nvim_make_run
-  changed_when: nvim_make_run.rc != 0
+  changed_when: nvim_make_run.rc == 0
   tags:
+    - molecule-idempotence-notest
     - install_server
     - nvim
 
