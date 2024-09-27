@@ -95,5 +95,5 @@
       # NPM --------------------------------
       # npm_typescript: false
       # GO --------------------------------
-      go_kompose: true
-      go_act: true
+      # go_kompose: true
+      # go_act: true
