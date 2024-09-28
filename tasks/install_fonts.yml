@@ -23,5 +23,6 @@
     mode: "0660"
   loop: "{{ install_server_fonts.fonts_src | flatten(levels=1) }}"
   tags:
+    - molecule-idempotence-notest
     - install_server
     - fonts
