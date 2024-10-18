@@ -5,8 +5,6 @@
 #
 # run `$sudo sysctl --system` to update
 #
-#
-#
 
 ###################################################################
 # ==> kernel
@@ -35,6 +33,9 @@ kernel.printk=3 4 1 3
 # Enable process address space protection
 # This makes it more difficult for an attacker to predict the location of key data structures in memory
 kernel.randomize_va_space=2
+# Restrict access to dmesg for non-root users, improving security.
+kernel.dmesg_restrict=1
+
 # Disable core dumps
 # This prevents core dumps from being written to disk if a setuid program crashes
 fs.suid_dumpable=0
@@ -70,11 +71,13 @@ vm.swappiness=1
 # Adjust vfs cache
 # https://lonesysadmin.net/2013/12/22/better-linux-disk-caching-performance-vm-dirty_ratio/
 # Decriase dirty cache to faster flush on disk
+# This controls when background processes start writing dirty data to disk, which can be set to 5% (around 3.2GB by 64GB of RAM).
 #vm.dirty_background_ratio=5
+# This means 10% of your RAM (about 6.4GB by 64GB of RAM) can be dirty before the system forces a write to disk.
 #vm.dirty_ratio=10
 
 ###################################################################
-# ==> network
+# ==> network (func)
 
 # Disable IPv6 usage complete, we do not need it internal
 # think about let it active on device which needs it
@@ -145,12 +148,11 @@ net.ipv4.tcp_sack=1
 net.ipv4.ip_no_pmtu_disc=1
 
 # Disable TCP timestamps (RFC1323/RFC7323)
+# This makes it more difficult for an attacker to perform a TCP spoofing attack
 net.ipv4.tcp_timestamps=0
 
-# uncomment below to use, for this setup we let it enabled
-# Enable the use of TCP timestamps
-# This makes it more difficult for an attacker to perform a TCP spoofing attack
-#net.ipv4.tcp_timestamps=1
+# Protect Against TCP Time-Wait
+net.ipv4.tcp_rfc1337=1
 
 # Enable source address verification for IPv6
 # This makes it more difficult for an attacker to spoof their IP address
@@ -160,32 +162,18 @@ net.ipv6.conf.default.accept_ra=0
 net.ipv4.route.flush=1
 net.ipv6.route.flush=1
 
-# allow testing with buffers up to 128MB (64MB)
-## Maximum receive socket buffer size
-net.core.rmem_max=134217728 #67108864
-## Maximum send socket buffer size
-net.core.wmem_max=134217728 #67108864
-
-# Maximum number of packets queued on the input side
-net.core.netdev_max_backlog=3000
-
 # Enable the use of TCP fast open
 # This allows the system to establish a TCP connection more quickly and improves performance
 # - 0: Disable TCP Fast Open (default if not explicitly set).
 # - 1: Enable TCP Fast Open for outgoing connections (clients).
 # - 2: Enable TCP Fast Open for incoming connections (servers).
 # - 3: Enable TCP Fast Open for both outgoing and incoming connections.
-#net.ipv4.tcp_fastopen=1
 net.ipv4.tcp_fastopen=3
 
 # Enable the use of TCP window scaling
 # increase Linux autotuning TCP buffer limit to 128MB (64MB)
 # This allows the system to handle large TCP window sizes and improves performance
 net.ipv4.tcp_window_scaling=3
-## Minimum, initial and max TCP Receive buffer size in Bytes
-net.ipv4.tcp_rmem=4096 87380 134217728 #67108864
-## Minimum, initial and max buffer space allocated
-net.ipv4.tcp_wmem=4096 87380 134217728 #67108864
 
 # recommended default congestion control is ...
 #net.ipv4.tcp_congestion_control=htcp
@@ -205,23 +193,55 @@ net.ipv4.tcp_no_metrics_save=1
 
 net.ipv4.tcp_low_latency=1
 
-vm.max_map_count=1048576
-
 # Netfilter should be turned off on bridge devices
 net.bridge.bridge-nf-call-iptables=0
 net.bridge.bridge-nf-call-arptables=0
 net.bridge.bridge-nf-call-ip6tables=0
 
 # ###################################################################
-fs.file-max=2097152 #262144
-net.core.somaxconn=65535 #4096
+# ==> network (space)
+
+# allow testing with buffers up to 128MB (64MB)
+# Maximum receive socket buffer size
+net.core.rmem_max=134217728 #67108864 | 134217728
+# Maximum send socket buffer size
+net.core.wmem_max=134217728 #67108864 | 134217728
+
+# Maximum number of packets queued on the input side
+net.core.netdev_max_backlog=1000 #1000 | 3000
+
+# Maximum number of pending connections
+net.core.somaxconn=4096 #4096 | 65535
+
+# Number of flow entries for Receive Packet Steering (RPS)
+net.core.rps_sock_flow_entries=32768
+
+# TCP Receive buffer size (min, default, max)
+net.ipv4.tcp_rmem=4096 87380 134217728 #67108864
+# TCP Send buffer size (min, default, max)
+net.ipv4.tcp_wmem=4096 87380 134217728 #67108864
+
+# Maximum number of queued SYN requests
 net.ipv4.tcp_max_syn_backlog=4096
-net.ipv4.tcp_mem=4194304 4194304 4194304
+# TCP memory pressure thresholds (low, pressure, high)
+#net.ipv4.tcp_mem=4194304  4194304  4194304
+net.ipv4.tcp_mem=8388608 12582912 16777216
+
+# ###################################################################
+vm.max_map_count=1048576
+fs.file-max=2097152 #262144 | 4194304
 
 # ###################################################################
 # check below if to use instead - if you have performance penalties
 #net.ipv4.tcp_timestamps=1
 #net.ipv4.ip_no_pmtu_disc=0
+#net.ipv4.tcp_fastopen=1
+
+# ###################################################################
+# activate IPv6 if you need it
+#net.ipv6.conf.all.disable_ipv6=0
+#net.ipv6.conf.default.disable_ipv6=0
+#net.ipv6.conf.lo.disable_ipv6=0
 
 # ###################################################################
 # if you have docker installed and want they can communicate local with each other
@@ -230,16 +250,11 @@ net.ipv4.tcp_mem=4194304 4194304 4194304
 #net.ipv6.conf.all.forwarding=1
 
 ###################################################################
-# Protect Against TCP Time-Wait
-#net.ipv4.tcp_rfc1337 = 1
-
-# Increase the tcp-time-wait buckets pool size to prevent simple DOS attacks
-#net.ipv4.tcp_max_tw_buckets = 1440000
-#net.ipv4.tcp_tw_recycle = 1
-#net.ipv4.tcp_tw_reuse = 1
-
 ###################################################################
-# to be tested
+# Increase the tcp-time-wait buckets pool size to prevent simple DOS attacks
+#net.ipv4.tcp_max_tw_buckets = 1440000 #262144 | 300000 | 500000 | 1440000
+#net.ipv4.tcp_tw_reuse = 1
+## to be tested
 #net.ipv4.ipfrag_high_thresh=8388608
 #net.ipv4.ipfrag_low_thresh=196608
 #net.ipv6.ip6frag_high_thresh=8388608
