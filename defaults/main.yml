@@ -83,6 +83,7 @@ install_server_config:
   snap_ruby: false
   # need to run "rustup default stable"
   snap_rust: false
+  snap_shellcheck: false
   snap_john_the_ripper: false
   snap_nmap: false
   # # FLATHUB ----------------------------------
@@ -410,6 +411,9 @@ install_server_snap:
   - name: rustup
     classic: true
     install: "{{ install_server_config.snap_rust | default('no') | bool }}"
+  - name: shellcheck
+    classic: false
+    install: "{{ install_server_config.snap_shellcheck | default('no') | bool }}"
   - name: openjdk
     classic: false
     install: "{{ install_server_config.snap_openjdk | default('no') | bool }}"

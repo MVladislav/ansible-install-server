@@ -68,6 +68,7 @@
       snap_ruby: false
       # need to run "rustup default stable"
       snap_rust: false
+      snap_shellcheck: true
       snap_john_the_ripper: false
       snap_nmap: false
       # # FLATHUB ----------------------------------

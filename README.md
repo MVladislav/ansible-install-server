@@ -92,6 +92,7 @@ install_server_config:
   snap_ruby: false
   # need to run "rustup default stable"
   snap_rust: false
+  snap_shellcheck: false
   snap_john_the_ripper: false
   snap_nmap: false
   # # FLATHUB ----------------------------------
@@ -236,6 +237,7 @@ install_server_config:
 | openjfx                |  x   |         |     |     |     |             | dev         |
 | ruby                   |  x   |         |     |     |     |             | dev         |
 | rust                   |  x   |         |     |     |     |             | dev         |
+| shellcheck             |  x   |         |     |     |     |             | dev         |
 | git                    |      |         |  x  |     |     |      x      | sys         |
 | zsh                    |      |         |  x  |     |     |      x      | sys         |
 | tmux                   |      |         |     |     |     |      x      | sys         |
