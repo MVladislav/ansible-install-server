@@ -21,7 +21,6 @@
       java_version: 21
     # --- in playbook ---
     install_server_config:
-      env_tun_setup: true
       # APT (1) -------------------------------
       apt_base: true
       apt_auth_priv: true

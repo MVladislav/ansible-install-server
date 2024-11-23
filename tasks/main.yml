@@ -12,15 +12,6 @@
   ansible.builtin.include_tasks: setup_users.yml
 
 # ------------------------------------------------------------------------------
-# --- TUNING OS ---
-- name: "SERVER | os | run os tuning's"
-  ansible.builtin.include_tasks: setup_tun_os.yml
-  when:
-    - install_server_os_tun is defined
-    - install_server_os_tun.install is defined
-    - install_server_os_tun.install | bool
-
-# ------------------------------------------------------------------------------
 # DEFAULT PACKAGES
 - name: "SERVER | apt | install apt packages"
   ansible.builtin.include_tasks: install_apt.yml

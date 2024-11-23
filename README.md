@@ -40,7 +40,6 @@ install_server_links_to_check_update:
   java_version: 21
 
 install_server_config:
-  env_tun_setup: false
   # APT (1) -------------------------------
   apt_base: false
   apt_exa: false

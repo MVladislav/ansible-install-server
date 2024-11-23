@@ -31,7 +31,6 @@ install_server_links_to_check_update:
 # ------------------------------------------------------------------------------
 # WHAT TO INSTALL
 install_server_config:
-  env_tun_setup: false
   # APT (1) -------------------------------
   apt_base: false
   apt_exa: false
@@ -114,12 +113,6 @@ install_server_config:
   # GO --------------------------------
   go_kompose: false
   go_act: false
-
-# ------------------------------------------------------------------------------
-# OS TUNNING'S
-# install_server_config.env_tun_setup
-install_server_os_tun:
-  install: "{{ install_server_config.env_tun_setup | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # APT
