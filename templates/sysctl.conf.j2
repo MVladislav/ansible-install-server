@@ -3,21 +3,18 @@
 # See /etc/sysctl.d/ for additional system variables.
 # See sysctl.conf (5) for information.
 #
-# run `$sudo sysctl --system` to update
+# To apply changes: `sudo sysctl -p --system`
 #
 
 ###################################################################
-# ==> kernel
+# ==> Kernel Parameters
 
-# https://en.wikipedia.org/wiki/Syslog#Severity_levels
-# stop low-level messages on console
-
-# kernel.printk: `3 4 1 3`
-#
-# - CUR = current severity level; only messages more important than this level are printed
-# - DEF = default severity level assigned to messages with no level
-# - MIN = minimum allowable CUR
-# - BTDEF = boot-time default CUR
+# Control kernel logging to console (severity levels).
+# See: https://en.wikipedia.org/wiki/Syslog#Severity_levels
+# - CUR: Current message level (default: 3, "error").
+# - DEF: Default level for messages without a specified level.
+# - MIN: Minimum CUR level allowed.
+# - BTDEF: Boot-time default for CUR.
 # |     |               | CUR | DEF | MIN | BTDEF |
 # | :-- | :------------ | :-- | :-- | :-- | :---- |
 # | 0   | emergency     | x   | x   | x   | x     |
@@ -28,232 +25,257 @@
 # | 5   | notice        |     |     |     |       |
 # | 6   | informational |     |     |     |       |
 # | 7   | debug         |     |     |     |       |
-kernel.printk=3 4 1 3
+kernel.printk=3 4 1 7
 
-# Enable process address space protection
-# This makes it more difficult for an attacker to predict the location of key data structures in memory
+# Enable Address Space Layout Randomization (ASLR) for process memory.
+# Enhances security by making it more difficult for attackers to predict memory addresses.
 kernel.randomize_va_space=2
-# Restrict access to dmesg for non-root users, improving security.
+# Restrict access to dmesg for non-root users, preventing potential leakage of sensitive system information.
 kernel.dmesg_restrict=1
+# Controls access to kernel pointer addresses in /proc files.
+# Restricting this prevents unauthorized users from reading kernel addresses.
+kernel.kptr_restrict=1
 
-# Disable core dumps
-# This prevents core dumps from being written to disk if a setuid program crashes
+# Disable core dumps for setuid programs to prevent sensitive data leaks.
 fs.suid_dumpable=0
 
+# Max inotify instances and watches per user (for applications that require more file monitoring).
 fs.inotify.max_user_instances=8192
-# Cache extend
 fs.inotify.max_user_watches=524288
 
-# limit the ability of a compromised process to PTRACE_ATTACH on other processes running under the same user
+# Restrict ptrace() debugging to parent processes only.
+# Prevents exploitation of ptrace by malicious processes.
 kernel.yama.ptrace_scope=1
 
 ###################################################################
-# Magic system request Key
-# 0=disable, 1=enable all, >1 bitmask of sysrq functions
-# See https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html
-# for what other values do
-#kernel.sysrq=438
-kernel.sysrq=0
+# ==> Magic SysRq Key Configuration
 
-# Background save may fail under low memory condition
+# Enable SysRq key functions selectively.
+# See https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html
+# - 0: Disable completely.
+# - 1: Enable all.
+# - 176: Allow only reboot, remount, kill, sync, etc.
+kernel.sysrq=176
+#kernel.sysrq=438
+
+###################################################################
+# ==> Virtual Memory
+
+# Prevent null-pointer dereference attacks by restricting minimum address mappable via mmap().
+vm.mmap_min_addr=65536
+
+# Memory overcommit handling:
+# - 0: Default overcommit handling.
+# - 1: Always overcommit.
+# - 2: No overcommit beyond set ratio.
 vm.overcommit_memory=0
-#vm.overcommit_memory=1
-#vm.overcommit_memory=2
+# In case overcommit ratio needs to be manually set (in percent).
 #vm.overcommit_ratio=100
 
-# swapp set to 1, but not quite disabling it. Will prevent OOM killer from killing processes when running out of physical memory.
+# Set swappiness value. Lower values reduce swap usage and prefer keeping data in RAM.
 vm.swappiness=1
 
-# Enable Transparent Huge Pages (THP)
-#vm.nr_hugepages=2048 #128
+# Transparent Huge Pages (THP) can be enabled for memory allocation efficiency if necessary.
+#vm.nr_hugepages=128
+#vm.nr_hugepages=2048
 #vm.nr_hugepages_mempolicy=1
 
-# Adjust vfs cache
-# https://lonesysadmin.net/2013/12/22/better-linux-disk-caching-performance-vm-dirty_ratio/
-# Decriase dirty cache to faster flush on disk
-# This controls when background processes start writing dirty data to disk, which can be set to 5% (around 3.2GB by 64GB of RAM).
+# Controls when dirty data (modified pages) is written to disk.
+# See https://lonesysadmin.net/2013/12/22/better-linux-disk-caching-performance-vm-dirty_ratio/
+# The `dirty_background_ratio` defines the threshold when background processes start flushing dirty pages.
+# The `dirty_ratio` is the maximum percentage of RAM that can be "dirty" before the system forces a write.
+# Example:
+# For a system with 64GB of RAM:
+# - dirty_background_ratio=5: Around 3.2GB will start flushing.
+# - dirty_ratio=10: Around 6.4GB can be dirty before a forced write.
+# Adjust these values depending on system load and disk performance requirements.
 #vm.dirty_background_ratio=5
-# This means 10% of your RAM (about 6.4GB by 64GB of RAM) can be dirty before the system forces a write to disk.
 #vm.dirty_ratio=10
 
 ###################################################################
-# ==> network (func)
+# ==> Networking (Functional Parameters)
 
-# Disable IPv6 usage complete, we do not need it internal
-# think about let it active on device which needs it
+# Disable IPv6 if not required.
+# Recommended for systems without IPv6 dependencies for security and performance reasons.
 net.ipv6.conf.all.disable_ipv6=1
 net.ipv6.conf.default.disable_ipv6=1
 net.ipv6.conf.lo.disable_ipv6=1
 
-# Do not send ICMP redirects (we are not a router)
+# Prevent sending ICMP redirects.
+# Improves security for non-router devices to avoid man-in-the-middle attacks.
 net.ipv4.conf.all.send_redirects=0
 net.ipv4.conf.default.send_redirects=0
 
-# Disable IP forwarding for IPv4 & IPv6
-# This prevents the system from forwarding packets between interfaces, which can help prevent man-in-the-middle attacks
+# Disable IP forwarding to prevent the system from routing packets, increasing security.
 net.ipv4.ip_forward=0
 net.ipv4.conf.all.forwarding=0
-#  Enabling this option disables Stateless Address Autoconfiguration
-#  based on Router Advertisements for this host
 net.ipv6.conf.all.forwarding=0
 
-# Do not accept IP source route packets (we are not a router)
-# This makes it more difficult for an attacker to control the path that packets take through the network
+# Disable source routing to protect against spoofing attacks, which can be used to bypass security mechanisms.
 net.ipv4.conf.all.accept_source_route=0
 net.ipv4.conf.default.accept_source_route=0
 net.ipv6.conf.all.accept_source_route=0
 net.ipv6.conf.default.accept_source_route=0
 
-# Do not accept ICMP redirects (prevent MITM attacks)
-# This makes it more difficult for an attacker to control the routing of packets on the network
+# Prevent acceptance of ICMP redirects, mitigating spoofing attacks.
 net.ipv4.conf.all.accept_redirects=0
 net.ipv4.conf.default.accept_redirects=0
 net.ipv6.conf.all.accept_redirects=0
 net.ipv6.conf.default.accept_redirects=0
 
-# Do not accept ICMP redirects only for gateways listed in our default
+# Do not accept ICMP redirects only for gateways listed in our default.
 net.ipv4.conf.all.secure_redirects=0
 net.ipv4.conf.default.secure_redirects=0
-# _or_
-# Accept ICMP redirects only for gateways listed in our default
-# gateway list (enabled by default)
-#net.ipv4.conf.all.secure_redirects=1
-#net.ipv4.conf.default.secure_redirects=1
 
-# Log Martian Packets (disabled)
+# Log Martian Packets (better to have enabled for security, but can cause log spam).
 net.ipv4.conf.all.log_martians=0
 net.ipv4.conf.default.log_martians=0
 
-# Ignore bogus ICMP errors
+# Ignore broadcast ICMP pings and erroneous error responses to enhance security.
 net.ipv4.icmp_echo_ignore_broadcasts=1
 net.ipv4.icmp_ignore_bogus_error_responses=1
 net.ipv4.icmp_echo_ignore_all=0
 
-# Uncomment the next two lines to enable Spoof protection (reverse-path filter)
-# Turn on Source Address Verification in all interfaces to
-# prevent some spoofing attacks
+# Enable source address validation to prevent spoofing.
 net.ipv4.conf.all.rp_filter=1
 net.ipv4.conf.default.rp_filter=1
-net.ipv4.conf.lo.rp_filter=1
+net.ipv4.conf.lo.rp_filter=0
 
-# Enable TCP SYN cookie protection
-# This makes it more difficult for an attacker to perform a SYN flood attack
+# Enable TCP SYN cookies to mitigate SYN flood attacks.
 net.ipv4.tcp_syncookies=1
-# Enable the use of TCP selective acknowledgements
-# This allows the system to acknowledge only the packets that were received and improves performance
+
+# Enable TCP Selective Acknowledgements (SACK), improving throughput and robustness.
 net.ipv4.tcp_sack=1
 
-# Disable the ability to change the MTU
-# This makes it more difficult for an attacker to control the maximum transmission unit (MTU) of packets on the network
+# Disable Path MTU Discovery to reduce the risk of attackers manipulating MTU values.
 net.ipv4.ip_no_pmtu_disc=1
 
-# Disable TCP timestamps (RFC1323/RFC7323)
-# This makes it more difficult for an attacker to perform a TCP spoofing attack
+# Disable TCP timestamps to improve security against timing-based attacks. (RFC1323/RFC7323)
 net.ipv4.tcp_timestamps=0
 
-# Protect Against TCP Time-Wait
+# Protect Against TCP Time-Wait to mitigate DoS attack attempts.
 net.ipv4.tcp_rfc1337=1
 
-# Enable source address verification for IPv6
+# Enable temporary IPv6 addresses for better privacy (anonymizing address information).
+net.ipv6.conf.all.use_tempaddr=2
+net.ipv6.conf.default.use_tempaddr=2
+
+# Enable source address verification for IPv6.
 # This makes it more difficult for an attacker to spoof their IP address
 net.ipv6.conf.all.accept_ra=0
 net.ipv6.conf.default.accept_ra=0
 
+# Clear routing cache to ensure routing decisions are made based on up-to-date information.
 net.ipv4.route.flush=1
 net.ipv6.route.flush=1
 
-# Enable the use of TCP fast open
-# This allows the system to establish a TCP connection more quickly and improves performance
+# Enable TCP Fast Open for faster connections, enhancing performance for both clients and servers.
 # - 0: Disable TCP Fast Open (default if not explicitly set).
 # - 1: Enable TCP Fast Open for outgoing connections (clients).
 # - 2: Enable TCP Fast Open for incoming connections (servers).
 # - 3: Enable TCP Fast Open for both outgoing and incoming connections.
 net.ipv4.tcp_fastopen=3
 
-# Enable the use of TCP window scaling
-# increase Linux autotuning TCP buffer limit to 128MB (64MB)
-# This allows the system to handle large TCP window sizes and improves performance
-net.ipv4.tcp_window_scaling=3
-
-# recommended default congestion control is ...
-#net.ipv4.tcp_congestion_control=htcp
+# Set congestion control algorithm for better throughput and latency.
 net.ipv4.tcp_congestion_control=bbr
+#net.ipv4.tcp_congestion_control=htcp
 #net.ipv4.tcp_congestion_control=cubic
 
-# recommended for hosts with jumbo frames enabled
+# Default queuing discipline (reduces latency under load).
+net.core.default_qdisc=fq_codel
+#net.core.default_qdisc=fq
+
+# Enable TCP window scaling for larger buffers, useful in high-bandwidth or high-latency networks.
+# Increase Linux autotuning TCP buffer limit to 128MB (64MB).
+net.ipv4.tcp_window_scaling=3
+
+# Enable MTU Probing (recommended for hosts with jumbo frames enabled).
 #net.ipv4.tcp_mtu_probing=1
 
-# recommended to enable 'fair queueing'
-net.core.default_qdisc=fq
-
-# Auto tuning
+# Enable auto-tuning of the receive buffer size for better performance in high-throughput networks.
 net.ipv4.tcp_moderate_rcvbuf=1
-# Don't cache ssthresh from previous connection
+
+# Don't cache the slow start threshold from previous connections for more consistent performance.
 net.ipv4.tcp_no_metrics_save=1
 
+# Enable low-latency TCP connections for time-sensitive applications.
 net.ipv4.tcp_low_latency=1
 
-# Netfilter should be turned off on bridge devices
+# Disable netfilter on bridge devices for improved performance in virtualized environments.
 net.bridge.bridge-nf-call-iptables=0
 net.bridge.bridge-nf-call-arptables=0
 net.bridge.bridge-nf-call-ip6tables=0
 
-# ###################################################################
-# ==> network (space)
+###################################################################
+# ==> Networking (Performance Parameters)
 
-# allow testing with buffers up to 128MB (64MB)
-# Maximum receive socket buffer size
-net.core.rmem_max=134217728 #67108864 | 134217728
-# Maximum send socket buffer size
-net.core.wmem_max=134217728 #67108864 | 134217728
+# Increase maximum receive/send socket buffer sizes for handling large data streams.
+# Backuped optional values: 67108864 | 134217728
+net.core.rmem_max=134217728
+net.core.wmem_max=134217728
 
-# Maximum number of packets queued on the input side
-net.core.netdev_max_backlog=1000 #1000 | 3000
+# Increase input queue size for better handling of high traffic volumes.
+# Backuped optional values: 1000 | 3000
+net.core.netdev_max_backlog=1000
 
-# Maximum number of pending connections
-net.core.somaxconn=4096 #4096 | 65535
+# Increase maximum number of pending connections to support high traffic loads.
+# Backuped optional values: 4096 | 65535
+net.core.somaxconn=4096
 
-# Number of flow entries for Receive Packet Steering (RPS)
+# Number of flow entries for Receive Packet Steering (RPS).
 net.core.rps_sock_flow_entries=32768
 
-# TCP Receive buffer size (min, default, max)
-net.ipv4.tcp_rmem=4096 87380 134217728 #67108864
-# TCP Send buffer size (min, default, max)
-net.ipv4.tcp_wmem=4096 87380 134217728 #67108864
+# Optimize TCP buffers for high throughput connections (low, pressure, high).
+# Backuped optional values: 67108864 | 134217728
+net.ipv4.tcp_rmem=4096 87380 134217728
+net.ipv4.tcp_wmem=4096 87380 134217728
 
-# Maximum number of queued SYN requests
+# Maximum number of queued SYN requests, higher values prevent SYN flood attacks.
 net.ipv4.tcp_max_syn_backlog=4096
-# TCP memory pressure thresholds (low, pressure, high)
-#net.ipv4.tcp_mem=4194304  4194304  4194304
+
+# Define memory pressure thresholds for TCP memory management (low, pressure, high).
+# Backuped optional values: 4194304 4194304 4194304
 net.ipv4.tcp_mem=8388608 12582912 16777216
 
-# ###################################################################
+###################################################################
+# ==> Filesystem Parameters
+
+# Increase maximum number of open file descriptors system-wide, supporting applications with many files open.
+# Backuped optional values: 2097152 | 262144 | 4194304
+fs.file-max=2097152
+
+# Increase maximum virtual memory map count for applications using large amounts of virtual memory.
 vm.max_map_count=1048576
-fs.file-max=2097152 #262144 | 4194304
+
+###################################################################
+# Notes and Optional Settings
 
 # ###################################################################
-# check below if to use instead - if you have performance penalties
+# Enabling TCP Timestamps and PMTU Discovery can improve certain network performance metrics
+# but may expose systems to specific types of attacks:
 #net.ipv4.tcp_timestamps=1
 #net.ipv4.ip_no_pmtu_disc=0
 #net.ipv4.tcp_fastopen=1
 
 # ###################################################################
-# activate IPv6 if you need it
+# If IPv6 is required, enable it with the following settings
 #net.ipv6.conf.all.disable_ipv6=0
 #net.ipv6.conf.default.disable_ipv6=0
 #net.ipv6.conf.lo.disable_ipv6=0
 
 # ###################################################################
-# if you have docker installed and want they can communicate local with each other
+# Enable packet forwarding for Docker networking (if installed and required)
 #net.ipv4.ip_forward=1
 #net.ipv4.conf.all.forwarding=1
 #net.ipv6.conf.all.forwarding=1
 
 ###################################################################
+# Optional changes for further performance tuning or alternative configurations:
 ###################################################################
 # Increase the tcp-time-wait buckets pool size to prevent simple DOS attacks
-#net.ipv4.tcp_max_tw_buckets = 1440000 #262144 | 300000 | 500000 | 1440000
-#net.ipv4.tcp_tw_reuse = 1
+# Backuped optional values: 262144 | 300000 | 500000 | 1440000
+#net.ipv4.tcp_max_tw_buckets=1440000
+#net.ipv4.tcp_tw_reuse=1
 ## to be tested
 #net.ipv4.ipfrag_high_thresh=8388608
 #net.ipv4.ipfrag_low_thresh=196608
