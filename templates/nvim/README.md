@@ -7,18 +7,31 @@
 | n    | `:Lazy`            |             |
 | n    | `:Mason`           |             |
 | n    | `:MarkdownPreview` |             |
+| n    | `:CloakDisable`    |             |
 
 ## Key Maps
 
 | mode | key                | command                                                               | topic     | description                    |
 | :--- | :----------------- | :-------------------------------------------------------------------- | :-------- | :----------------------------- |
-| n    | u                  | u                                                                     |           | revert/undo                    |
-| n    | <C-6>              | <C-6>                                                                 |           | jump back prev open            |
-| n    | <C-w><C-h>         | <C-w><C-h>                                                            |           | move focus left windows        |
-| n    | <C-w><C-l>         | <C-w><C-l>                                                            |           | move focus right windows       |
-| n    | <C-w><C-j>         | <C-w><C-j>                                                            |           | move focus lower windows       |
-| n    | <C-w><C-k>         | <C-w><C-k>                                                            |           | move focus upper windows       |
+| n    | `u`                | `u`                                                                   |           | revert/undo                    |
+| n    | `<C-r>`            | `<C-r>`                                                               |           | redo                           |
+| n    | `<C-6>`            | `<C-6>`                                                               |           | jump back prev open            |
+| n    | `<C-w><C-h>`       | `<C-w><C-h>`                                                          |           | move focus left windows        |
+| n    | `<C-w><C-l>`       | `<C-w><C-l>`                                                          |           | move focus right windows       |
+| n    | `<C-w><C-j>`       | `<C-w><C-j>`                                                          |           | move focus lower windows       |
+| n    | `<C-w><C-k>`       | `<C-w><C-k>`                                                          |           | move focus upper windows       |
 |      |                    |                                                                       |           |                                |
+| n    | `zc`               | `zc`                                                                  |           | fold current block             |
+| n    | `zo`               | `zo`                                                                  |           | unfold current block           |
+| n    | `<A-k><A-0>`       | `vim.cmd("normal! zR")`                                               |           | unfold all                     |
+| n    | `<A-k><A-1>`       | `FoldToLevel(0)`                                                      |           | fold level 1                   |
+| n    | `<A-k><A-2>`       | `FoldToLevel(0)`                                                      |           | fold level 2                   |
+| n    | `<A-k><A-3>`       | `FoldToLevel(0)`                                                      |           | fold level 3                   |
+| n    | `<A-k><A-4>`       | `FoldToLevel(0)`                                                      |           | fold level 4                   |
+| n    | `<A-k><A-5>`       | `FoldToLevel(0)`                                                      |           | fold level 5                   |
+|      |                    |                                                                       |           |                                |
+| v    | `gc`               | `gc`                                                                  |           | toggle comment                 |
+| n    | `<C-V>` => `c`     | `<C-V>`                                                               |           | multi line selection + change  |
 |      |                    |                                                                       |           |                                |
 | n    | `<leader>pv`       | `vim.cmd.Ex`                                                          | basic     | exit file                      |
 | v    | `J`                | `:m '>+1<CR>gv=gv`                                                    | basic     | move line(s) down              |
