@@ -33,6 +33,7 @@ install_server_links_to_check_update:
 install_server_config:
   # APT (1) -------------------------------
   apt_base: false
+  apt_duf: false
   apt_exa: false
   apt_eza: false
   apt_bat: false
@@ -129,9 +130,9 @@ install_server_apt:
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
   - name: nano
     install: "{{ install_server_config.apt_base | default('no') | bool }}"
-  - name: duf
-    install: "{{ install_server_config.apt_base | default('no') | bool }}"
   # --------------------------------
+  - name: duf
+    install: "{{ install_server_config.apt_duf | default('no') | bool }}"
   - name: exa
     install: "{{ install_server_config.apt_exa | default('no') | bool }}"
   - name: eza
@@ -468,6 +469,9 @@ install_server_git:
         scope: global
       # - key: difftool.prompt
       #   value: "false"
+      #   scope: global
+      # - key: safe.directory
+      #   value: "*"
       #   scope: global
     hook:
       base_path: ~/.git-hooks

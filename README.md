@@ -42,6 +42,7 @@ install_server_links_to_check_update:
 install_server_config:
   # APT (1) -------------------------------
   apt_base: false
+  apt_duf: false
   apt_exa: false
   apt_eza: false
   apt_bat: false
@@ -135,11 +136,11 @@ install_server_config:
 | git                    |      |         |  x  |     |     |             | base\*      |
 | vim                    |      |         |  x  |     |     |             | base\*      |
 | nano                   |      |         |  x  |     |     |             | base\*      |
-| exa                    |      |         |  x  |     |     |             | base\*      |
-| eza                    |      |         |  x  |     |     |             | base\*      |
-| bat                    |      |         |  x  |     |     |             | base\*      |
-| duf                    |      |         |  x  |     |     |             | base\*      |
-| ncdu                   |      |         |  x  |     |     |             | base\*      |
+| duf                    |      |         |  x  |     |     |             | tool\*      |
+| exa                    |      |         |  x  |     |     |             | tool\*      |
+| eza                    |      |         |  x  |     |     |             | tool\*      |
+| bat                    |      |         |  x  |     |     |             | tool\*      |
+| ncdu                   |      |         |  x  |     |     |             | tool\*      |
 | dirmngr                |      |         |  x  |     |     |             | auth_priv\* |
 | gnupg                  |      |         |  x  |     |     |             | auth_priv\* |
 | libpam-u2f             |      |         |  x  |     |     |             | auth_priv\* |
