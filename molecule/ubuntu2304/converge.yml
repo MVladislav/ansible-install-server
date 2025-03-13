@@ -2,9 +2,9 @@
 - name: Converge
   hosts: all
   tasks:
-    - name: "Include ansible-install-server"
+    - name: "Run role"
       ansible.builtin.include_role:
-        name: "ansible-install-server"
+        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
   vars:
     # --- in inventory ---
     clients:
