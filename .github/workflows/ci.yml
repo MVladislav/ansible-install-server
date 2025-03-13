@@ -25,7 +25,7 @@ jobs:
             { version: "3.10", param: "" },
             { version: "3.11", param: "--break-system-packages" },
           ]
-        molecule-os: ["ubuntu2304"]
+        molecule-os: ["ubuntu2404"]
 
     steps:
       # https://github.com/actions/checkout
