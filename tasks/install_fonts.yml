@@ -13,6 +13,16 @@
     - install_server
     - fonts
 
+- name: "SERVER | fonts | install fonts dependencies"
+  become: true
+  ansible.builtin.apt:
+    name: xz-utils
+    state: present
+    force_apt_get: true # apt-get instead of aptitude
+  tags:
+    - install_server
+    - fonts
+
 - name: "SERVER | fonts | install fonts"
   become: true
   become_user: "{{ outer_item.name }}"
