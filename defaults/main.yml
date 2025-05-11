@@ -447,6 +447,7 @@ install_server_snap:
 # install_server_config.inst_git_conf
 install_server_git_user: "{{ ansible_user }}"
 install_server_git_email: "{{ ansible_user }}"
+# install_server_git_signing_key: ~/.ssh/id_ed25519_github.pub
 install_server_git:
   apt:
     - git
@@ -472,6 +473,15 @@ install_server_git:
       #   scope: global
       # - key: safe.directory
       #   value: "*"
+      #   scope: global
+      - key: gpg.format
+        value: ssh
+        scope: global
+      # - key: user.signingkey
+      #   value: "{{ install_server_git_signing_key }}"
+      #   scope: global
+      # - key: commit.gpgsign
+      #   value: true
       #   scope: global
     hook:
       base_path: ~/.git-hooks
