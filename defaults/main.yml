@@ -453,27 +453,113 @@ install_server_git:
     - git
   git:
     config:
+      ## USER ------------------------------------------
       - key: user.email
         value: "{{ install_server_git_email }}"
         scope: global
       - key: user.name
         value: "{{ install_server_git_user }}"
         scope: global
+      ## CORE ------------------------------------------
+      - key: hooksPath
+        value: "~/.git-hooks"
+        scope: global
+      - key: core.compression
+        value: 9
+        scope: global
+      - key: core.whitespace
+        value: error
+        scope: global
+      - key: core.preloadindex
+        value: true
+        scope: global
+      ## INIT ------------------------------------------
       - key: init.defaultBranch
         value: main
         scope: global
+      ## PUSH ------------------------------------------
+      - key: push.autoSetupRemote
+        value: true
+        scope: global
+      - key: push.default
+        value: current
+        scope: global
+      - key: push.followTags
+        value: true
+        scope: global
+      ## PULL ------------------------------------------
       - key: pull.ff
         value: only
+        scope: global
+      - key: pull.default
+        value: current
+        scope: global
+      - key: pull.rebase
+        value: true
+        scope: global
+      ## REBASE ----------------------------------------
+      - key: rebase.autoStash
+        value: true
+        scope: global
+      - key: rebase.missingCommitsCheck
+        value: warn
+        scope: global
+      ## BRANCH ----------------------------------------
+      - key: branch.sort
+        value: -committerdate
+        scope: global
+      ## TAG -------------------------------------------
+      - key: tag.sort
+        value: -taggerdate
+        scope: global
+      ## ADVICE ----------------------------------------
+      - key: advice.addEmptyPathspec
+        value: false
+        scope: global
+      - key: advice.pushNonFastForward
+        value: false
+        scope: global
+      - key: advice.statusHints
+        value: false
+        scope: global
+      ## STATUS ----------------------------------------
+      - key: status.branch
+        value: true
+        scope: global
+      - key: status.showStash
+        value: true
+        scope: global
+      - key: status.showUntrackedFiles
+        value: all
+        scope: global
+      ## LOG -------------------------------------------
+      - key: log.abbrevCommit
+        value: true
+        scope: global
+      - key: log.graphColors
+        value: blue,yellow,cyan,magenta,green,red
+        scope: global
+      ## DIFF ------------------------------------------
+      - key: diff.context
+        value: 3
+        scope: global
+      - key: diff.renames
+        value: copies
+        scope: global
+      - key: diff.interHunkContext
+        value: 10
         scope: global
       - key: diff.tool
         value: nvimdiff
         scope: global
-      # - key: difftool.prompt
-      #   value: "false"
-      #   scope: global
-      # - key: safe.directory
-      #   value: "*"
-      #   scope: global
+      ## PAGER -----------------------------------------
+      - key: pager.branch
+        value: false
+        scope: global
+      - key: pager.tag
+        value: false
+        scope: global
+      ## SIGN ------------------------------------------
       - key: gpg.format
         value: ssh
         scope: global
@@ -482,6 +568,14 @@ install_server_git:
       #   scope: global
       # - key: commit.gpgsign
       #   value: true
+      #   scope: global
+      ## SHORTS ----------------------------------------
+      # - key: url "git@github.com:".insteadOf
+      #   value: "gh:"
+      #   scope: global
+      ## OTHER -----------------------------------------
+      # - key: safe.directory
+      #   value: "*"
       #   scope: global
     hook:
       base_path: ~/.git-hooks
