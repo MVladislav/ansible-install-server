@@ -461,7 +461,7 @@ install_server_git:
         value: "{{ install_server_git_user }}"
         scope: global
       ## CORE ------------------------------------------
-      - key: hooksPath
+      - key: core.hooksPath
         value: "~/.git-hooks"
         scope: global
       - key: core.compression
