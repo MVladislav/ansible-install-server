@@ -71,6 +71,7 @@
     enabled: false
     masked: true
     state: stopped
+  failed_when: false # NOTE: sometimes throws error
   when:
     - service_status_remmina.stdout == "loaded"
   tags:
