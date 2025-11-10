@@ -116,6 +116,7 @@ install_server_config:
   pip_black: false
   pip_mypy: false
   pip_pre_commit: false
+  pip_uv: false
   pip_openconnect_sso: false
   pip_ansible: false
   # NPM --------------------------------
@@ -253,6 +254,7 @@ install_server_config:
 | black                  |      |         |     |  x  |     |             | dev         |
 | mypy                   |      |         |     |  x  |     |             | dev         |
 | pre_commit             |      |         |     |  x  |     |             | dev         |
+| uv                     |      |         |     |  x  |     |             | dev         |
 | openconnect_sso        |      |         |     |  x  |     |             | sys         |
 | ansible\*              |      |         |     |  x  |     |             | sys         |
 | kompose                |      |         |     |     |  x  |             | dev         |

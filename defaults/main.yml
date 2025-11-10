@@ -107,6 +107,7 @@ install_server_config:
   pip_black: false
   pip_mypy: false
   pip_pre_commit: false
+  pip_uv: false
   pip_openconnect_sso: false
   pip_ansible: false
   # NPM --------------------------------
@@ -832,6 +833,8 @@ install_server_python:
       install: "{{ install_server_config.pip_ansible | default('no') | bool }}"
     - name: ansible-lint
       install: "{{ install_server_config.pip_ansible | default('no') | bool }}"
+    - name: uv
+      install: "{{ install_server_config.pip_uv | default('no') | bool }}"
 
 # ------------------------------------------------------------------------------
 # GO packages
